@@ -1,0 +1,279 @@
+from fnmatch import fnmatch
+from pathlib import Path
+
+from mkdocs.structure.files import Files
+
+from typing import Dict, Any
+
+import re
+
+import os
+
+from mkdocs.plugins import BasePlugin, log
+from mkdocs.config import config_options
+
+from . import glr_path_static
+from .binder import copy_binder_files
+# from .docs_resolv import embed_code_links
+from .gen_gallery import parse_config, _KNOWN_CSS, generate_gallery_md, summarize_failing_examples, fill_mkdocs_nav
+
+
+class GalleryPlugin(BasePlugin):
+    #     # Mandatory to display plotly graph within the site
+    #     import plotly.io as pio
+    #     pio.renderers.default = "sphinx_gallery"
+
+    # TODO check more config options from mkdocs-gallery.gen_gallery.DEFAULT_GALLERY_CONF
+    config_scheme = (
+        ('examples_dirs', config_options.Dir(exists=True, default="examples", required=True)),
+        ('gallery_dirs', config_options.Dir(exists=False, default="generated/gallery", required=True)),
+        ('filename_pattern', config_options.Type(str, default=re.escape(os.sep) + 'plot')),
+        ('within_subsection_order', config_options.Choice(choices=("FileNameSortKey", "NumberOfCodeLinesSortKey"),
+                                                          default="FileNameSortKey")),
+        # Build options
+        ('plot_gallery', config_options.Type(bool, default=True, required=True)),
+        ('download_all_examples', config_options.Type(bool, default=True, required=True)),
+        ('abort_on_example_error', config_options.Type(bool, default=False, required=True)),
+        ('only_warn_on_example_error', config_options.Type(bool, default=False, required=True)),
+    )
+
+    def on_config(self, config, **kwargs):
+        """
+        TODO Add plugin templates and scripts to config.
+        """
+
+        from mkdocs.utils import yaml_load
+
+        # Enable navigation indexes in "material" theme,
+        # see https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/#section-index-pages
+        if config["theme"].name == "material":
+            if "navigation.indexes" not in config["theme"]["features"]:
+                if "toc.integrate" not in config["theme"]["features"]:
+                    config["theme"]["features"].append("navigation.indexes")
+
+        extra_config_yml = """
+markdown_extensions:
+  # to declare attributes such as css classes on markdown elements. For example to change the color
+  - attr_list
+  
+  # to have the download icons in the buttons
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  
+  # to display the code blocks https://squidfunk.github.io/mkdocs-material/reference/code-blocks/
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.snippets
+  
+  # to add notes such as http://squidfunk.github.io/mkdocs-material/extensions/admonition/
+  - admonition        
+"""
+        extra_config = yaml_load(extra_config_yml)
+        merge_extra_config(extra_config, config)
+
+        # Append static resources
+        static_resources_dir = glr_path_static()
+        config['theme'].dirs.append(static_resources_dir)
+        for css_file in os.listdir(static_resources_dir):
+            if css_file.endswith(".css"):
+                config['extra_css'].append(css_file)
+        # config['theme'].static_templates.add('search.html')
+        # config['extra_javascript'].append('search/main.js')
+
+        # Use the sphinx-gallery config validator (almost)
+        self.config = parse_config(self.config, mkdocs_conf=config)
+
+        # TODO do we need to register those CSS files and how ? (they are already registered ads
+        # for css in self.config['css']:
+        #     if css not in _KNOWN_CSS:
+        #         raise ConfigError('Unknown css %r, must be one of %r'
+        #                           % (css, _KNOWN_CSS))
+        #     if gallery_conf['app'] is not None:  # can be None in testing
+        #         gallery_conf['app'].add_css_file(css + '.css')
+
+        return config
+
+    def on_serve(self, server, config, builder):
+
+        # self.observer.schedule(handler, path, recursive=recursive)
+        excluded_dirs = self.config["gallery_dirs"]
+        if isinstance(excluded_dirs, str):
+            excluded_dirs = [excluded_dirs]  # a single dir
+
+        def wrap_callback(original_callback):
+            def _callback(event):
+                for g in excluded_dirs:
+                    # TODO maybe use fnmatch rather ?
+                    if event.src_path.startswith(g):
+                        # ignore this event: the file is in the gallery target dir.
+                        # log.info(f"Ignoring event: {event}")
+                        return
+                return original_callback(event)
+            return _callback
+
+        # TODO this is an ugly hack...
+        # Find the objects in charge of monitoring the dirs and modify their callbacks
+        for watch, handlers in server.observer._handlers.items():
+            for h in handlers:
+                h.on_any_event = wrap_callback(h.on_any_event)
+
+        return server
+
+    def on_pre_build(self, config, **kwargs):
+        """Create one md file for each python example in the gallery, and update the navigation."""
+
+        # TODO ?
+        #   if 'sphinx.ext.autodoc' in app.extensions:
+        #       app.connect('autodoc-process-docstring', touch_empty_backreferences)
+        #   app.add_directive('minigallery', MiniGallery)
+        #   app.add_directive("image-sg", ImageSg)
+        #   imagesg_addnode(app)
+
+        galleries_tocs = generate_gallery_md(self.config, config)
+
+        # Update the nav for all galleries if needed
+        new_nav = fill_mkdocs_nav(config, galleries_tocs)
+        config["nav"] = new_nav
+
+    def on_files(self, files, config):
+        """Remove the md files from the gallery"""
+
+        # Get the list of gallery source files, possibly containing the readme.md that we wish to exclude
+        gallery_conf = self.config
+        examples_dirs = gallery_conf['examples_dirs']
+        if not isinstance(examples_dirs, list):
+            examples_dirs = [examples_dirs]
+        # Get them relative to the mkdocs source dir
+        mkdocs_src_dir = config['docs_dir']
+        examples_dirs = [os.path.relpath(e, mkdocs_src_dir) for e in examples_dirs]
+
+        def exclude(i):
+            i_path = Path(i.src_path)
+            for d in examples_dirs:
+                if i_path.match(f"{d}/**/*") or i_path.match(f"{d}/*"):
+                    return True
+            return False
+
+        out = []
+        for i in files:
+            if not exclude(i):
+                out.append(i)
+        return Files(out)
+
+    # def on_nav(self, nav, config, files):
+    #     # Nav already modded in on_pre_build
+    #     return nav
+
+    # def on_page_content(self, html, page: Page, config: Config, files: Files):
+    #     """Edit the 'edit this page' link, see https://github.com/oprypin/mkdocs-gen-files/blob/master/mkdocs_gen_files/plugin.py"""
+    #
+    #     # TODO
+    #     repo_url = config.get("repo_url", None)
+    #     edit_uri = config.get("edit_uri", None)
+    #
+    #     if page.file.src_path in self._edit_paths:
+    #         path = self._edit_paths.pop(page.file.src_path)
+    #         if repo_url and edit_uri:
+    #             page.edit_url = path and urllib.parse.urljoin(
+    #                 urllib.parse.urljoin(repo_url, edit_uri), path
+    #             )
+    #
+    #     return html
+
+    def on_post_build(self, config, **kwargs):
+        """Create one md file for each python example in the gallery."""
+
+        # TODO copy_binder_files(gallery_conf=self.config, mkdocs_conf=config)
+        summarize_failing_examples(gallery_conf=self.config)
+        # TODO embed_code_links()
+
+
+def merge_extra_config(extra_config: Dict[str, Any], config):
+    """Extend the configuration 'markdown_extensions' list with extension_name if needed."""
+
+    for extension_cfg in extra_config["markdown_extensions"]:
+        if isinstance(extension_cfg, str):
+            extension_name = extension_cfg
+            if extension_name not in config['markdown_extensions']:
+                config['markdown_extensions'].append(extension_name)
+        elif isinstance(extension_cfg, dict):
+            assert len(extension_cfg) == 1
+            extension_name, extension_options = extension_cfg.popitem()
+            if extension_name not in config['markdown_extensions']:
+                config['markdown_extensions'].append(extension_name)
+            if extension_name not in config['mdx_configs']:
+                config['mdx_configs'][extension_name] = extension_options
+            else:
+                # Only add options that are not already set
+                # TODO should we warn ?
+                for cfg_key, cfg_val in extension_options.items():
+                    if cfg_key not in config['mdx_configs'][extension_name]:
+                        config['mdx_configs'][extension_name][cfg_key] = cfg_val
+        else:
+            raise TypeError(extension_cfg)
+
+
+# class SearchPlugin(BasePlugin):
+#     """ Add a search feature to MkDocs. """
+#
+#     config_scheme = (
+#         ('lang', LangOption()),
+#         ('separator', config_options.Type(str, default=r'[\s\-]+')),
+#         ('min_search_length', config_options.Type(int, default=3)),
+#         ('prebuild_index', config_options.Choice((False, True, 'node', 'python'), default=False)),
+#         ('indexing', config_options.Choice(('full', 'sections', 'titles'), default='full'))
+#     )
+#
+#     def on_config(self, config, **kwargs):
+#         "Add plugin templates and scripts to config."
+#         if 'include_search_page' in config['theme'] and config['theme']['include_search_page']:
+#             config['theme'].static_templates.add('search.html')
+#         if not ('search_index_only' in config['theme'] and config['theme']['search_index_only']):
+#             path = os.path.join(base_path, 'templates')
+#             config['theme'].dirs.append(path)
+#             if 'search/main.js' not in config['extra_javascript']:
+#                 config['extra_javascript'].append('search/main.js')
+#         if self.config['lang'] is None:
+#             # lang setting undefined. Set default based on theme locale
+#             validate = self.config_scheme[0][1].run_validation
+#             self.config['lang'] = validate(config['theme']['locale'].language)
+#         # The `python` method of `prebuild_index` is pending deprecation as of version 1.2.
+#         # TODO: Raise a deprecation warning in a future release (1.3?).
+#         if self.config['prebuild_index'] == 'python':
+#             log.info(
+#                 "The 'python' method of the search plugin's 'prebuild_index' config option "
+#                 "is pending deprecation and will not be supported in a future release."
+#             )
+#         return config
+#
+#     def on_page_context(self, context, **kwargs):
+#         "Add page to search index."
+#         self.search_index.add_entry_from_context(context['page'])
+#
+#     def on_post_build(self, config, **kwargs):
+#         "Build search index."
+#         output_base_path = os.path.join(config['site_dir'], 'search')
+#         search_index = self.search_index.generate_search_index()
+#         json_output_path = os.path.join(output_base_path, 'search_index.json')
+#         utils.write_file(search_index.encode('utf-8'), json_output_path)
+#
+#         if not ('search_index_only' in config['theme'] and config['theme']['search_index_only']):
+#             # Include language support files in output. Copy them directly
+#             # so that only the needed files are included.
+#             files = []
+#             if len(self.config['lang']) > 1 or 'en' not in self.config['lang']:
+#                 files.append('lunr.stemmer.support.js')
+#             if len(self.config['lang']) > 1:
+#                 files.append('lunr.multi.js')
+#             if ('ja' in self.config['lang'] or 'jp' in self.config['lang']):
+#                 files.append('tinyseg.js')
+#             for lang in self.config['lang']:
+#                 if (lang != 'en'):
+#                     files.append(f'lunr.{lang}.js')
+#
+#             for filename in files:
+#                 from_path = os.path.join(base_path, 'lunr-language', filename)
+#                 to_path = os.path.join(output_base_path, filename)
+#                 utils.copy_file(from_path, to_path)

@@ -1,0 +1,31 @@
+site_name: mkdocs-gallery
+# site_description: 'A short description of my project'
+repo_url: https://github.com/smarie/mkdocs-gallery
+#docs_dir: .
+#site_dir: ../site
+# default branch is main instead of master now on github
+edit_uri : ./edit/main/docs
+
+theme: material  # readthedocs  mkdocs  material
+nav:
+  - Home: index.md
+  - generated/gallery
+  - Changelog: changelog.md
+
+plugins:
+  - search
+  - gallery:
+      examples_dirs: docs/examples          # path to your example scripts, relative to mkdocs.yml
+      gallery_dirs: docs/generated/gallery  # where to save gallery generated output
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+
+  - toc:
+      permalink: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
