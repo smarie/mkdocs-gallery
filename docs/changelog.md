@@ -14,3 +14,8 @@ Initial release with:
  
  - All gallery examples from Sphinx-Gallery successfully translated, in particular:
    - LaTeX support works
+
+ - Refactoring:
+   - Using pathlib all over the place
+   - Using f-string whenever possible
+   - Object-oriented approach for configuration and dir/file names used in the generated files.
