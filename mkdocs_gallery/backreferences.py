@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Author: Óscar Nájera
+# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
 # License: 3-clause BSD
 """
 Backreferences Generator
@@ -8,6 +8,8 @@ Backreferences Generator
 Parses example file code in order to keep track of used functions
 """
 from __future__ import print_function, unicode_literals
+
+from typing import Set
 
 import ast
 import codecs
@@ -18,11 +20,11 @@ import os
 import re
 import warnings
 
-from sphinx.errors import ExtensionError
+from .errors import ExtensionError
 
 from . import mkdocs_compatibility
-from .scrapers import _find_image_ext
-from .utils import _replace_md5
+from .gen_data_model import GalleryScript, GalleryScriptResults
+from .utils import _replace_by_new_if_needed
 
 
 class DummyClass(object):
@@ -196,23 +198,27 @@ _regex = re.compile(r':(?:'
 
 def identify_names(script_blocks, global_variables=None, node=''):
     """Build a codeobj summary by identifying and resolving used names."""
+
     if node == '':  # mostly convenience for testing functions
         c = '\n'.join(txt for kind, txt, _ in script_blocks if kind == 'code')
         node = ast.parse(c)
+
     # Get matches from the code (AST)
     finder = NameFinder(global_variables)
     if node is not None:
         finder.visit(node)
     names = list(finder.get_mapping())
+
     # Get matches from docstring inspection
     text = '\n'.join(txt for kind, txt, _ in script_blocks if kind == 'text')
     names.extend((x, x, False, False) for x in re.findall(_regex, text))
     example_code_obj = collections.OrderedDict()  # order is important
-    # Make a list of all guesses, in `_embed_code_links` we will break
-    # when we find a match
+
+    # Make a list of all guesses, in `_embed_code_links` we will break when we find a match
     for name, full_name, class_like, is_class in names:
         if name not in example_code_obj:
             example_code_obj[name] = list()
+
         # name is as written in file (e.g. np.asarray)
         # full_name includes resolved import path (e.g. numpy.asarray)
         splitted = full_name.rsplit('.', 1 + class_like)
@@ -230,7 +236,9 @@ def identify_names(script_blocks, global_variables=None, node=''):
         module_short = _get_short_module_name(module, attribute)
         cobj = {'name': attribute, 'module': module,
                 'module_short': module_short or module, 'is_class': is_class}
+
         example_code_obj[name].append(cobj)
+
     return example_code_obj
 
 
@@ -256,83 +264,68 @@ BACKREF_THUMBNAIL_TEMPLATE = THUMBNAIL_TEMPLATE
 #  + """
 # .. only:: not html
 #
-#  * :ref:`sphx_glr_{ref_name}`
+#  * :ref:`mkd_glr_{ref_name}`
 # """
 
 
-def _thumbnail_div(target_dir, src_dir, subsection_path, py_fname, snippet, title,
-                   is_backref=False, check=True):
+def _thumbnail_div(script_results: GalleryScriptResults, is_backref: bool = False, check: bool = True):
     """
     Generate MD to place a thumbnail in a gallery.
 
     Parameters
     ----------
-    target_dir
-    src_dir
-    subsection_path : str
-        the relative path of the subsection
-    py_fname
-    snippet
-    title
-    is_backref
-    check
+    script_results : GalleryScriptResults
+        The results from processing a gallery example
+
+    is_backref : bool
+        ?
+
+    check : bool
+        ?
 
     Returns
     -------
     md : str
         The markdown to integrate in the global gallery readme. Note that this is also the case for subsections.
-
     """
     # Absolute path to the thumbnail
-    thumb, _ = _find_image_ext(
-        os.path.join(target_dir, 'images', 'thumb',
-                     'sphx_glr_%s_thumb.png' % py_fname[:-3]))
-    if check and not os.path.isfile(thumb):
+    if check and not script_results.thumb.exists():
         # This means we have done something wrong in creating our thumbnail!
-        raise ExtensionError('Could not find internal mkdocs-gallery thumbnail'
-                             ' file:\n%s' % (thumb,))
+        raise ExtensionError(f"Could not find internal mkdocs-gallery thumbnail file:\n{script_results.thumb}")
 
     # Relative path to the thumbnail (relative to the gallery, not the subsection)
-    thumb = os.path.join(subsection_path, os.path.relpath(thumb, target_dir)).replace(os.sep, "/")
-
-    # full_dir = os.path.relpath(target_dir, src_dir)
-    # ref_name = os.path.join(full_dir, py_fname).replace(os.path.sep, '_')
-    # ref_name = ref_name.replace(".", '-').replace("_", '-')
+    thumb = script_results.thumb_rel_root_gallery
 
     # Relative path to the html tutorial that will be generated from the md
-    example_html = os.path.join(subsection_path, f"{py_fname[:-3]}").replace(os.sep, "/")
+    example_html = script_results.script.md_file_rel_root_gallery.with_suffix("")
 
     template = BACKREF_THUMBNAIL_TEMPLATE if is_backref else THUMBNAIL_TEMPLATE
-    return template.format(snippet=escape(snippet), thumbnail=thumb, title=title, example_html=example_html)
+    return template.format(snippet=escape(script_results.intro), thumbnail=thumb, title=script_results.script.title,
+                           example_html=example_html)
 
 
-def _write_backreferences(backrefs, seen_backrefs, gallery_conf,
-                          target_dir, subsection_path, fname, snippet, title):
+def _write_backreferences(backrefs: Set, seen_backrefs: Set, snippet: str, script: GalleryScript):
     """
     Write backreference file including a thumbnail list of examples.
 
     Parameters
     ----------
-    backrefs
-    seen_backrefs
-    gallery_conf
-    target_dir
-    subsection_path : str
-        the relative path of the subsection
-    fname
-    snippet
-    title
+    backrefs : set
+
+    seen_backrefs : set
+
+    snippet : str
+
+    script : GalleryScript
 
     Returns
     -------
 
     """
-    if gallery_conf['backreferences_dir'] is None:
-        return
-
     for backref in backrefs:
-        include_path = os.path.join(gallery_conf['src_dir'],
-                                    gallery_conf['backreferences_dir'],
+        # TODO use _new_file and also create a property
+        include_path = os.path.join(script.gallery.all_info.mkdocs_conf['docs_dir'],
+                                    script.gallery_conf['backreferences_dir'],
                                     '%s.examples.new' % backref)
         seen = backref in seen_backrefs
         with codecs.open(include_path, 'a' if seen else 'w',
@@ -343,7 +336,7 @@ def _write_backreferences(backrefs, seen_backrefs, gallery_conf,
                 heading = 'Examples using ``%s``' % backref
                 ex_file.write('\n\n' + heading + '\n')
                 ex_file.write('^' * len(heading) + '\n')
-            ex_file.write(_thumbnail_div(target_dir, gallery_conf['src_dir'],
+            ex_file.write(_thumbnail_div(target_dir, mkdocs_conf['docs_dir'],
                                          subsection_path,
                                          fname, snippet, title,
                                          is_backref=True))
@@ -357,11 +350,12 @@ def _finalize_backreferences(seen_backrefs, gallery_conf):
         return
 
     for backref in seen_backrefs:
-        path = os.path.join(gallery_conf['src_dir'],
+        # TODO use _new_file ?
+        path = os.path.join(mkdocs_conf['docs_dir'],
                             gallery_conf['backreferences_dir'],
                             '%s.examples.new' % backref)
         if os.path.isfile(path):
-            _replace_md5(path, mode='t')
+            _replace_by_new_if_needed(path, md5_mode='t')
         else:
             level = gallery_conf['log_level'].get('backreference_missing',
                                                   'warning')

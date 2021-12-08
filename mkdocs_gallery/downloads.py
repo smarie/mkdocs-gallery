@@ -4,96 +4,67 @@ Utilities for downloadable items
 ================================
 
 """
-# Author: Óscar Nájera
+# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
 # License: 3-clause BSD
 
 from __future__ import absolute_import, division, print_function
 
-import os
-import zipfile
+from pathlib import Path
 
-from .utils import _replace_md5
+from typing import List
 
-# TODO what about only html > remove binder badge?
-CODE_DOWNLOAD = """
-<div id="download_links"></div>
+from zipfile import ZipFile
+from .gen_data_model import Gallery
 
-{binder_badge_md}
-
-[{download_icon} Download Python source code: {py_name}](./{py_name}){{ .md-button }}
-
-[{download_icon} Download Jupyter notebook: {ipynb_name}](./{ipynb_name}){{ .md-button }}
-"""
-
-CODE_ZIP_DOWNLOAD = """
-<div id="download_links"></div>
-
-[{download_icon} Download all examples in Python source code: {py_name}](./{py_zip}){{ .md-button }}
-
-[{download_icon} Download all examples in Jupyter notebooks: {ipynb_name}](./{ipynb_zip}){{ .md-button }}
-"""
+from .utils import _replace_by_new_if_needed, _new_file
 
 
-def python_zip(file_list, gallery_path, extension='.py'):
-    """Stores all files in file_list into an zip file
+def python_zip(file_list: List[Path], gallery: Gallery, extension='.py'):
+    """Stores all files in file_list with modified extension `extension` into an zip file
 
     Parameters
     ----------
-    file_list : list
-        Holds all the file names to be included in zip file
-    gallery_path : str
-        path to where the zipfile is stored
+    file_list : List[Path]
+        Holds all the files to be included in zip file. Note that if extension
+        is set to
+
+    gallery : Gallery
+        gallery for which to create the zip file
+
     extension : str
-        '.py' or '.ipynb' In order to deal with downloads of python
-        sources and jupyter notebooks the file extension from files in
-        file_list will be removed and replace with the value of this
-        variable while generating the zip file
+        The replacement extension for files in file_list. '.py' or '.ipynb'.
+        In order to deal with downloads of python sources and jupyter notebooks,
+        since we know that there is one notebook for each python file.
+
     Returns
     -------
-    zipname : str
-        zip file name, written as `target_dir_{python,jupyter}.zip`
-        depending on the extension
+    zipfile : Path
+        zip file, written as `<target_dir>_{python,jupyter}.zip` depending on the extension
     """
-    zipname = os.path.basename(os.path.normpath(gallery_path))
-    zipname += '_python' if extension == '.py' else '_jupyter'
-    zipname = os.path.join(gallery_path, zipname + '.zip')
-    zipname_new = zipname + '.new'
-    with zipfile.ZipFile(zipname_new, mode='w') as zipf:
-        for fname in file_list:
-            file_src = os.path.splitext(fname)[0] + extension
-            zipf.write(file_src, os.path.relpath(file_src, gallery_path))
-    _replace_md5(zipname_new)
-    return zipname
+    zipfile = gallery.zipfile_python if extension == '.py' else gallery.zipfile_jupyter
+
+    # Create the new zip
+    zipfile_new = _new_file(zipfile)
+    with ZipFile(str(zipfile_new), mode='w') as zipf:
+        for file in file_list:
+            file_src = file.with_suffix(extension)
+            zipf.write(file_src, file_src.relative_to(gallery.generated_dir))
+
+    # Replace the old one if needed
+    _replace_by_new_if_needed(zipfile_new)
+
+    return zipfile
 
 
-def list_downloadable_sources(target_dir):
-    """Returns a list of python source files is target_dir
-
-    Parameters
-    ----------
-    target_dir : str
-        path to the directory where python source file are
-    Returns
-    -------
-    list
-        list of paths to all Python source files in `target_dir`
-    """
-    return [os.path.join(target_dir, fname)
-            for fname in os.listdir(target_dir)
-            if fname.endswith('.py')]
-
-
-def generate_zipfiles(gallery_dir, src_dir):
+def generate_zipfiles(gallery: Gallery):
     """
     Collects all Python source files and Jupyter notebooks in
     gallery_dir and makes zipfiles of them
 
     Parameters
     ----------
-    gallery_dir : str
+    gallery : Gallery
         path of the gallery to collect downloadable sources
-    src_dir : str
-        The build source directory. Needed to make the RST paths relative.
 
     Return
     ------
@@ -101,24 +72,18 @@ def generate_zipfiles(gallery_dir, src_dir):
         Markdown to include download buttons to the generated files
     """
     # Collect the files to include in the zip
-    listdir = list_downloadable_sources(gallery_dir)
-    for directory in sorted(os.listdir(gallery_dir)):
-        if os.path.isdir(os.path.join(gallery_dir, directory)):
-            target_dir = os.path.join(gallery_dir, directory)
-            listdir.extend(list_downloadable_sources(target_dir))
+    listdir = gallery.list_downloadable_sources(recurse=True)
+
     # Create the two zip files
-    py_zipfile = python_zip(listdir, gallery_dir)
-    jy_zipfile = python_zip(listdir, gallery_dir, ".ipynb")
+    python_zip(listdir, gallery, extension=".py")
+    python_zip(listdir, gallery, extension=".ipynb")
 
-    def md_path(filepath):
-        filepath = os.path.relpath(filepath, gallery_dir) #os.path.normpath(src_dir))
-        return filepath.replace(os.sep, '/')
-
-    py_name = os.path.basename(py_zipfile)
-    ipynb_name = os.path.basename(jy_zipfile)
     icon = ":fontawesome-solid-download:"
-    dw_md = CODE_ZIP_DOWNLOAD.format(py_name=py_name, download_icon=icon,
-                                     py_zip=md_path(py_zipfile),
-                                     ipynb_name=ipynb_name,
-                                     ipynb_zip=md_path(jy_zipfile))
+    dw_md = f"""
+<div id="download_links"></div>
+
+[{icon} Download all examples in Python source code: {gallery.zipfile_python.name}](./{gallery.zipfile_python_rel_index_md}){{ .md-button .center}}
+
+[{icon} Download all examples in Jupyter notebooks: {gallery.zipfile_jupyter.name}](./{gallery.zipfile_jupyter_rel_index_md}){{ .md-button .center}}
+"""
     return dw_md

@@ -1,5 +1,5 @@
 # # -*- coding: utf-8 -*-
-# # Author: Óscar Nájera
+# # Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
 # # License: 3-clause BSD
 # """
 # Link resolver objects

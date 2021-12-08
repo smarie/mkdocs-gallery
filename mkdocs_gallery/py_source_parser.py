@@ -3,12 +3,14 @@ r"""
 Parser for python source files
 ==============================
 """
-# Created Sun Nov 27 14:03:07 2016
-# Author: Óscar Nájera
+# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
 
 from __future__ import division, absolute_import, print_function
 
-import codecs
+from typing import List, Dict, Tuple, Union
+
+from pathlib import Path
+
 import ast
 from distutils.version import LooseVersion
 from io import BytesIO
@@ -44,12 +46,12 @@ INFILE_CONFIG_PATTERN = re.compile(
     re.MULTILINE)
 
 
-def parse_source_file(filename):
+def parse_source_file(file: Path):
     """Parse source file into AST node.
 
     Parameters
     ----------
-    filename : str
+    file : Path
         File path
 
     Returns
@@ -57,8 +59,10 @@ def parse_source_file(filename):
     node : AST node
     content : utf-8 encoded string
     """
-    with codecs.open(filename, 'r', 'utf-8') as fid:
-        content = fid.read()
+    # with codecs.open(filename, 'r', 'utf-8') as fid:
+    #     content = fid.read()
+    content = file.read_text(encoding="utf-8")
+
     # change from Windows format to UNIX for uniformity
     content = content.replace('\r\n', '\n')
 
@@ -69,10 +73,15 @@ def parse_source_file(filename):
         return None, content
 
 
-def _get_docstring_and_rest(filename):
+def _get_docstring_and_rest(file: Path):
     """Separate ``filename`` content between docstring and the rest.
 
     Strongly inspired from ast.get_docstring.
+
+    Parameters
+    ----------
+    file : Path
+        The source file
 
     Returns
     -------
@@ -85,7 +94,7 @@ def _get_docstring_and_rest(filename):
     node : ast Node
         The node.
     """
-    node, content = parse_source_file(filename)
+    node, content = parse_source_file(file)
 
     if node is None:
         return SYNTAX_ERROR_DOCSTRING, content, 1, node
@@ -97,10 +106,9 @@ def _get_docstring_and_rest(filename):
     if not (node.body and isinstance(node.body[0], ast.Expr) and
             isinstance(node.body[0].value, ast.Str)):
         raise ExtensionError(
-            'Could not find docstring in file "{0}". '
+            f'Could not find docstring in file "{file}". '
             'A docstring is required by mkdocs-gallery '
-            'unless the file is ignored by "ignore_pattern"'
-            .format(filename))
+            'unless the file is ignored by "ignore_pattern"')
 
     if LooseVersion(sys.version) >= LooseVersion('3.7'):
         docstring = ast.get_docstring(node)
@@ -118,7 +126,7 @@ def _get_docstring_and_rest(filename):
         else:
             lineno = 0
     else:
-        # this block can be removed when python 3.6 support is dropped
+        # TODO this block can be removed when python 3.6 support is dropped
         docstring_node = node.body[0]
         docstring = docstring_node.value.s
         lineno = docstring_node.lineno  # The last line of the string.
@@ -151,12 +159,12 @@ def extract_file_config(content):
     return file_conf
 
 
-def split_code_and_text_blocks(source_file, return_node=False):
+def split_code_and_text_blocks(source_file: Path, return_node=False) -> Union[Tuple[Dict, List], Tuple[Dict, List, ast.AST]]:
     """Return list with source file separated into code and text blocks.
 
     Parameters
     ----------
-    source_file : str
+    source_file : Path
         Path to the source file.
     return_node : bool
         If True, return the ast node.
@@ -173,15 +181,12 @@ def split_code_and_text_blocks(source_file, return_node=False):
     node : ast Node
         The parsed node.
     """
-    docstring, rest_of_content, lineno, node = _get_docstring_and_rest(
-        source_file)
+    docstring, rest_of_content, lineno, node = _get_docstring_and_rest(source_file)
     blocks = [('text', docstring, 1)]
 
     file_conf = extract_file_config(rest_of_content)
 
-    pattern = re.compile(
-        r'(?P<header_line>^#{20,}.*|^# ?%%.*)\s(?P<text_content>(?:^#.*\s?)*)',
-        flags=re.M)
+    pattern = re.compile(r'(?P<header_line>^#{20,}.*|^# ?%%.*)\s(?P<text_content>(?:^#.*\s?)*)', flags=re.M)
     sub_pat = re.compile('^#', flags=re.M)
 
     pos_so_far = 0

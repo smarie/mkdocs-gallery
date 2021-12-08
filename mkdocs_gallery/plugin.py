@@ -1,4 +1,6 @@
-from fnmatch import fnmatch
+from mkdocs.config.base import ValidationError
+from mkdocs.config.config_options import OptionallyRequired, BaseConfigOption
+
 from pathlib import Path
 
 from mkdocs.structure.files import Files
@@ -18,6 +20,32 @@ from .binder import copy_binder_files
 from .gen_gallery import parse_config, _KNOWN_CSS, generate_gallery_md, summarize_failing_examples, fill_mkdocs_nav
 
 
+class ConfigList(OptionallyRequired):
+    """A list or single element of configuration matching a specific ConfigOption"""
+
+    def __init__(self, item_config: BaseConfigOption, single_elt_allowed: bool = True, **kwargs):
+        super().__init__(**kwargs)
+        self.single_elt_allowed = single_elt_allowed
+        self.item_config = item_config
+
+    def run_validation(self, value):
+        if not isinstance(value, (list, tuple)):
+            if self.single_elt_allowed:
+                value = (value, )
+            else:
+                msg = f"Expected a list but received a single element."
+                raise ValidationError(msg)
+
+        # Validate all elements in the list
+        result = []
+        for i, v in enumerate(value):
+            try:
+                result.append(self.item_config.validate(v))
+            except ValidationError as e:
+                raise ValidationError(f"Error validating config item #{i+1}: {e}")
+        return result
+
+
 class GalleryPlugin(BasePlugin):
     #     # Mandatory to display plotly graph within the site
     #     import plotly.io as pio
@@ -25,9 +53,11 @@ class GalleryPlugin(BasePlugin):
 
     # TODO check more config options from mkdocs-gallery.gen_gallery.DEFAULT_GALLERY_CONF
     config_scheme = (
-        ('examples_dirs', config_options.Dir(exists=True, default="examples", required=True)),
-        ('gallery_dirs', config_options.Dir(exists=False, default="generated/gallery", required=True)),
+        ('examples_dirs', ConfigList(config_options.Dir(exists=True), default="examples", required=True)),
+        ('expected_failing_examples', ConfigList(config_options.File(exists=True))),
+        ('gallery_dirs', ConfigList(config_options.Dir(exists=False), default="generated/gallery", required=True)),
         ('filename_pattern', config_options.Type(str, default=re.escape(os.sep) + 'plot')),
+        ('subsection_order', config_options.Choice(choices=(None, "ExplicitOrder"), default=None)),
         ('within_subsection_order', config_options.Choice(choices=("FileNameSortKey", "NumberOfCodeLinesSortKey"),
                                                           default="FileNameSortKey")),
         # Build options
@@ -83,6 +113,7 @@ markdown_extensions:
         # config['extra_javascript'].append('search/main.js')
 
         # Use the sphinx-gallery config validator (almost)
+        # TODO move to an object-oriented version of the config ?
         self.config = parse_config(self.config, mkdocs_conf=config)
 
         # TODO do we need to register those CSS files and how ? (they are already registered ads
@@ -94,32 +125,6 @@ markdown_extensions:
         #         gallery_conf['app'].add_css_file(css + '.css')
 
         return config
-
-    def on_serve(self, server, config, builder):
-
-        # self.observer.schedule(handler, path, recursive=recursive)
-        excluded_dirs = self.config["gallery_dirs"]
-        if isinstance(excluded_dirs, str):
-            excluded_dirs = [excluded_dirs]  # a single dir
-
-        def wrap_callback(original_callback):
-            def _callback(event):
-                for g in excluded_dirs:
-                    # TODO maybe use fnmatch rather ?
-                    if event.src_path.startswith(g):
-                        # ignore this event: the file is in the gallery target dir.
-                        # log.info(f"Ignoring event: {event}")
-                        return
-                return original_callback(event)
-            return _callback
-
-        # TODO this is an ugly hack...
-        # Find the objects in charge of monitoring the dirs and modify their callbacks
-        for watch, handlers in server.observer._handlers.items():
-            for h in handlers:
-                h.on_any_event = wrap_callback(h.on_any_event)
-
-        return server
 
     def on_pre_build(self, config, **kwargs):
         """Create one md file for each python example in the gallery, and update the navigation."""
@@ -182,11 +187,38 @@ markdown_extensions:
     #
     #     return html
 
+    def on_serve(self, server, config, builder):
+        """"""
+
+        # self.observer.schedule(handler, path, recursive=recursive)
+        excluded_dirs = self.config["gallery_dirs"]
+        if isinstance(excluded_dirs, str):
+            excluded_dirs = [excluded_dirs]  # a single dir
+
+        def wrap_callback(original_callback):
+            def _callback(event):
+                for g in excluded_dirs:
+                    # TODO maybe use fnmatch rather ?
+                    if event.src_path.startswith(g):
+                        # ignore this event: the file is in the gallery target dir.
+                        # log.info(f"Ignoring event: {event}")
+                        return
+                return original_callback(event)
+            return _callback
+
+        # TODO this is an ugly hack...
+        # Find the objects in charge of monitoring the dirs and modify their callbacks
+        for watch, handlers in server.observer._handlers.items():
+            for h in handlers:
+                h.on_any_event = wrap_callback(h.on_any_event)
+
+        return server
+
     def on_post_build(self, config, **kwargs):
         """Create one md file for each python example in the gallery."""
 
         # TODO copy_binder_files(gallery_conf=self.config, mkdocs_conf=config)
-        summarize_failing_examples(gallery_conf=self.config)
+        summarize_failing_examples(gallery_conf=self.config, mkdocs_conf=config)
         # TODO embed_code_links()
 
 

@@ -19,38 +19,37 @@ import os
 import shutil
 from urllib.parse import quote
 
-from sphinx.errors import ConfigError
+from typing import Dict
 
-from .utils import replace_py_ipynb
+from .errors import ConfigError
+from .gen_data_model import GalleryScript
 from . import mkdocs_compatibility, glr_path_static
 
 logger = mkdocs_compatibility.getLogger('mkdocs-gallery')
 
 
-def gen_binder_url(fpath, binder_conf, gallery_conf):
+def gen_binder_url(script: GalleryScript, binder_conf):
     """Generate a Binder URL according to the configuration in conf.py.
 
     Parameters
     ----------
-    fpath: str
-        The path to the `.py` file for which a Binder badge will be generated.
+    script: GalleryScript
+        The script for which a Binder badge will be generated.
     binder_conf: dict or None
         The Binder configuration dictionary. See `gen_binder_md` for details.
 
     Returns
     -------
     binder_url : str
-        A URL that can be used to direct the user to the live Binder
-        environment.
+        A URL that can be used to direct the user to the live Binder environment.
     """
     # Build the URL
     fpath_prefix = binder_conf.get('filepath_prefix')
     link_base = binder_conf.get('notebooks_dir')
 
     # We want to keep the relative path to sub-folders
-    relative_link = os.path.relpath(fpath, gallery_conf['src_dir'])
-    path_link = os.path.join(
-        link_base, replace_py_ipynb(relative_link))
+    relative_link = script.dwnld_py_file_rel_site_root
+    path_link = os.path.join(link_base, get_ipynb_for_py_script(relative_link))
 
     # In case our website is hosted in a sub-folder
     if fpath_prefix is not None:
@@ -73,13 +72,13 @@ def gen_binder_url(fpath, binder_conf, gallery_conf):
     return binder_url
 
 
-def gen_binder_md(fpath, binder_conf, gallery_conf):
+def gen_binder_md(script: GalleryScript, binder_conf: Dict):
     """Generate the MD + link for the Binder badge.
 
     Parameters
     ----------
-    fpath: str
-        The path to the `.py` file for which a Binder badge will be generated.
+    script: GalleryScript
+        The script for which a Binder badge will be generated.
 
     binder_conf: dict or None
         If a dictionary it must have the following keys:
@@ -95,31 +94,29 @@ def gen_binder_md(fpath, binder_conf, gallery_conf):
         'dependencies'
             A list of paths to dependency files that match the Binderspec.
 
-    gallery_conf : dict
-        mkdocs-gallery configuration dictionary.
-
     Returns
     -------
     md : str
         The Markdown for the Binder badge that links to this file.
     """
-    binder_url = gen_binder_url(fpath, binder_conf, gallery_conf)
-    # In theory we should be able to use glr_path_static for this, but Sphinx
-    # only allows paths to be relative to the build root. On Linux, absolute
-    # paths can be used and they work, but this does not seem to be
-    # documented behavior:
-    #     https://github.com/sphinx-doc/sphinx/issues/7772
-    # And in any case, it does not work on Windows, so here we copy the SVG to
-    # `images` for each gallery and link to it there. This will make
-    # a few copies, and there will be an extra in `_static` at the end of the
-    # build, but it at least works...
-    physical_path = os.path.join(
-        os.path.dirname(fpath), 'images', 'binder_badge_logo.svg')
-    os.makedirs(os.path.dirname(physical_path), exist_ok=True)
-    if not os.path.isfile(physical_path):
-        shutil.copyfile(
-            os.path.join(glr_path_static(), 'binder_badge_logo.svg'),
-            physical_path)
+    binder_url = gen_binder_url(script, binder_conf)
+
+    # TODO revisit this comment for mkdocs
+    # In theory we should be able to use glr_path_static for this, but Sphinx only allows paths to be relative to the
+    # build root. On Linux, absolute paths can be used and they work, but this does not seem to be
+    # documented behavior: https://github.com/sphinx-doc/sphinx/issues/7772
+    # And in any case, it does not work on Windows, so here we copy the SVG to `images` for each gallery and link to it
+    # there. This will make a few copies, and there will be an extra in `_static` at the end of the build, but it at
+    # least works...
+    physical_path = script.gallery.images_dir / "binder_badge_logo.svg"
+    if not physical_path.exists():
+        # Make sure parent dirs exists (this should not be necessary actually)
+        physical_path.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(os.path.join(glr_path_static(), 'binder_badge_logo.svg'), str(physical_path))
+    else:
+        assert physical_path.is_file()
+
+    # Create the markdown entry TODO
     md = (
         "\n"
         "  .. container:: binder-badge\n\n"
@@ -154,10 +151,8 @@ def _copy_binder_reqs(app, binder_conf):
     path_reqs = binder_conf.get('dependencies')
     for path in path_reqs:
         if not os.path.exists(os.path.join(app.srcdir, path)):
-            raise ConfigError(
-                "Couldn't find the Binder requirements file: {}, "
-                "did you specify the path correctly?"
-                .format(path))
+            raise ConfigError(f"Couldn't find the Binder requirements file: {path}, "
+                              f"did you specify the path correctly?")
 
     binder_folder = os.path.join(app.outdir, 'binder')
     if not os.path.isdir(binder_folder):
@@ -214,6 +209,7 @@ def _copy_binder_notebooks(app):
 
 def check_binder_conf(binder_conf):
     """Check to make sure that the Binder configuration is correct."""
+
     # Grab the configuration and return None if it's not configured
     binder_conf = {} if binder_conf is None else binder_conf
     if not isinstance(binder_conf, dict):
@@ -230,38 +226,33 @@ def check_binder_conf(binder_conf):
             missing_values.append(val)
 
     if len(missing_values) > 0:
-        raise ConfigError('binder_conf is missing values for: {}'.format(
-            missing_values))
+        raise ConfigError(f"binder_conf is missing values for: {missing_values}")
 
     for key in binder_conf.keys():
         if key not in (req_values + optional_values):
-            raise ConfigError("Unknown Binder config key: {}".format(key))
+            raise ConfigError(f"Unknown Binder config key: {key}")
 
     # Ensure we have http in the URL
-    if not any(binder_conf['binderhub_url'].startswith(ii)
-               for ii in ['http://', 'https://']):
-        raise ConfigError('did not supply a valid url, '
-                          'gave binderhub_url: {}'
-                          .format(binder_conf['binderhub_url']))
+    if not any(binder_conf['binderhub_url'].startswith(ii) for ii in ['http://', 'https://']):
+        raise ConfigError(f"did not supply a valid url, gave binderhub_url: {binder_conf['binderhub_url']}")
 
     # Ensure we have at least one dependency file
     # Need at least one of these three files
     required_reqs_files = ['requirements.txt', 'environment.yml', 'Dockerfile']
+
     path_reqs = binder_conf['dependencies']
     if isinstance(path_reqs, str):
         path_reqs = [path_reqs]
         binder_conf['dependencies'] = path_reqs
     elif not isinstance(path_reqs, (list, tuple)):
-        raise ConfigError("`dependencies` value should be a list of strings. "
-                          "Got type {}.".format(type(path_reqs)))
+        raise ConfigError(f"`dependencies` value should be a list of strings. Got type {type(path_reqs)}.")
 
-    binder_conf['notebooks_dir'] = binder_conf.get('notebooks_dir',
-                                                   'notebooks')
+    binder_conf['notebooks_dir'] = binder_conf.get('notebooks_dir', 'notebooks')
+
     path_reqs_filenames = [os.path.basename(ii) for ii in path_reqs]
     if not any(ii in path_reqs_filenames for ii in required_reqs_files):
-        raise ConfigError(
-            'Did not find one of `requirements.txt` or `environment.yml` '
-            'in the "dependencies" section of the binder configuration '
-            'for mkdocs-gallery. A path to at least one of these files '
-            'must exist in your Binder dependencies.')
+        raise ConfigError("Did not find one of `requirements.txt` or `environment.yml` in the \"dependencies\" section"
+                          " of the binder configuration for mkdocs-gallery. A path to at least one of these files must"
+                          " exist in your Binder dependencies.")
+
     return binder_conf

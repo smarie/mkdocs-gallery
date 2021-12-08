@@ -6,13 +6,11 @@ Parser for Jupyter notebooks
 Class that holds the Jupyter notebook information
 
 """
-# Author: Óscar Nájera
+# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
 # License: 3-clause BSD
 
 from __future__ import division, absolute_import, print_function
-from collections import defaultdict
 from functools import partial
-from itertools import count
 import argparse
 import base64
 import json
@@ -21,11 +19,13 @@ import os
 import re
 import sys
 import copy
+from pathlib import Path
+from typing import List, Dict
 
 from . import mkdocs_compatibility
 from .errors import ExtensionError
 from .py_source_parser import split_code_and_text_blocks
-from .utils import replace_py_ipynb
+from .gen_data_model import GalleryScript
 
 logger = mkdocs_compatibility.getLogger('mkdocs-gallery')
 
@@ -158,14 +158,14 @@ def generate_image_src(image_path, gallery_conf, target_dir):
     # If absolute path from source directory given
     if image_path.startswith('/'):
         # Path should now be relative to source dir, not target dir
-        target_dir = gallery_conf['src_dir']
+        target_dir = mkdocs_conf['docs_dir']
         image_path = image_path.lstrip('/')
     full_path = os.path.join(target_dir, image_path.replace('/', os.sep))
 
     if isinstance(gallery_conf['notebook_images'], str):
         # Use as prefix e.g. URL
         prefix = gallery_conf['notebook_images']
-        rel_path = os.path.relpath(full_path, gallery_conf['src_dir'])
+        rel_path = os.path.relpath(full_path, mkdocs_conf['docs_dir'])
         return prefix + rel_path.replace(os.sep, '/')
     else:
         # True, but not string. Embed as data URI.
@@ -180,25 +180,32 @@ def generate_image_src(image_path, gallery_conf, target_dir):
         return 'data:{};base64,{}'.format(mime_type[0], data.decode('ascii'))
 
 
-def jupyter_notebook(script_blocks, gallery_conf, target_dir):
+def jupyter_notebook(script: GalleryScript, script_blocks: List):
     """Generate a Jupyter notebook file cell-by-cell
 
     Parameters
     ----------
+    script : GalleryScript
+        Script
+
     script_blocks : list
         Script execution cells.
-    gallery_conf : dict
-        The mkdocs-gallery configuration dictionary.
-    target_dir : str
-        Path that notebook is intended for. Used where relative paths
-        may be required.
     """
-    first_cell = gallery_conf["first_notebook_cell"]
-    last_cell = gallery_conf["last_notebook_cell"]
+    # Grab the possibly custom first and last cells
+    first_cell = script.gallery_conf["first_notebook_cell"]
+    last_cell = script.gallery_conf["last_notebook_cell"]
+
+    # Initialize with a notebook skeleton
     work_notebook = jupyter_notebook_skeleton()
+
+    # Custom first cell
     if first_cell is not None:
         add_code_cell(work_notebook, first_cell)
-    fill_notebook(work_notebook, script_blocks, gallery_conf, target_dir)
+
+    # Fill the notebook per se
+    fill_notebook(work_notebook, script_blocks)
+
+    # Custom last cell
     if last_cell is not None:
         add_code_cell(work_notebook, last_cell)
 
@@ -240,7 +247,7 @@ def add_markdown_cell(work_notebook, markdown):
     work_notebook["cells"].append(markdown_cell)
 
 
-def fill_notebook(work_notebook, script_blocks, gallery_conf, target_dir):
+def fill_notebook(work_notebook, script_blocks):
     """Writes the Jupyter notebook cells
 
     If available, uses pypandoc to convert rst to markdown >> not anymore.
@@ -269,9 +276,9 @@ def fill_notebook(work_notebook, script_blocks, gallery_conf, target_dir):
             add_markdown_cell(work_notebook, markdown)
 
 
-def save_notebook(work_notebook, write_file):
+def save_notebook(work_notebook: Dict, write_file: Path):
     """Saves the Jupyter work_notebook to write_file"""
-    with open(write_file, 'w') as out_nb:
+    with open(str(write_file), 'w') as out_nb:
         json.dump(work_notebook, out_nb, indent=2)
 
 
@@ -298,4 +305,4 @@ def python_to_jupyter_cli(args=None, namespace=None):
         gallery_conf = copy.deepcopy(gen_gallery.DEFAULT_GALLERY_CONF)
         target_dir = os.path.dirname(src_file)
         example_nb = jupyter_notebook(blocks, gallery_conf, target_dir)
-        save_notebook(example_nb, replace_py_ipynb(src_file))
+        save_notebook(example_nb, get_ipynb_for_py_script(src_file))

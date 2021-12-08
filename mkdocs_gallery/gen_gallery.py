@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Author: Óscar Nájera, Sylvain Marié
+# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
 # License: 3-clause BSD
 """
 mkdocs-gallery Generator
@@ -11,6 +11,9 @@ when building the documentation.
 
 
 from __future__ import division, print_function, absolute_import
+
+from typing import Dict, Iterable, Tuple, List, Set
+
 import codecs
 import copy
 from datetime import timedelta, datetime
@@ -18,16 +21,16 @@ from difflib import get_close_matches
 from importlib import import_module
 import re
 import os
-import pathlib
+from pathlib import Path
 from xml.sax.saxutils import quoteattr, escape
 
 from .errors import ConfigError, ExtensionError
 from . import mkdocs_compatibility
+from .gen_data_model import AllInformation, GalleryScript, GalleryScriptResults, GalleryBase
 from .mkdocs_compatibility import red
-from .utils import _replace_md5, _has_optipng, _has_pypandoc
+from .utils import _replace_by_new_if_needed, _has_optipng, _new_file
 from .backreferences import _finalize_backreferences
-from .gen_single import (generate_dir, SPHX_GLR_SIG, _get_memory_base,
-                         _get_readme)
+from .gen_single import MKD_GLR_SIG, _get_memory_base, generate
 from .scrapers import _scraper_dict, _reset_dict, _import_matplotlib
 from .downloads import generate_zipfiles
 from .sorting import NumberOfCodeLinesSortKey, str_to_sorting_method
@@ -42,7 +45,7 @@ class DefaultResetArgv:
     def __repr__(self):
         return "DefaultResetArgv"
 
-    def __call__(self, gallery_conf, script_vars):
+    def __call__(self, script: GalleryScript):
         return []
 
 
@@ -68,11 +71,11 @@ DEFAULT_GALLERY_CONF = {
     'download_all_examples': True,
     'abort_on_example_error': False,
     'only_warn_on_example_error': False,
-    'failing_examples': {},
+    'failing_examples': {},  # type: Set[str]
     'passing_examples': [],
-    'stale_examples': [],  # ones that did not need to be run due to md5sum
+    'stale_examples': [],  # type: List[str]  # ones that did not need to be run due to md5sum
     'run_stale_examples': False,
-    'expected_failing_examples': set(),
+    'expected_failing_examples': set(),  # type: Set[str]
     'thumbnail_size': (400, 280),  # Default CSS does 0.4 scaling (160, 112)
     'min_reported_time': 0,
     'binder': {},
@@ -142,6 +145,10 @@ def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
         gallery_conf['image_scrapers'] += ('mayavi',)
 
     # Text to Class for sorting methods
+    _order = gallery_conf['subsection_order']
+    if isinstance(_order, str):
+        gallery_conf['subsection_order'] = str_to_sorting_method(_order)
+
     _order = gallery_conf['within_subsection_order']
     if isinstance(_order, str):
         gallery_conf['within_subsection_order'] = str_to_sorting_method(_order)
@@ -150,7 +157,7 @@ def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
     # evaluated this way as it allows setting via -D on the command line
     for key in ('run_stale_examples',):
         gallery_conf[key] = _bool_eval(gallery_conf[key])
-    gallery_conf['src_dir'] = mkdocs_conf['docs_dir']
+    # gallery_conf['src_dir'] = mkdocs_conf['docs_dir']
     # gallery_conf['app'] = app
 
     # Check capture_repr
@@ -318,18 +325,19 @@ def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
     #                               % (accepted_keys, key))
 
     # Make it easy to know which builder we're in
-    gallery_conf['builder_name'] = builder_name
-    gallery_conf['titles'] = {}
-    # Ensure 'backreferences_dir' is str, pathlib.Path or None
+    # gallery_conf['builder_name'] = builder_name
+    # gallery_conf['titles'] = {}
+
+    # Ensure 'backreferences_dir' is str, Path or None
     backref = gallery_conf['backreferences_dir']
-    if (not isinstance(backref, (str, pathlib.Path))) and \
+    if (not isinstance(backref, (str, Path))) and \
             (backref is not None):
         raise ConfigError("The 'backreferences_dir' parameter must be of type "
-                          "str, pathlib.Path or None, "
+                          "str, Path or None, "
                           "found type %s" % type(backref))
-    # if 'backreferences_dir' is pathlib.Path, make str for Python <=3.5
+    # if 'backreferences_dir' is Path, make str for Python <=3.5
     # compatibility
-    if isinstance(backref, pathlib.Path):
+    if isinstance(backref, Path):
         gallery_conf['backreferences_dir'] = str(backref)
 
     # binder
@@ -348,57 +356,7 @@ def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
     return gallery_conf
 
 
-def get_subsections(srcdir, examples_dir, gallery_conf):
-    """Return the list of subsections of a gallery.
-
-    Parameters
-    ----------
-    srcdir : str
-        absolute path to directory containing conf.py
-    examples_dir : str
-        path to the examples directory relative to conf.py
-    gallery_conf : dict
-        The gallery configuration.
-
-    Returns
-    -------
-    out : list
-        sorted list of gallery subsection folder names
-    """
-    sortkey = gallery_conf['subsection_order']
-    subfolders = [subfolder for subfolder in os.listdir(examples_dir)
-                  if _get_readme(os.path.join(examples_dir, subfolder),
-                                 gallery_conf, raise_error=False) is not None]
-    base_examples_dir_path = os.path.relpath(examples_dir, srcdir)
-    subfolders_with_path = [os.path.join(base_examples_dir_path, item)
-                            for item in subfolders]
-    sorted_subfolders = sorted(subfolders_with_path, key=sortkey)
-
-    return [subfolders[i] for i in [subfolders_with_path.index(item)
-                                    for item in sorted_subfolders]]
-
-
-def _prepare_gallery_dirs(gallery_conf, srcdir):
-    """Creates necessary folders for sphinx_gallery files """
-    examples_dirs = gallery_conf['examples_dirs']
-    gallery_dirs = gallery_conf['gallery_dirs']
-
-    if not isinstance(examples_dirs, list):
-        examples_dirs = [examples_dirs]
-
-    if not isinstance(gallery_dirs, list):
-        gallery_dirs = [gallery_dirs]
-
-    if bool(gallery_conf['backreferences_dir']):
-        backreferences_dir = os.path.join(
-            srcdir, gallery_conf['backreferences_dir'])
-        if not os.path.exists(backreferences_dir):
-            os.makedirs(backreferences_dir)
-
-    return list(zip(examples_dirs, gallery_dirs))
-
-
-def generate_gallery_md(gallery_conf, mkdocs_conf):
+def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict[str, str]]]:
     """Generate the Main examples gallery reStructuredText
 
     Start the mkdocs-gallery configuration and recursively scan the examples
@@ -406,79 +364,80 @@ def generate_gallery_md(gallery_conf, mkdocs_conf):
 
     Returns
     -------
-    md_files_toc : Dict[str, Dict[str, str]]
-        A map of galleries src folders to galleries toc (map of title to path)
+    md_files_toc : Dict[str, Tuple[str, Dict[str, str]]]
+        A map of galleries src folders to title and galleries toc (map of title to path)
     """
     logger.info('generating gallery...')  # , color='white')
     # gallery_conf = parse_config(app)  already done
 
     seen_backrefs = set()
-
     md_files_toc = dict()
-    costs = []
-    # the global source directory of mkdocs
-    mkdocs_srcdir = mkdocs_conf['docs_dir']
+
     # a list of pairs "gallery source" > "gallery dest" dirs
-    workdirs = _prepare_gallery_dirs(gallery_conf, mkdocs_srcdir)
+    all_info = AllInformation.from_cfg(gallery_conf, mkdocs_conf)
+
+    # Gather all files except ignored ones, and sort them according to the configuration.
+    all_info.collect_script_files()
 
     # Check for duplicate filenames to make sure linking works as expected
-    examples_dirs = [ex_dir for ex_dir, _ in workdirs]
-    files = collect_gallery_files(examples_dirs, gallery_conf)
+    files = all_info.get_all_script_files()
     check_duplicate_filenames(files)
     check_spaces_in_filenames(files)
 
-    for examples_dir, gallery_dir in workdirs:
+    # For each gallery,
+    all_results = []
+    for gallery in all_info.galleries:
+        # Process the root level
+        title, index_md, results = generate(gallery=gallery, seen_backrefs=seen_backrefs)
+        write_computation_times(gallery, results)
 
-        examples_dir = os.path.join(mkdocs_srcdir, examples_dir)
-        gallery_dir = os.path.join(mkdocs_srcdir, gallery_dir)
+        # Remember the results so that we can write the final summary
+        all_results.extend(results)
 
-        # Here we don't use an os.walk, but we recurse only twice: flat is
-        # better than nested.
-        this_title, this_md_files, this_fhindex, this_costs = generate_dir(
-            examples_dir, examples_dir, gallery_dir, gallery_conf, seen_backrefs)
+        # Create the toc entries
+        root_md_files = {res.script.title: res.script.md_file_rel_site_root.as_posix() for res in results}
+        md_files_toc[gallery.generated_dir] = (title, root_md_files)
 
-        md_files_toc[gallery_dir] = (this_title, this_md_files)
-        costs += this_costs
-        write_computation_times(gallery_conf, gallery_dir, this_costs)
-
-        # Finally create an index.md with all examples
-        index_md_new = os.path.join(gallery_dir, 'index.md.new')
-        with codecs.open(index_md_new, 'w', encoding='utf-8') as fhindex:
-            # Write the README and thumbnails for the root-level example
-            fhindex.write(this_fhindex)
+        # Create an index.md with all examples
+        index_md_new = _new_file(gallery.index_md)
+        with codecs.open(str(index_md_new), 'w', encoding='utf-8') as fhindex:
+            # Write the README and thumbnails for the root-level examples
+            fhindex.write(index_md)
 
             # If there are any subsections, handle them
-            for subsection in get_subsections(mkdocs_srcdir, examples_dir, gallery_conf):
-                sub_src_dir = os.path.join(examples_dir, subsection)
-                sub_target_dir = os.path.join(gallery_dir, subsection)
-                this_title, this_md_files, this_fhindex, this_costs = \
-                    generate_dir(examples_dir, sub_src_dir, sub_target_dir, gallery_conf,
-                                 seen_backrefs)
-                fhindex.write(this_fhindex)
-                md_files_toc[sub_target_dir] = (this_title, this_md_files)
-                costs += this_costs
-                write_computation_times(gallery_conf, sub_target_dir, this_costs)
+            for subg in gallery.subsections:
+                # Process the root level
+                sub_title, sub_index_md, sub_results = generate(gallery=subg, seen_backrefs=seen_backrefs)
+                write_computation_times(subg, sub_results)
+
+                # Remember the results so that we can write the final summary
+                all_results.extend(sub_results)
+
+                # Create the toc entries
+                sub_md_files = {res.script.title: res.script.md_file for res in sub_results}
+                md_files_toc[subg.generated_dir] = (sub_title, sub_md_files)
+
+                # Write the README and thumbnails for the subgallery examples
+                fhindex.write(sub_index_md)
 
             # Finally generate the download buttons
             if gallery_conf['download_all_examples']:
-                download_fhindex = generate_zipfiles(
-                    gallery_dir, mkdocs_srcdir)
+                download_fhindex = generate_zipfiles(gallery)
                 fhindex.write(download_fhindex)
 
             # And the "generated by..." signature
             if gallery_conf['show_signature']:
-                fhindex.write(SPHX_GLR_SIG)
+                fhindex.write(MKD_GLR_SIG)
 
         # Remove the .new suffix and update the md5
-        index_md = _replace_md5(index_md_new, mode='t')
+        index_md = _replace_by_new_if_needed(index_md_new, md5_mode='t')
 
     # TODO what does this mean?
     _finalize_backreferences(seen_backrefs, gallery_conf)
 
     if gallery_conf['plot_gallery']:
         logger.info("computation time summary:")  #, color='white')
-        lines, lens = _format_for_writing(
-            costs, os.path.normpath(gallery_conf['src_dir']), kind='console')
+        lines, lens = _format_for_writing(all_results, kind='console')
         for name, t, m in lines:
             text = ('    - %s:   ' % (name,)).ljust(lens[0] + 10)
             if t is None:
@@ -489,19 +448,29 @@ def generate_gallery_md(gallery_conf, mkdocs_conf):
                 if t_float >= gallery_conf['min_reported_time']:
                     text += t.rjust(lens[1]) + '   ' + m.rjust(lens[2])
                     logger.info(text)
-        # Also create a junit.xml file, useful e.g. on CircleCI
-        write_junit_xml(gallery_conf, mkdocs_conf['site_dir'], costs)
+
+        # Also create a junit.xml file if needed for rep
+        if gallery_conf['junit'] and gallery_conf['plot_gallery']:
+            write_junit_xml(all_info, all_results)
 
     return md_files_toc
 
 
-def fill_mkdocs_nav(mkdocs_config, galleries_tocs):
-    """Creates a new nav by replacing all entries in the nav containing a reference to gallery_index"""
+def fill_mkdocs_nav(mkdocs_config: Dict, galleries_tocs: Dict[Path, Tuple[str, Dict[str, str]]]):
+    """Creates a new nav by replacing all entries in the nav containing a reference to gallery_index
 
-    modded_nav = []
+    Parameters
+    ----------
+    mkdocs_config
+
+    galleries_tocs : Dict[Path, Tuple[str, Dict[str, str]]]
+        A reference dict containing for each gallery, its path (the key) and its title and contents. The
+        contents is a dictionary containing title and path to md, for each element in the gallery.
+    """
+    mkdocs_docs_dir = Path(mkdocs_config["docs_dir"])
 
     # galleries_tocs_rel = {os.path.relpath(k, mkdocs_config["docs_dir"]): v for k, v in galleries_tocs.items()}
-    galleries_tocs_unique = {pathlib.Path(k).absolute().as_posix(): v for k, v in galleries_tocs.items()}
+    galleries_tocs_unique = {Path(k).absolute().as_posix(): v for k, v in galleries_tocs.items()}
 
     def get_gallery_toc(gallery_target_dir_or_index):
         """
@@ -512,7 +481,7 @@ def fill_mkdocs_nav(mkdocs_config, galleries_tocs):
         if os.path.isabs(gallery_target_dir_or_index):
             return None, None, None
 
-        # Auto-remove the "index.md" if needed
+        # Auto-remove the "/index.md" if needed
         if gallery_target_dir_or_index.endswith("/index.md"):
             main_toc_entry = gallery_target_dir_or_index
             gallery_target_dir_or_index = gallery_target_dir_or_index[:-9]
@@ -523,7 +492,7 @@ def fill_mkdocs_nav(mkdocs_config, galleries_tocs):
                 main_toc_entry = gallery_target_dir_or_index + "/index.md"
 
         # Find the actual absolute path for comparison
-        gallery_target_dir_or_index = (pathlib.Path(mkdocs_config["docs_dir"]) / gallery_target_dir_or_index).absolute().as_posix()
+        gallery_target_dir_or_index = (mkdocs_docs_dir / gallery_target_dir_or_index).absolute().as_posix()
 
         try:
             title, contents = galleries_tocs_unique[gallery_target_dir_or_index]
@@ -547,14 +516,19 @@ def fill_mkdocs_nav(mkdocs_config, galleries_tocs):
 
     def _replace_element(toc_elt):
         if isinstance(toc_elt, str):
+            # A single file name directly, e.g. index.md or gallery
             return _get_replacement_for(toc_elt)
 
         elif isinstance(toc_elt, list):
+            # A list of items, either single file_names or one-entry dicts
             return [_replace_element(elt) for elt in toc_elt]
 
         elif isinstance(toc_elt, dict):
+            # A dictionary containing a single element: {title: file_name} of title : (list)
             assert len(toc_elt) == 1
             toc_name, toc_elt = tuple(toc_elt.items())[0]
+
+            # Have a look at the element
             if isinstance(toc_elt, str):
                 # Special case: this is a gallery with a custom name.
                 new_toc_elt = _get_replacement_for(toc_elt, custom_title=toc_name)
@@ -564,7 +538,7 @@ def fill_mkdocs_nav(mkdocs_config, galleries_tocs):
                     # not a gallery, return the original contents
                     return {toc_name: toc_elt}
             else:
-                # Recurse
+                # A list: recurse
                 return {toc_name: _replace_element(toc_elt)}
 
         else:
@@ -573,13 +547,6 @@ def fill_mkdocs_nav(mkdocs_config, galleries_tocs):
 
     modded_nav = _replace_element(mkdocs_config["nav"])
     return modded_nav
-
-
-SPHX_GLR_COMP_TIMES = """
-
-# Computation times
-
-"""
 
 
 def _sec_to_readable(t):
@@ -595,61 +562,63 @@ def _sec_to_readable(t):
     return t
 
 
-def cost_name_key(cost_name):
-    cost, name = cost_name
+def cost_name_key(result: GalleryScriptResults):
     # sort by descending computation time, descending memory, alphabetical name
-    return (-cost[0], -cost[1], name)
+    return (-result.exec_time, -result.memory, result.script.src_py_file_rel_project)
 
 
-def _format_for_writing(costs, path, kind='md'):
+def _format_for_writing(results: GalleryScriptResults, kind='md'):
     """Format (name, time, memory) for a single row in the mg_execution_times.md table."""
     lines = list()
-    for (time, mem), py_path in sorted(costs, key=cost_name_key):
+    for result in sorted(results, key=cost_name_key):
         if kind == 'md':  # like in mg_execution_times
-            py_file = os.path.basename(py_path)
-            # TODO have the full name and link
-            #  text = f"[{name}]({md_path})({py_file})"
-            text = py_file
-            t = _sec_to_readable(time)
+            text = f"[{result.script.script_stem}](./{result.script.md_file.name}) ({result.script.src_py_file_rel_project.as_posix()})"
+            t = _sec_to_readable(result.exec_time)
         else:  # like in generate_gallery
-            assert kind == 'console'
-            text = os.path.relpath(py_path, path)
-            t = f'{time:0.2f} sec'
+            assert kind == "console"
+            text = result.script.src_py_file_rel_project.as_posix()
+            t = f"{result.exec_time:0.2f} sec"
 
         # Memory usage
-        m = f'{mem:.1f} MB'
+        m = f"{result.memory:.1f} MB"
 
         # The 3 values in the table : name, time, memory
         lines.append([text, t, m])
 
-    lens = [max(x) for x in zip(*[[len(item) for item in cost]
-                                  for cost in lines])]
+    lens = [max(x) for x in zip(*[[len(item) for item in cost] for cost in lines])]
     return lines, lens
 
 
-def write_computation_times(gallery_conf, target_dir, costs):
+def write_computation_times(gallery: GalleryBase, results: List[GalleryScriptResults]):
     """Write the mg_execution_times.md file containing all execution times."""
 
-    total_time = sum(cost[0][0] for cost in costs)
-    # TODO uncomment
-    # if total_time == 0:
-    #     return
-    target_dir_clean = os.path.relpath(
-        target_dir, gallery_conf['src_dir']).replace(os.path.sep, '_')
-    # new_ref = 'sphx_glr_%s_mg_execution_times' % target_dir_clean
-    with codecs.open(os.path.join(target_dir, 'mg_execution_times.md'), 'w',
-                     encoding='utf-8') as fid:
+    total_time = sum(result.exec_time for result in results)
+    if total_time == 0:
+        return
+
+    target_dir = gallery.generated_dir_rel_site_root
+    target_dir_clean = target_dir.as_posix().replace("/", '_')
+    # new_ref = 'mkd_glr_%s_mg_execution_times' % target_dir_clean
+    with codecs.open(str(gallery.exec_times_md_file), 'w', encoding='utf-8') as fid:
         # Write the header
-        fid.write(SPHX_GLR_COMP_TIMES)  #.format(new_ref))
-        fid.write(f"**{_sec_to_readable(total_time)}** total execution time for **{target_dir_clean}** files:\n\n")
+        fid.write(f"""
+
+# Computation times
+
+**{_sec_to_readable(total_time)}** total execution time for **{target_dir_clean}** files:
+
+""")
 
         # Write the table of execution times in markdown
-        lines, lens = _format_for_writing(costs, target_dir_clean)
-        del costs
-        hline = ''.join(('+' + '-' * (length + 2)) for length in lens) + '+\n'
+        lines, lens = _format_for_writing(results)
+
+        # Create the markdown table.
+        # First line of the table  +--------------+
+        hline = "".join(('+' + '-' * (length + 2)) for length in lens) + '+\n'
         fid.write(hline)
-        format_str = ''.join('| {%s} ' % (ii,)
-                             for ii in range(len(lines[0]))) + '|\n'
+
+        # Table rows
+        format_str = ''.join('| {%s} ' % (ii,) for ii in range(len(lines[0]))) + '|\n'
         for line in lines:
             line = [ll.ljust(len_) for ll, len_ in zip(line, lens)]
             text = format_str.format(*line)
@@ -658,33 +627,45 @@ def write_computation_times(gallery_conf, target_dir, costs):
             fid.write(hline)
 
 
-def write_junit_xml(gallery_conf, target_dir, costs):
-    if not gallery_conf['junit'] or not gallery_conf['plot_gallery']:
-        return
-    failing_as_expected, failing_unexpectedly, passing_unexpectedly = \
-        _parse_failures(gallery_conf)
+def write_junit_xml(all_info: AllInformation, all_results: List[GalleryScriptResults]):
+    """
+
+    Parameters
+    ----------
+    all_info
+    all_results
+
+    Returns
+    -------
+
+    """
+    gallery_conf = all_info.gallery_conf
+    failing_as_expected, failing_unexpectedly, passing_unexpectedly = _parse_failures(gallery_conf)
+
     n_tests = 0
     n_failures = 0
     n_skips = 0
     elapsed = 0.
-    src_dir = gallery_conf['src_dir']
+    src_dir = all_info.mkdocs_docs_dir
+    target_dir = all_info.mkdocs_site_dir
     output = ''
-    for cost in costs:
-        (t, _), fname = cost
+    for result in all_results:
+        t = result.exec_time
+        fname = result.script.src_py_file_rel_project.as_posix()
         if not any(fname in x for x in (gallery_conf['passing_examples'],
                                         failing_unexpectedly,
                                         failing_as_expected,
                                         passing_unexpectedly)):
             continue  # not subselected by our regex
-        title = gallery_conf['titles'][fname]
-        output += (
-            u'<testcase classname={0!s} file={1!s} line="1" '
-            u'name={2!s} time="{3!r}">'
-            .format(quoteattr(os.path.splitext(os.path.basename(fname))[0]),
-                    quoteattr(os.path.relpath(fname, src_dir)),
-                    quoteattr(title), t))
+        title = gallery_conf['titles'][fname]  # use gallery.title
+
+        _cls_name = quoteattr(os.path.splitext(os.path.basename(fname))[0])
+        _file = quoteattr(os.path.relpath(fname, src_dir))
+        _name = quoteattr(title)
+
+        output += f'<testcase classname={_cls_name!s} file={_file!s} line="1" name={2!s} time="{t!r}">'
         if fname in failing_as_expected:
-            output += u'<skipped message="expected example failure"></skipped>'
+            output += '<skipped message="expected example failure"></skipped>'
             n_skips += 1
         elif fname in failing_unexpectedly or fname in passing_unexpectedly:
             if fname in failing_unexpectedly:
@@ -692,22 +673,27 @@ def write_junit_xml(gallery_conf, target_dir, costs):
             else:  # fname in passing_unexpectedly
                 traceback = 'Passed even though it was marked to fail'
             n_failures += 1
-            output += (u'<failure message={0!s}>{1!s}</failure>'
-                       .format(quoteattr(traceback.splitlines()[-1].strip()),
-                               escape(traceback)))
-        output += u'</testcase>'
+            _msg = quoteattr(traceback.splitlines()[-1].strip())
+            _tb = escape(traceback)
+            output += f'<failure message={_msg!s}>{_tb!s}</failure>'
+        output += "</testcase>"
         n_tests += 1
         elapsed += t
-    output += u'</testsuite>'
-    output = (u'<?xml version="1.0" encoding="utf-8"?>'
-              u'<testsuite errors="0" failures="{0}" name="mkdocs-gallery" '
-              u'skipped="{1}" tests="{2}" time="{3}">'
-              .format(n_failures, n_skips, n_tests, elapsed)) + output
-    # Actually write it
+
+    # Add the header and footer
+    output = f"""<?xml version="1.0" encoding="utf-8"?>
+<testsuite errors="0" failures="{n_failures}" name="mkdocs-gallery" skipped="{n_skips}" tests="{n_tests}" time="{elapsed}">
+{output}
+</testsuite>
+"""
+
+    # Actually write it at desired file location
     fname = os.path.normpath(os.path.join(target_dir, gallery_conf['junit']))
     junit_dir = os.path.dirname(fname)
+    # Make the dirs if needed
     if not os.path.isdir(junit_dir):
         os.makedirs(junit_dir)
+
     with codecs.open(fname, 'w', encoding='utf-8') as fid:
         fid.write(output)
 
@@ -731,30 +717,30 @@ def touch_empty_backreferences(mkdocs_conf, what, name, obj, options, lines):
         open(examples_path, 'w').close()
 
 
-def _expected_failing_examples(gallery_conf):
-    return set(
-        os.path.normpath(os.path.join(gallery_conf['src_dir'], path))
-        for path in gallery_conf['expected_failing_examples'])
+def _expected_failing_examples(gallery_conf: Dict, mkdocs_conf: Dict) -> Set[str]:
+    """The set of expected failing examples"""
+    return set((Path(mkdocs_conf['docs_dir']) / path).as_posix()
+               for path in gallery_conf['expected_failing_examples'])
 
 
-def _parse_failures(gallery_conf):
+def _parse_failures(gallery_conf: Dict, mkdocs_conf: Dict):
     """Split the failures."""
     failing_examples = set(gallery_conf['failing_examples'].keys())
-    expected_failing_examples = _expected_failing_examples(gallery_conf)
-    failing_as_expected = failing_examples.intersection(
-        expected_failing_examples)
-    failing_unexpectedly = failing_examples.difference(
-        expected_failing_examples)
-    passing_unexpectedly = expected_failing_examples.difference(
-        failing_examples)
+    expected_failing_examples = _expected_failing_examples(gallery_conf=gallery_conf, mkdocs_conf=mkdocs_conf)
+
+    failing_as_expected = failing_examples.intersection(expected_failing_examples)
+    failing_unexpectedly = failing_examples.difference(expected_failing_examples)
+    passing_unexpectedly = expected_failing_examples.difference(failing_examples)
+
     # filter from examples actually run
     passing_unexpectedly = [
         src_file for src_file in passing_unexpectedly
         if re.search(gallery_conf.get('filename_pattern'), src_file)]
+
     return failing_as_expected, failing_unexpectedly, passing_unexpectedly
 
 
-def summarize_failing_examples(gallery_conf):
+def summarize_failing_examples(gallery_conf: Dict, mkdocs_conf: Dict):
     """Collects the list of falling examples and prints them with a traceback.
 
     Raises ValueError if there where failing examples.
@@ -768,31 +754,26 @@ def summarize_failing_examples(gallery_conf):
                     'False, so no examples were executed.')  #, color='brown')
         return
 
-    failing_as_expected, failing_unexpectedly, passing_unexpectedly = \
-        _parse_failures(gallery_conf)
+    failing_as_expected, failing_unexpectedly, passing_unexpectedly = _parse_failures(gallery_conf=gallery_conf, mkdocs_conf=mkdocs_conf)
 
     if failing_as_expected:
         logger.info("Examples failing as expected:")  # , color='brown')
         for fail_example in failing_as_expected:
-            logger.info('%s failed leaving traceback:', fail_example)
-                        # color='brown')
-            logger.info(gallery_conf['failing_examples'][fail_example])
-                        # color='brown')
+            logger.info('%s failed leaving traceback:', fail_example)   # color='brown')
+            logger.info(gallery_conf['failing_examples'][fail_example])  # color='brown')
 
     fail_msgs = []
     if failing_unexpectedly:
         fail_msgs.append(red("Unexpected failing examples:"))
         for fail_example in failing_unexpectedly:
-            fail_msgs.append(fail_example + ' failed leaving traceback:\n' +
-                             gallery_conf['failing_examples'][fail_example] +
-                             '\n')
+            fail_msgs.append(f"{fail_example} failed leaving traceback:\n"
+                             f"{gallery_conf['failing_examples'][fail_example]}\n")
 
     if passing_unexpectedly:
         fail_msgs.append(red("Examples expected to fail, but not failing:\n") +
-                         "Please remove these examples from\n" +
-                         "mkdocs_gallery_conf['expected_failing_examples']\n" +
-                         "in your conf.py file"
-                         "\n".join(passing_unexpectedly))
+                         "\n".join(passing_unexpectedly) +
+                         "\nPlease remove these examples from 'expected_failing_examples' in your mkdocs.yml file."
+                         )
 
     # standard message
     n_good = len(gallery_conf['passing_examples'])
@@ -821,31 +802,18 @@ def summarize_failing_examples(gallery_conf):
             raise ExtensionError(fail_message)
 
 
-def collect_gallery_files(examples_dirs, gallery_conf):
-    """Collect python files from the gallery example directories."""
-    files = []
-    for example_dir in examples_dirs:
-        for root, dirnames, filenames in os.walk(example_dir):
-            for filename in filenames:
-                if filename.endswith('.py'):
-                    if re.search(gallery_conf['ignore_pattern'],
-                                 filename) is None:
-                        files.append(os.path.join(root, filename))
-    return files
-
-
-def check_duplicate_filenames(files):
+def check_duplicate_filenames(files: Iterable[Path]):
     """Check for duplicate filenames across gallery directories."""
-    # Check whether we'll have duplicates
+
     used_names = set()
     dup_names = list()
 
     for this_file in files:
-        this_fname = os.path.basename(this_file)
-        if this_fname in used_names:
+        # this_fname = os.path.basename(this_file)
+        if this_file.name in used_names:
             dup_names.append(this_file)
         else:
-            used_names.add(this_fname)
+            used_names.add(this_file.name)
 
     if len(dup_names) > 0:
         logger.warning(
@@ -854,10 +822,10 @@ def check_duplicate_filenames(files):
             'List of files: {}'.format(sorted(dup_names),))
 
 
-def check_spaces_in_filenames(files):
+def check_spaces_in_filenames(files: Iterable[Path]):
     """Check for spaces in filenames across example directories."""
     regex = re.compile(r'[\s]')
-    files_with_space = list(filter(regex.search, files))
+    files_with_space = list(filter(regex.search, (str(f) for f in files)))
     if files_with_space:
         logger.warning(
             'Example file name(s) with space(s) found. Having space(s) in '

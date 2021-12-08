@@ -59,6 +59,8 @@ Most [sphinx-gallery configuration options](https://sphinx-gallery.github.io/sta
 
 See [mkdocs configuration](https://www.mkdocs.org/user-guide/configuration/) for general information about the `mkdocs.yml` file.
 
+Also, you can look at the configuration used for this site: [mkdocs.yml](https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml).
+
 ### 3. Add gallery examples
 
 Gallery examples are structured [the same way as in sphinx-gallery](https://sphinx-gallery.github.io/stable/syntax.html), with two major differences: 
@@ -79,6 +81,7 @@ examples/            # base 'Gallery of Examples' directory
 
 The entire original [gallery of examples from sphinx-gallery](https://sphinx-gallery.github.io/stable/auto_examples/index.html) has been ported [here](http://127.0.0.1:8000/generated/gallery/). You may wish to check it out in order to see how each technical aspect translates in the mkdocs world.
 
+You can look at the configuration used to generate it here: [mkdocs.yml](https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml).
 
 ## See Also
 

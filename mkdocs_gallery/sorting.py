@@ -5,14 +5,15 @@ Sorters for mkdocs-gallery (sub)sections
 
 Sorting key functions for gallery subsection folders and section files.
 """
-# Created: Sun May 21 20:38:59 2017
-# Author: Óscar Nájera
+# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
 # License: 3-clause BSD
 
 from __future__ import division, absolute_import, print_function
 
 from enum import Enum
-from typing import Type
+from pathlib import Path
+
+from typing import Type, Iterable
 
 import os
 import types
@@ -23,7 +24,14 @@ from .gen_single import extract_intro_and_title
 from .py_source_parser import split_code_and_text_blocks
 
 
-class ExplicitOrder(object):
+class _SortKey(object):
+    """Base class for section order key classes."""
+
+    def __repr__(self):
+        return '<%s>' % (self.__class__.__name__,)
+
+
+class ExplicitOrder(_SortKey):
     """Sorting key for all gallery subsections.
 
     This requires all folders to be listed otherwise an exception is raised.
@@ -39,7 +47,7 @@ class ExplicitOrder(object):
         Wrong input type or Subgallery path missing.
     """
 
-    def __init__(self, ordered_list):
+    def __init__(self, ordered_list: Iterable[str]):
         if not isinstance(ordered_list, (list, tuple, types.GeneratorType)):
             raise ConfigError("ExplicitOrder sorting key takes a list, "
                               "tuple or Generator, which hold"
@@ -48,40 +56,23 @@ class ExplicitOrder(object):
         self.ordered_list = list(os.path.normpath(path)
                                  for path in ordered_list)
 
-    def __call__(self, item):
-        if item in self.ordered_list:
-            return self.ordered_list.index(item)
+    def __call__(self, item: Path):
+        if item.name in self.ordered_list:
+            return self.ordered_list.index(item.name)
         else:
             raise ConfigError('If you use an explicit folder ordering, you '
                               'must specify all folders. Explicit order not '
-                              'found for {}'.format(item))
+                              'found for {}'.format(item.name))
 
     def __repr__(self):
         return '<%s : %s>' % (self.__class__.__name__, self.ordered_list)
 
 
-class _SortKey(object):
-    """Base class for section order key classes."""
-
-    def __init__(self, src_dir):
-        self.src_dir = src_dir
-
-    def __repr__(self):
-        return '<%s>' % (self.__class__.__name__,)
-
-
 class NumberOfCodeLinesSortKey(_SortKey):
-    """Sort examples in src_dir by the number of code lines.
+    """Sort examples by the number of code lines."""
 
-    Parameters
-    ----------
-    src_dir : str
-        The source directory.
-    """
-
-    def __call__(self, filename):
-        src_file = os.path.normpath(os.path.join(self.src_dir, filename))
-        file_conf, script_blocks = split_code_and_text_blocks(src_file)
+    def __call__(self, file: Path):
+        file_conf, script_blocks = split_code_and_text_blocks(file)
         amount_of_code = sum([len(bcontent)
                               for blabel, bcontent, lineno in script_blocks
                               if blabel == 'code'])
@@ -89,45 +80,27 @@ class NumberOfCodeLinesSortKey(_SortKey):
 
 
 class FileSizeSortKey(_SortKey):
-    """Sort examples in src_dir by file size.
+    """Sort examples by file size."""
 
-    Parameters
-    ----------
-    src_dir : str
-        The source directory.
-    """
-
-    def __call__(self, filename):
-        src_file = os.path.normpath(os.path.join(self.src_dir, filename))
-        return int(os.stat(src_file).st_size)
+    def __call__(self, file: Path):
+        # src_file = os.path.normpath(str(file))
+        # return int(os.stat(src_file).st_size)
+        return file.stat().st_size
 
 
 class FileNameSortKey(_SortKey):
-    """Sort examples in src_dir by file name.
+    """Sort examples by file name."""
 
-    Parameters
-    ----------
-    src_dir : str
-        The source directory.
-    """
-
-    def __call__(self, filename):
-        return filename
+    def __call__(self, file: Path):
+        return file.name
 
 
 class ExampleTitleSortKey(_SortKey):
-    """Sort examples in src_dir by example title.
+    """Sort examples by example title."""
 
-    Parameters
-    ----------
-    src_dir : str
-        The source directory.
-    """
-
-    def __call__(self, filename):
-        src_file = os.path.normpath(os.path.join(self.src_dir, filename))
-        _, script_blocks = split_code_and_text_blocks(src_file)
-        _, title = extract_intro_and_title(src_file, script_blocks[0][1])
+    def __call__(self, file: Path):
+        _, script_blocks = split_code_and_text_blocks(file)
+        _, title = extract_intro_and_title(file, script_blocks[0][1])
         return title
 
 
