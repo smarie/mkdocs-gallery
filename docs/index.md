@@ -8,7 +8,7 @@
 
 Do you love [Sphinx-Gallery](https://sphinx-gallery.github.io/) but prefer [mkdocs](https://www.mkdocs.org/) over [Sphinx](sphinx-doc.org/) for your documentation ? `mkdocs-gallery` was written for you ;) 
 
-It relies on [mkdocs-material](https://squidfunk.github.io/mkdocs-material) to get the most of mkdocs, so that your galleries look nice!
+It relies on [mkdocs-material](https://squidfunk.github.io/mkdocs-material) to get the most of mkdocs, so that your galleries look nice !
 
 ## Installing
 
@@ -20,11 +20,11 @@ It relies on [mkdocs-material](https://squidfunk.github.io/mkdocs-material) to g
 
 ### 1. Create a source gallery folder
 
-First, create a folder that will contain your gallery examples, for example `examples/`. It will be referenced by the `examples_dirs` [configuration option](#2-configure-mkdocs). 
+First, create a folder that will contain your gallery examples, for example `docs/examples/`. It will be referenced by the `examples_dirs` [configuration option](#2-configure-mkdocs).
 
-In this folder, you may add a readme for now. Note that this readme should be written in markdown, be named `README` or `readme` or `Readme`, and have a `.txt` or `.md` extension.
+Then in this folder, you may add a readme. This readme should be written in markdown, be named `README` or `readme` or `Readme`, and have a `.md` or `.txt` extension.
 
-Note that this folder can be located inside the usual mkdocs source folder:
+Note: the folder can be located inside the usual mkdocs source folder:
 
 ```
 docs/                    # base mkdocs source directory
@@ -32,41 +32,47 @@ docs/                    # base mkdocs source directory
     └── README.md
 ```
 
+or not
+
+```
+examples/            # base 'Gallery of Examples' directory
+└── README.md
+docs/                # base mkdocs source directory
+```
 
 ### 2. Configure mkdocs
 
 Simply add the following configuration to you `mkdocs.yml`:
 
 ```yaml
-theme: material
+theme: material    # This theme is mandatory for now, see below
 
 plugins:
   - gallery:
-      examples_dirs: docs/examples          # path to your example scripts, relative to mkdocs.yml
-      gallery_dirs: docs/generated/gallery  # where to save gallery generated output
-      # (other mkdocs-gallry options go here, see https://sphinx-gallery.github.io/stable/configuration.html)
+      examples_dirs: docs/examples          # path to your example scripts
+      gallery_dirs: docs/generated/gallery  # where to save generated gallery
+      # ... (other options)
   
   - search  # make sure the search plugin is still enabled
 ```
 
-Most [sphinx-gallery configuration options](https://sphinx-gallery.github.io/stable/configuration.html) are supported and can be configured in here after `examples_dirs` and `gallery_dirs`.
+Most [sphinx-gallery configuration options](https://sphinx-gallery.github.io/stable/configuration.html) are supported and can be configured in here after `examples_dirs` and `gallery_dirs`. All paths should be relative to the `mkdocs.yml` file. You can look at the configuration used to generate this site as an example: [mkdocs.yml](https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml).
 
 !!! caution
-    `mkdocs-gallery` currently requires that you use the `material` theme from `mkdocs-material` to render prpoperly. You may wish to try other themes to see what is missing to support them: actually, only a few things concerning buttons and icons do not seem to currently work properly.
+    `mkdocs-gallery` currently requires that you use the `material` theme from `mkdocs-material` to render properly. You may wish to try other themes to see what is missing to support them: actually, only a few things concerning buttons and icons do not seem to currently work properly.
 
 !!! note
     The `search` plugin is not related with mkdocs-gallery. It is activated by default in mkdocs but if you edit the `plugins` configuration you have to add it explicitly again.
 
 See [mkdocs configuration](https://www.mkdocs.org/user-guide/configuration/) for general information about the `mkdocs.yml` file.
 
-Also, you can look at the configuration used for this site: [mkdocs.yml](https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml).
 
 ### 3. Add gallery examples
 
 Gallery examples are structured [the same way as in sphinx-gallery](https://sphinx-gallery.github.io/stable/syntax.html), with two major differences: 
 
- - all comment blocks should be written using markdown instead of rST. 
- - no sphinx directive is supported: all markdown directives should be supported by your mkdocs or one of its plugins.
+ - All comment blocks should be written using **Markdown** instead of rST. 
+ - No sphinx directive is supported: all markdown directives should be supported by `mkdocs`, by one of its activated [plugins](https://www.mkdocs.org/dev-guide/plugins/) or by a base markdown extension (see note below).
 
 ```
 examples/            # base 'Gallery of Examples' directory
@@ -83,11 +89,42 @@ The entire original [gallery of examples from sphinx-gallery](https://sphinx-gal
 
 You can look at the configuration used to generate it here: [mkdocs.yml](https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml).
 
+
+### 5. Mkdocs "serve" mode
+
+`mkdocs-gallery` supports the mkdocs dev-server `mkdocs serve` so that you can edit your documentation with live feedback ! 
+
+As soon as you modify an example file, it will rebuild the documentation and notify your browser. The examples that did not change will be automatically skipped (based on md5, identical to sphinx-gallery).
+
+See [mkdocs documentation](https://www.mkdocs.org/getting-started/) for details.
+
+
+### 6. Make your examples shine !
+
+The following `mkdocs` plugins and extensions are automatically activated - you may therefore use them in your markdown blocks without changing your `mkdocs.yml` configuration:
+
+ - [`mkdocs-material`](https://squidfunk.github.io/mkdocs-material) mkdocs plugin: **make sure you check this one out !**
+    - [`navigation.indexes`](https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/#section-index-pages) in the `material` theme. This is used for the gallery readme pages to be selectible in the nav without creating an extra entry (see left pane). 
+    - [icons + emojis](https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/) :thumbsup: :slight_smile:
+    - All no-conf features are there too, for example support for $\LaTeX$ using [Mathjax](https://squidfunk.github.io/mkdocs-material/reference/mathjax/), [code blocks](https://squidfunk.github.io/mkdocs-material/reference/code-blocks/), [Admonitions](https://squidfunk.github.io/mkdocs-material/reference/admonitions/) etc.
+
+ - markdown extensions:
+    - [`attr_list`](https://python-markdown.github.io/extensions/attr_list/) to declare attributes such as css classes on markdown elements.
+    - [`admonition`](https://python-markdown.github.io/extensions/admonition/) used to add notes.
+    - [`pymdownx.details`](https://facelessuser.github.io/pymdown-extensions/extensions/details/) to create foldable notes such as this one.
+    - [`pymdownx.highlight`](https://facelessuser.github.io/pymdown-extensions/extensions/highlight/)
+    - [`pymdownx.inlinehilite`](https://facelessuser.github.io/pymdown-extensions/extensions/inlinehilite/)
+    - [`pymdownx.superfences`](https://facelessuser.github.io/pymdown-extensions/extensions/superfences/)
+    - [`pymdownx.snippets`](https://facelessuser.github.io/pymdown-extensions/extensions/snippets/)
+    - [`pymdownx.emoji`](https://facelessuser.github.io/pymdown-extensions/extensions/emoji/) configured with the catalog from mkdocs-material (see above)
+
+
 ## See Also
 
- - [`mkdocs`](mkdocs.org/)
- - [`mkdocs-material`](https://squidfunk.github.io/mkdocs-material)
  - [`sphinx-gallery`](https://sphinx-gallery.github.io/)
+ - [`mkdocs`](https://www.mkdocs.org/)
+ - [`mkdocs-material`](https://squidfunk.github.io/mkdocs-material)
+ - [`PyMdown Extensions`](https://facelessuser.github.io/pymdown-extensions/)
 
 ### Others
 
