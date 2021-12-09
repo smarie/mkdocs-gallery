@@ -25,7 +25,7 @@ output.
 Mathematical expressions can be included as LaTeX, and will be rendered with
 MathJax. See
 [mkdocs-material](https://squidfunk.github.io/mkdocs-material/reference/mathjax)
-for configuration of your mkdocs.yml as well as for syntax details. For example,
+for configuration of your `mkdocs.yml` as well as for syntax details. For example,
 we are about to plot the following function:
 
 $$
@@ -52,7 +52,7 @@ plt.show()
 
 #%%
 # To include embedded Markdown, use a line of >= 20 ``#``'s or ``#%%`` between
-# your Markdown and your code (see [syntax](../../index.md)). This separates your example
+# your Markdown and your code (see [syntax](../../index.md#3-add-gallery-examples)). This separates your example
 # into distinct text and code blocks. You can continue writing code below the
 # embedded Markdown text block:
 
@@ -68,21 +68,41 @@ print('This example shows a sin plot!')
 # Cross referencing
 # -----------------
 #
-# TODO update this part
-#
 # You can refer to an example from any part of the documentation,
-# including from other examples. Mkdocs-Gallery automatically creates reference
-# labels for each example. The label consists of the ``.py`` file name,
-# prefixed with ``sphx_glr_`` and the name of the
-# folder(s) the example is in. Below, the example we want to
-# cross-reference is in ``auto_examples`` (the ``gallery_dirs``; see
-# :ref:`configure_and_use_sphinx_gallery`), then the subdirectory ``no_output``
-# (since the example is within a sub-gallery). The file name of the example is
-# ``plot_syntaxerror.py``. We can thus cross-link to the example 'SyntaxError'
-# using:
-# ``:ref:`sphx_glr_auto_examples_no_output_plot_syntaxerror.py```.
+# including from other examples. However as opposed to what happens in Sphinx,
+# there is no possibility to create unique identifiers in MkDocs.
 #
-# .. seealso::
-#     See :ref:`sphx_glr_auto_examples_no_output_plot_syntaxerror.py` for
-#     an example with an error.
+# So you should use relative paths. First, let's note that the markdown
+# for the current file is located at `docs/generated/gallery/plot_1_sin.md`.
+# This is because the configuration for this gallery in `mkdocs.yml` states
+# that the `examples/` gallery should be generated in the `generated/gallery`
+# folder.
+#
+# Below, the example we want to cross-reference is the 'SyntaxError' example,
+# located in the `no_output` subgallery of the `examples` gallery.
+# The associated generated file is
+# `docs/generated/gallery/no_output/plot_syntaxerror.md`.
+#
+# ```
+# docs/
+# └── generated/
+#     └── gallery/
+#         ├── no_output/
+#         │   ├── plot_syntaxerror.md  # example to reference
+#         │   └── ...
+#         ├── plot_1_sin.md            # current example
+#         └── ...
+# ```
+#
+# We can therefore cross-link to the example using
+# `[SyntaxError](./no_output/plot_syntaxerror.md)`:
+# [SyntaxError](./no_output/plot_syntaxerror.md).
+#
+# Of course as for normal documents, we can leverage plugins
+# (e.g. mkdocs-material) and extensions. So here we use
+# [admonitions](https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types):
+# to create a nice "see also" note:
+#
+# !!! info "See also"
+#     See [SyntaxError](./no_output/plot_syntaxerror.md) for an example with an error.
 #
