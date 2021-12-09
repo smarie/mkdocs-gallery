@@ -99,7 +99,7 @@ class GalleryScriptResults:
 
 class ScriptRunVars:
     """The variables created when a script is run."""
-    __slots__ = ("image_path_iterator", "example_globals", "memory_used_in_blocks", "memory_delta", "fake_main")
+    __slots__ = ("image_path_iterator", "example_globals", "memory_used_in_blocks", "memory_delta", "fake_main", "stop_executing")
 
     def __init__(self, image_path_iterator: ImagePathIterator):
         # The iterator returning the next image file paths
@@ -109,13 +109,16 @@ class ScriptRunVars:
         self.example_globals: Dict[str, Any] = None
 
         # The memory used along execution (first entry is memory before running the first block)
-        self.memory_used_in_blocks: List[float] = []
+        self.memory_used_in_blocks: List[float] = None
 
         # The memory actually used by the code, i.e. the difference between the max used and the memory used before run.
         self.memory_delta: float = None
 
         # A temporary __main__
         self.fake_main = None
+
+        # A flag that might be set to True if there is an error during execution
+        self.stop_executing = False
 
 
 class GalleryScript:

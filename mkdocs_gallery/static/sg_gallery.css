@@ -107,6 +107,10 @@ blockquote.mkd-glr-script-out {
   padding: 7px;
 }
 
+.mkd-glr-script-err-disp code {
+  background-color: #ffe4e4;
+}
+
 .mkd-glr-script-out-disp code {
   background-color: #fafae2;
 }

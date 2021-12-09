@@ -85,20 +85,23 @@ class GalleryPlugin(BasePlugin):
 markdown_extensions:
   # to declare attributes such as css classes on markdown elements. For example to change the color
   - attr_list
-  
+
+  # to add notes such as http://squidfunk.github.io/mkdocs-material/extensions/admonition/
+  - admonition
+
+  # to display the code blocks https://squidfunk.github.io/mkdocs-material/reference/code-blocks/
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.snippets
+
   # to have the download icons in the buttons
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
-  
-  # to display the code blocks https://squidfunk.github.io/mkdocs-material/reference/code-blocks/
-  - pymdownx.highlight
-  - pymdownx.inlinehilite
-  - pymdownx.superfences
-  - pymdownx.snippets
-  
-  # to add notes such as http://squidfunk.github.io/mkdocs-material/extensions/admonition/
-  - admonition        
+
+
 """
         extra_config = yaml_load(extra_config_yml)
         merge_extra_config(extra_config, config)

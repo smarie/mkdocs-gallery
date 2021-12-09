@@ -171,7 +171,7 @@ HTML_HEADER = """
     <br />"""
 
 
-def codestr2md(codestr, lang='python', lineno=None):
+def codestr2md(codestr, lang='python', lineno=None, is_exc: bool=False):
     """Return markdown code block from code string."""
 
     # if lineno is not None:
@@ -183,12 +183,13 @@ def codestr2md(codestr, lang='python', lineno=None):
     # code_directive = ".. code-block:: {0}\n{1}\n".format(lang, lineno)
     # indented_block = indent(codestr, ' ' * 4)
     # return code_directive + indented_block
+    style = " .mkd-glr-script-err-disp" if is_exc else ""
     if lineno is not None:
         # Sphinx only starts numbering from the first non-empty line. TODO do we need this too ?
         #     blank_lines = codestr.count('\n', 0, -len(codestr.lstrip()))
-        return f'```{lang} linenums="{lineno}"\n{codestr}```\n'
+        return f'```{{.{lang}{style} linenums="{lineno}"}}\n{codestr}```\n'
     else:
-        return f"```{lang}\n{codestr}```\n"
+        return f"```{{.{lang}{style}}}\n{codestr}```\n"
 
 
 def _regroup(x):
@@ -534,10 +535,10 @@ def handle_exception(exc_info, script: GalleryScript):
         func, color = logger.warning, 'red'
     func(f"{src_file} failed to execute correctly: {formatted_exception}")  #, color=color)
 
-    except_md = codestr2md(formatted_exception, lang='pytb')
+    except_md = codestr2md(formatted_exception, lang='pytb', is_exc=True)
 
-    # Ensure it's marked as our style
-    except_md = "{: .mkd-glr-script-out }\n\n" + except_md
+    # Ensure it's marked as our style: this is now already done in codestr2md
+    # except_md = "{: .mkd-glr-script-out }\n\n" + except_md
     return except_md, formatted_exception
 
 
@@ -764,9 +765,8 @@ def execute_code_block(compiler, block, script: GalleryScript):
 
     blabel, bcontent, lineno = block
 
-    # If example is not suitable to run, skip executing its blocks
-    # if not script.is_executable_example() or
-    if blabel == 'text':
+    # If example is not suitable to run anymore, skip executing its blocks
+    if script.run_vars.stop_executing or blabel == 'text':
         return ''
 
     cwd = os.getcwd()
@@ -808,15 +808,15 @@ def execute_code_block(compiler, block, script: GalleryScript):
         logging_tee.restore_std()
         except_md, formatted_exception = handle_exception(sys.exc_info(), script)
 
-        # Stores failing file
-        script.gallery_conf['failing_examples'][src_file] = formatted_exception
-
         # Breaks build on first example error
         if script.gallery_conf['abort_on_example_error']:
             raise
 
-        # TODO ?
-        # script_vars['execute_script'] = False
+        # Stores failing file
+        script.gallery_conf['failing_examples'][src_file] = formatted_exception
+
+        # Stop further execution on that script
+        script.run_vars.stop_executing = True
 
         code_output = u"\n{0}\n\n\n\n".format(except_md)
         # still call this even though we won't use the images so that
