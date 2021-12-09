@@ -9,15 +9,20 @@ edit_uri : ./edit/main/docs
 theme: material  # readthedocs  mkdocs  material
 nav:
   - Home: index.md
-  - generated/gallery
+  - generated/gallery       # The first gallery of examples
+  - generated/tutorials     # The second gallery (from tutorials)
   - Changelog: changelog.md
 
 plugins:
   - search
   - gallery:
-      examples_dirs: docs/examples          # path to your example scripts, relative to mkdocs.yml
-        # TODO tutorials and mayavi_examples
-      gallery_dirs: docs/generated/gallery  # where to save gallery generated output
+      examples_dirs:
+        - docs/examples          # path to your example scripts, relative to mkdocs.yml
+        - docs/tutorials
+        # TODO mayavi_examples
+      gallery_dirs:
+        - docs/generated/gallery  # where to save gallery generated output. Note that you may or may not include them in
+        - docs/generated/tutorials
         # TODO tutorials and mayavi_examples
       # backreferences_dir: gen_modules/backreferences  # where to generate the back references summary
       # doc_module: ['sphinx_gallery', 'numpy']

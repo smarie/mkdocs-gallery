@@ -157,7 +157,7 @@ markdown_extensions:
         def exclude(i):
             i_path = Path(i.src_path)
             for d in examples_dirs:
-                if i_path.match(f"{d}/**/*") or i_path.match(f"{d}/*"):
+                if i_path.match(f"^{d}/**/*") or i_path.match(f"^{d}/*"):
                     return True
             return False
 
@@ -165,6 +165,7 @@ markdown_extensions:
         for i in files:
             if not exclude(i):
                 out.append(i)
+
         return Files(out)
 
     # def on_nav(self, nav, config, files):
