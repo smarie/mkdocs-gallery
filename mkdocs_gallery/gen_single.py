@@ -905,7 +905,7 @@ def parse_and_execute(script: GalleryScript, script_blocks):
 
     # Initial memory used
     memory_start, _ = script.gallery_conf['call_memory'](lambda: None)
-    script.run_vars.memory_delta = [memory_start]  # include at least one entry to avoid max() ever failing
+    script.run_vars.memory_used_in_blocks = [memory_start]  # include at least one entry to avoid max() ever failing
 
     t_start = time()
     compiler = codeop.Compile()
