@@ -41,7 +41,7 @@ import codeop
 from tqdm import tqdm
 
 from .errors import ExtensionError
-from .gen_data_model import Gallery, GalleryScript, GalleryScriptResults
+from .gen_data_model import GalleryScript, GalleryScriptResults, GalleryBase
 
 from .scrapers import (save_figures, clean_modules, _find_image_ext, ImageNotFoundError)
 from .utils import (rescale_image, _replace_by_new_if_needed, _new_file,
@@ -217,6 +217,16 @@ def _sanitize_md(string):
     return string
 
 
+# Find RST/Markdown title chars,
+# i.e. lines that consist of (3 or more of the same) 7-bit non-ASCII chars.
+# This conditional is not perfect but should hopefully be good enough.
+RE_3_OR_MORE_NON_ASCII = r"([\W _])\1{3,}"  # 3 or more identical chars
+
+RST_TITLE_MARKER = re.compile(rf'^[ ]*{RE_3_OR_MORE_NON_ASCII}[ ]*$')
+MD_TITLE_MARKER = re.compile(r'^[ ]*[#]+[ ]*(.*)[ ]*$')  # One or more hash at the beginning with optional whitespaces before.
+FIRST_NON_MARKER_WITHOUT_HASH = re.compile(rf'^[# ]*(?!{RE_3_OR_MORE_NON_ASCII})[# ]*(.+)', re.MULTILINE)
+
+
 def extract_readme_title(file: Path, contents: str) -> str:
     """Same as `extract_intro_and_title` for the readme files in galleries, but does not return the introduction.
 
@@ -233,14 +243,66 @@ def extract_readme_title(file: Path, contents: str) -> str:
     title : str
         The readme title
     """
-
-    match = re.search(r'^[# ]*(?!([\W _])\1{3,})[# ]*(.+)', contents,
-                      re.MULTILINE)
+    match = FIRST_NON_MARKER_WITHOUT_HASH.search(contents)
     if match is None:
         raise ExtensionError(f"Could not find a title in readme file: {file}")
 
     title = match.group(2).strip()
     return title
+
+
+def extract_readme_last_subtitle(file: Path, contents: str) -> str:
+    """Same as `extract_intro_and_title` for the readme files in galleries, but does not return the introduction.
+
+    Parameters
+    ----------
+    file : Path
+        The readme file path (used for error messages only).
+
+    contents : str
+        The already parsed readme contents
+
+    Returns
+    -------
+    last_subtitle : str
+        The readme last title, or None.
+    """
+    paragraphs = extract_paragraphs(contents)
+
+    # iterate from last paragraph
+    last_subtitle = None
+    for p in reversed(paragraphs):
+        current_is_good = False
+        for line in reversed(p.splitlines()):
+            if current_is_good:
+                last_subtitle = line
+                break
+            # Does this line contain a title ?
+            # - md style
+            md_match = MD_TITLE_MARKER.search(line)
+            if md_match:
+                last_subtitle = md_match.group(1)
+                break
+
+            # - rst style
+            rst_match = RST_TITLE_MARKER.search(line)
+            if rst_match:
+                current_is_good = True
+
+        if last_subtitle:
+            break
+
+    return last_subtitle
+
+
+def extract_paragraphs(doc: str) -> List[str]:
+    # lstrip is just in case docstring has a '\n\n' at the beginning
+    paragraphs = doc.lstrip().split('\n\n')
+
+    # remove comments and other syntax like `.. _link:`
+    paragraphs = [p for p in paragraphs if not p.startswith('.. ') and len(p) > 0]
+
+    return paragraphs
 
 
 def extract_intro_and_title(docstring: str, script: GalleryScript) -> Tuple[str, str]:
@@ -264,13 +326,8 @@ def extract_intro_and_title(docstring: str, script: GalleryScript) -> Tuple[str,
     introduction : str
         The introduction
     """
-
-    # lstrip is just in case docstring has a '\n\n' at the beginning
-    paragraphs = docstring.lstrip().split('\n\n')
-
-    # remove comments and other syntax like `.. _link:`
-    paragraphs = [p for p in paragraphs if not p.startswith('.. ') and len(p) > 0]
-
+    # Extract paragraphs from the text
+    paragraphs = extract_paragraphs(docstring)
     if len(paragraphs) == 0:
         raise ExtensionError(f"Example docstring should have a header for the example title. "
                              f"Please check the example file:\n {script.script_file}\n")
@@ -280,7 +337,7 @@ def extract_intro_and_title(docstring: str, script: GalleryScript) -> Tuple[str,
     # non-ASCII chars.
     # This conditional is not perfect but should hopefully be good enough.
     title_paragraph = paragraphs[0]
-    match = re.search(r'^[# ]*(?!([\W _])\1{3,})[# ]*(.+)', title_paragraph, re.MULTILINE)
+    match = FIRST_NON_MARKER_WITHOUT_HASH.search(title_paragraph)
     if match is None:
         raise ExtensionError(f"Could not find a title in first paragraph:\n{title_paragraph}")
 
@@ -289,9 +346,11 @@ def extract_intro_and_title(docstring: str, script: GalleryScript) -> Tuple[str,
     # Use the title if no other paragraphs are provided
     intro_paragraph = title if len(paragraphs) < 2 else paragraphs[1]
 
-    # Concatenate all lines of the first paragraph and truncate at 95 chars
+    # Concatenate all lines of the first paragraph
     intro = re.sub('\n', ' ', intro_paragraph)
     intro = _sanitize_md(intro)
+
+    # Truncate at 95 chars
     if len(intro) > 95:
         intro = intro[:95] + '...'
 
@@ -352,13 +411,13 @@ def create_thumb_from_image(script: GalleryScript, src_image_path: Path) -> Path
     return thumb_file
 
 
-def generate(gallery: Gallery, seen_backrefs: Set) -> Tuple[str, str, List[GalleryScriptResults]]:
+def generate(gallery: GalleryBase, seen_backrefs: Set) -> Tuple[str, str, str, List[GalleryScriptResults]]:
     """
     Generate the gallery md for an example directory, including the index.
 
     Parameters
     ----------
-    gallery : Gallery
+    gallery : GalleryBase
         The gallery or subgallery to process
 
     seen_backrefs : Set
@@ -369,6 +428,9 @@ def generate(gallery: Gallery, seen_backrefs: Set) -> Tuple[str, str, List[Galle
     title : str
         The gallery title, that is, the title of the readme file.
 
+    root_subtitle : str
+        The gallery suptitle that will be used in case the gallery has subsections.
+
     index_md : str
         The markdown to include in the global gallery readme.
 
@@ -378,6 +440,12 @@ def generate(gallery: Gallery, seen_backrefs: Set) -> Tuple[str, str, List[Galle
     # Read the gallery readme and add it to the index
     readme_contents = gallery.readme_file.read_text(encoding="utf-8")
     readme_title = extract_readme_title(gallery.readme_file, readme_contents)
+    if gallery.has_subsections():
+        # parse and try to also extract the last subtitle
+        last_readme_subtitle = extract_readme_last_subtitle(gallery.readme_file, readme_contents)
+    else:
+        # Dont look for the last subtitle
+        last_readme_subtitle = None
 
     # Create the destination dir if needed
     gallery.make_generated_dir()
@@ -396,14 +464,17 @@ def generate(gallery: Gallery, seen_backrefs: Set) -> Tuple[str, str, List[Galle
 
     # Write the gallery summary index.md
     index_md = f"""<!-- {str(gallery.generated_dir_rel_project).replace(os.path.sep, '_')} -->
+
 {readme_contents}
 
 {"".join(all_thumbnail_entries)}
-
 <div class="mkd-glr-clear"></div>
-"""
 
-    return readme_title, index_md, results
+
+"""
+    # Note: the "clear" is to disable floating elements again, now that the gallery section is over.
+
+    return readme_title, last_readme_subtitle, index_md, results
 
 
 def is_failing_example(script: GalleryScript):
@@ -712,8 +783,7 @@ def execute_code_block(compiler, block, script: GalleryScript):
     sys.path.append(os.getcwd())
 
     # Save figures unless there is a `mkdocs_gallery_defer_figures` flag
-    match = re.search(r'^[\ \t]*#\s*mkdocs_gallery_defer_figures[\ \t]*\n?',
-                      bcontent, re.MULTILINE)
+    match = re.search(r'^[\ \t]*#\s*mkdocs_gallery_defer_figures[\ \t]*\n?', bcontent, re.MULTILINE)
     need_save_figures = match is None
 
     try:

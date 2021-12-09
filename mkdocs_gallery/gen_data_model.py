@@ -475,12 +475,17 @@ class GalleryBase(ABC):
         else:
             assert self.thumb_dir.is_dir()
 
-
+    @abstractmethod
+    def has_subsections(self) -> bool:
+        """Return True if the gallery has at least one subsection"""
 
 
 class GallerySubSection(GalleryBase):
     """Represents a subsection in a gallery."""
     __slots__ = ("__weakref__", "_parent", "subpath")
+
+    def has_subsections(self) -> bool:
+        return False
 
     def __init__(self, parent: "Gallery", subpath: Path):
         """
@@ -588,6 +593,9 @@ class Gallery(GalleryBase):
         # Check that generated dir is inside docs dir
         if not self.generated_dir.as_posix().startswith(self.all_info.mkdocs_docs_dir.as_posix()):
             raise ValueError("Generated gallery dirs can only be located as subfolders of the mkdocs 'docs_dir'.")
+
+    def has_subsections(self) -> bool:
+        return len(self.subsections) > 0
 
     @property
     def root(self) -> "Gallery":

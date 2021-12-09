@@ -388,7 +388,7 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
     all_results = []
     for gallery in all_info.galleries:
         # Process the root level
-        title, index_md, results = generate(gallery=gallery, seen_backrefs=seen_backrefs)
+        title, root_nested_title, index_md, results = generate(gallery=gallery, seen_backrefs=seen_backrefs)
         write_computation_times(gallery, results)
 
         # Remember the results so that we can write the final summary
@@ -396,7 +396,14 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
 
         # Create the toc entries
         root_md_files = {res.script.title: res.script.md_file_rel_site_root.as_posix() for res in results}
-        md_files_toc[gallery.generated_dir] = (title, root_md_files)
+        root_md_files = dict_to_list_of_dicts(root_md_files)
+        if len(gallery.subsections) == 0:
+            # No subsections: do not nest the gallery examples further
+            md_files_toc[gallery.generated_dir] = (title, root_md_files)
+        else:
+            # There are subsections. Find the root gallery title if possible and nest the root contents
+            subsection_tocs = [{(root_nested_title or title): root_md_files}]
+            md_files_toc[gallery.generated_dir] = (title, subsection_tocs)
 
         # Create an index.md with all examples
         index_md_new = _new_file(gallery.index_md)
@@ -407,14 +414,18 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
             # If there are any subsections, handle them
             for subg in gallery.subsections:
                 # Process the root level
-                sub_title, sub_index_md, sub_results = generate(gallery=subg, seen_backrefs=seen_backrefs)
+                sub_title, _, sub_index_md, sub_results = generate(gallery=subg, seen_backrefs=seen_backrefs)
                 write_computation_times(subg, sub_results)
 
                 # Remember the results so that we can write the final summary
                 all_results.extend(sub_results)
 
                 # Create the toc entries
-                sub_md_files = {res.script.title: res.script.md_file for res in sub_results}
+                sub_md_files = {res.script.title: res.script.md_file_rel_site_root.as_posix() for res in sub_results}
+                sub_md_files = dict_to_list_of_dicts(sub_md_files)
+                # Both append the subsection contents to the parent gallery toc
+                subsection_tocs.append({sub_title: sub_md_files})
+                # ... and also have an independent reference in case the subsection is directly referenced in the nav.
                 md_files_toc[subg.generated_dir] = (sub_title, sub_md_files)
 
                 # Write the README and thumbnails for the subgallery examples
@@ -454,6 +465,11 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
             write_junit_xml(all_info, all_results)
 
     return md_files_toc
+
+
+def dict_to_list_of_dicts(dct: Dict) -> List[Dict]:
+    """Transform a dict containing several entries into a list of dicts containing one entry each (nav requirement)"""
+    return [{k: v} for k, v in dct.items()]
 
 
 def fill_mkdocs_nav(mkdocs_config: Dict, galleries_tocs: Dict[Path, Tuple[str, Dict[str, str]]]):
@@ -509,7 +525,7 @@ def fill_mkdocs_nav(mkdocs_config: Dict, galleries_tocs: Dict[Path, Tuple[str, D
             custom_title = glr_title
         if gallery_toc_entries is not None:
             # Put the new contents in place
-            return {custom_title: [{custom_title: main_toc_entry}] + [{k: v} for k, v in gallery_toc_entries.items()]}
+            return {custom_title: [{custom_title: main_toc_entry}] + gallery_toc_entries}
         else:
             # Leave the usual item
             return toc_elt
