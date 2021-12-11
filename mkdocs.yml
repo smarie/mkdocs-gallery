@@ -9,7 +9,7 @@ edit_uri : ./edit/main/docs
 theme: material  # readthedocs  mkdocs  material
 nav:
   - Home: index.md
-  - generated/gallery       # The first gallery of examples
+  - Gallery of examples: generated/gallery       # The first gallery of examples
   - generated/tutorials     # The second gallery (from tutorials)
   - Changelog: changelog.md
 
