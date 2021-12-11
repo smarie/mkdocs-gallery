@@ -109,7 +109,7 @@ examples/            # base 'Gallery of Examples' directory
 
 ### 4. Examples
 
-The entire original [gallery of examples from sphinx-gallery](https://sphinx-gallery.github.io/stable/auto_examples/index.html) has been ported [here](http://127.0.0.1:8000/generated/gallery/). You may wish to check it out in order to see how each technical aspect translates in the mkdocs world.
+The entire original [gallery of examples from sphinx-gallery](https://sphinx-gallery.github.io/stable/auto_examples/index.html) is being ported [here](http://127.0.0.1:8000/generated/gallery/) (work in progress). You may wish to check it out in order to see how each technical aspect translates in the mkdocs world.
 
 You can look at the configuration used to generate it here: [mkdocs.yml](https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml).
 
