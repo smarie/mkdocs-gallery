@@ -18,7 +18,7 @@ import subprocess
 from typing import Tuple
 
 from . import mkdocs_compatibility
-
+from .errors import ExtensionError
 
 logger = mkdocs_compatibility.getLogger('mkdocs-gallery')
 
