@@ -167,7 +167,11 @@ def docs(session: PowerSession):
         "seaborn",
         "statsmodels",
         "plotly",
+        # "memory_profiler",
     ])
+
+    # Install the plugin
+    session.run2("pip install -e .")
 
     if session.posargs:
         # use posargs instead of "serve"
@@ -180,7 +184,12 @@ def docs(session: PowerSession):
 def publish(session: PowerSession):
     """Deploy the docs+reports on github pages. Note: this rebuilds the docs"""
 
-    session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs-material", "mkdocs", "pymdown-extensions", "pygments"])
+    session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs-material", "mkdocs", "pymdown-extensions", "pygments",
+                                                     # "memory_profiler"
+                                                     ])
+
+    # Install the plugin
+    session.run2("pip install -e .")
 
     # possibly rebuild the docs in a static way (mkdocs serve does not build locally)
     session.run2("mkdocs build")
