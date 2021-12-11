@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>flake8 violations: mkdocs_gallery/gen_gallery.py</title>
+      <meta http-equiv="Content-Type" value="text/html; charset=UTF-8">
+      <link rel="stylesheet" href="styles.css">
+<script>
+function bindHandler(link) {
+   var code = link.getAttribute('data-code');
+   var key = location.pathname + '#' + code;
+
+   var ul = link.parentNode.querySelector('.details');
+   if (sessionStorage[key] != 'open') {
+      ul.style.display = 'none';
+   }
+   link.addEventListener('click', function (event) {
+      if (!ul.style.display || ul.style.display == 'none') {
+         ul.style.display = 'block';
+         sessionStorage[key] = 'open';
+      } else {
+         ul.style.display = 'none';
+         sessionStorage[key] = 'closed';
+      }
+   });
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+   var links = document.querySelectorAll('#index > li > a');
+   for (var i = 0; i < links.length; i++) {
+      bindHandler(links[i]);
+   }
+});
+</script>
+   </head>
+   <body>
+      <div id="masthead" class="sev-1"></div>
+      <div id="page">
+         <p id="srclink">
+            <a title="View full annotated source"
+               href="mkdocs_gallery.gen_gallery.source.html">
+               <img src="file.svg" alt="&#x2261;">
+            </a></p>
+         <h1>
+            <a href="index.html">
+               <img src="back.svg" alt="&#x2B05;">
+               mkdocs_gallery/gen_gallery.py
+            </a>
+         </h1>
+
+         <ul id="index">
+         
+         <li>
+            <a data-code="F821">
+               <span class="count sev-1">
+                  3
+               </span>
+               <strong>F821:</strong> undefined name 'app'
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l757">
+                  <tt><i>757</i>     <span class="k">if</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">mkdocs_gallery_conf</span><span class="p">[</span><span class="s1">&#39;backreferences_dir&#39;</span><span class="p">]):</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l760">
+                  <tt><i>760</i>     <span class="n">examples_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">srcdir</span><span class="p">,</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l761">
+                  <tt><i>761</i>                                  <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">mkdocs_gallery_conf</span><span class="p">[</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="F841">
+               <span class="count sev-1">
+                  1
+               </span>
+               <strong>F841:</strong> local variable '_name' is assigned to but never used
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l714">
+                  <tt><i>714</i>         <span class="n">_name</span> <span class="o">=</span> <span class="n">quoteattr</span><span class="p">(</span><span class="n">title</span><span class="p">)</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="E501">
+               <span class="count sev-2">
+                  3
+               </span>
+               <strong>E501:</strong> line too long (136 > 120 characters)
+               
+                  (and 2 similar)
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <p>Line too long (136 > 120 characters):</p>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l625">
+                  <tt><i>625</i>             <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">script_stem</span><span class="si">}</span><span class="s2">](./</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">md_file</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">) (</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">src_py_file_rel_project</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span><span class="si">}</span><span class="s2">)&quot;</span></tt>
+               </a>
+            </li><li>
+               
+               <p>Line too long (123 > 120 characters):</p>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l735">
+                  <tt><i>735</i> <span class="s2">&lt;testsuite errors=&quot;0&quot; failures=&quot;</span><span class="si">{</span><span class="n">n_failures</span><span class="si">}</span><span class="s2">&quot; name=&quot;mkdocs-gallery&quot; skipped=&quot;</span><span class="si">{</span><span class="n">n_skips</span><span class="si">}</span><span class="s2">&quot; tests=&quot;</span><span class="si">{</span><span class="n">n_tests</span><span class="si">}</span><span class="s2">&quot; time=&quot;</span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s2">&quot;&gt;</span></tt>
+               </a>
+            </li><li>
+               
+               <p>Line too long (137 > 120 characters):</p>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l807">
+                  <tt><i>807</i>     <span class="n">failing_as_expected</span><span class="p">,</span> <span class="n">failing_unexpectedly</span><span class="p">,</span> <span class="n">passing_unexpectedly</span> <span class="o">=</span> <span class="n">_parse_failures</span><span class="p">(</span><span class="n">gallery_conf</span><span class="o">=</span><span class="n">gallery_conf</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="o">=</span><span class="n">mkdocs_conf</span><span class="p">)</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="E262">
+               <span class="count sev-2">
+                  2
+               </span>
+               <strong>E262:</strong> inline comment should start with '# '
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l484">
+                  <tt><i>484</i>         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;computation time summary:&quot;</span><span class="p">)</span>  <span class="c1">#, color=&#39;white&#39;)</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l804">
+                  <tt><i>804</i>                     <span class="s1">&#39;False, so no examples were executed.&#39;</span><span class="p">)</span>  <span class="c1">#, color=&#39;brown&#39;)</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="E116">
+               <span class="count sev-2">
+                  1
+               </span>
+               <strong>E116:</strong> unexpected indentation (comment)
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l843">
+                  <tt><i>843</i>                 <span class="c1"># color=&#39;brown&#39;)</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="S101">
+               <span class="count sev-3">
+                  4
+               </span>
+               <strong>S101:</strong> Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l241">
+                  <tt><i>241</i>     <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;call_memory&#39;</span><span class="p">])</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l578">
+                  <tt><i>578</i>             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">toc_elt</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l628">
+                  <tt><i>628</i>             <span class="k">assert</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;console&quot;</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l675">
+                  <tt><i>675</i>             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">hline</span><span class="p">)</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="B009">
+               <span class="count sev-3">
+                  1
+               </span>
+               <strong>B009:</strong> Do not call getattr with a constant attribute value, it is not any safer than normal property access.
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l256">
+                  <tt><i>256</i>                     <span class="n">scraper</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scraper</span><span class="p">,</span> <span class="s1">&#39;_get_sg_image_scraper&#39;</span><span class="p">)</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="S307">
+               <span class="count sev-3">
+                  1
+               </span>
+               <strong>S307:</strong> Use of possibly insecure function - consider using safer ast.literal_eval.
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l110">
+                  <tt><i>110</i>             <span class="n">x</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="S406">
+               <span class="count sev-3">
+                  1
+               </span>
+               <strong>S406:</strong> Using quoteattr to parse untrusted XML data is known to be vulnerable to XML attacks. Replace quoteattr with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.gen_gallery.source.html#l27">
+                  <tt><i>27</i> <span class="kn">from</span> <span class="nn">xml.sax.saxutils</span> <span class="kn">import</span> <span class="n">quoteattr</span><span class="p">,</span> <span class="n">escape</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         </ul>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>flake8 violations: mkdocs_gallery/gen_data_model.py</title>
+      <meta http-equiv="Content-Type" value="text/html; charset=UTF-8">
+      <link rel="stylesheet" href="styles.css">
+<script>
+function bindHandler(link) {
+   var code = link.getAttribute('data-code');
+   var key = location.pathname + '#' + code;
+
+   var ul = link.parentNode.querySelector('.details');
+   if (sessionStorage[key] != 'open') {
+      ul.style.display = 'none';
+   }
+   link.addEventListener('click', function (event) {
+      if (!ul.style.display || ul.style.display == 'none') {
+         ul.style.display = 'block';
+         sessionStorage[key] = 'open';
+      } else {
+         ul.style.display = 'none';
+         sessionStorage[key] = 'closed';
+      }
+   });
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+   var links = document.querySelectorAll('#index > li > a');
+   for (var i = 0; i < links.length; i++) {
+      bindHandler(links[i]);
+   }
+});
+</script>
+   </head>
+   <body>
+      <div id="masthead" class="sev-2"></div>
+      <div id="page">
+         <p id="srclink">
+            <a title="View full annotated source"
+               href="mkdocs_gallery.gen_data_model.source.html">
+               <img src="file.svg" alt="&#x2261;">
+            </a></p>
+         <h1>
+            <a href="index.html">
+               <img src="back.svg" alt="&#x2B05;">
+               mkdocs_gallery/gen_data_model.py
+            </a>
+         </h1>
+
+         <ul id="index">
+         
+         <li>
+            <a data-code="E501">
+               <span class="count sev-2">
+                  5
+               </span>
+               <strong>E501:</strong> line too long (130 > 120 characters)
+               
+                  (and 3 similar)
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <p>Line too long (130 > 120 characters):</p>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l102">
+                  <tt><i>102</i>     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;image_path_iterator&quot;</span><span class="p">,</span> <span class="s2">&quot;example_globals&quot;</span><span class="p">,</span> <span class="s2">&quot;memory_used_in_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;memory_delta&quot;</span><span class="p">,</span> <span class="s2">&quot;fake_main&quot;</span><span class="p">,</span> <span class="s2">&quot;stop_executing&quot;</span><span class="p">)</span></tt>
+               </a>
+            </li><li>
+               
+               <p>Line too long (126 > 120 characters):</p>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l193">
+                  <tt><i>193</i>         <span class="sd">&quot;&quot;&quot;The absolute file path of the script in the generated gallery dir, e.g. &lt;project&gt;/generated/gallery/my_script.py&quot;&quot;&quot;</span></tt>
+               </a>
+            </li><li>
+               
+               <p>Line too long (127 > 120 characters):</p>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l647">
+                  <tt><i>647</i>         <span class="bp">self</span><span class="o">.</span><span class="n">subsections</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">GallerySubSection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subpath</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scripts_dir</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">sorted_subfolders</span><span class="p">))</span></tt>
+               </a>
+            </li><li>
+               
+               <p>Line too long (125 > 120 characters):</p>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l789">
+                  <tt><i>789</i>     <span class="k">def</span> <span class="nf">collect_script_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">do_subgalleries</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">apply_ignore_pattern</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">sort_files</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span></tt>
+               </a>
+            </li><li>
+               
+               <p>Line too long (125 > 120 characters):</p>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l792">
+                  <tt><i>792</i>             <span class="n">g</span><span class="o">.</span><span class="n">collect_script_files</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">do_subgalleries</span><span class="p">,</span> <span class="n">apply_ignore_pattern</span><span class="o">=</span><span class="n">apply_ignore_pattern</span><span class="p">,</span> <span class="n">sort_files</span><span class="o">=</span><span class="n">sort_files</span><span class="p">)</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="W293">
+               <span class="count sev-2">
+                  4
+               </span>
+               <strong>W293:</strong> blank line contains whitespace
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l135">
+                  <tt><i>135</i>         </tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l372">
+                  <tt><i>372</i>     </tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l436">
+                  <tt><i>436</i>     </tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l456">
+                  <tt><i>456</i>     </tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="E271">
+               <span class="count sev-2">
+                  1
+               </span>
+               <strong>E271:</strong> multiple spaces after keyword
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l157">
+                  <tt><i>157</i>         <span class="k">return</span>  <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">script_stem</span><span class="si">}</span><span class="s2">.py&quot;</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="S101">
+               <span class="count sev-3">
+                  12
+               </span>
+               <strong>S101:</strong> Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l26">
+                  <tt><i>26</i>     <span class="k">assert</span> <span class="n">dir_</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l133">
+                  <tt><i>133</i>         <span class="k">assert</span> <span class="n">script_src_file</span><span class="o">.</span><span class="n">parent</span> <span class="o">==</span> <span class="n">gallery</span><span class="o">.</span><span class="n">scripts_dir</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l134">
+                  <tt><i>134</i>         <span class="k">assert</span> <span class="n">script_src_file</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.py&quot;</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l350">
+                  <tt><i>350</i>         <span class="k">assert</span> <span class="n">ext</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;.&quot;</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l417">
+                  <tt><i>417</i>         <span class="k">assert</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;scripts&quot;</span><span class="p">),</span> <span class="s2">&quot;This can only be called once!&quot;</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l467">
+                  <tt><i>467</i>             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">images_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l479">
+                  <tt><i>479</i>             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">thumb_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l504">
+                  <tt><i>504</i>         <span class="k">assert</span> <span class="ow">not</span> <span class="n">subpath</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l583">
+                  <tt><i>583</i>         <span class="k">assert</span> <span class="ow">not</span> <span class="n">scripts_dir_rel_project</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l588">
+                  <tt><i>588</i>         <span class="k">assert</span> <span class="ow">not</span> <span class="n">generated_dir_rel_project</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l631">
+                  <tt><i>631</i>         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">subsections</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;This method can only be called once !&quot;</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l747">
+                  <tt><i>747</i>         <span class="k">assert</span> <span class="n">project_root_dir</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="B007">
+               <span class="count sev-3">
+                  1
+               </span>
+               <strong>B007:</strong> Loop control variable 'ii' not used within the loop body. If this is intended, start the name with an underscore.
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.gen_data_model.source.html#l68">
+                  <tt><i>68</i>         <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">):</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         </ul>
+      </div>
+   </body>
+</html>

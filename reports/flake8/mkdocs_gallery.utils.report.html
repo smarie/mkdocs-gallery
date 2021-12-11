@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>flake8 violations: mkdocs_gallery/utils.py</title>
+      <meta http-equiv="Content-Type" value="text/html; charset=UTF-8">
+      <link rel="stylesheet" href="styles.css">
+<script>
+function bindHandler(link) {
+   var code = link.getAttribute('data-code');
+   var key = location.pathname + '#' + code;
+
+   var ul = link.parentNode.querySelector('.details');
+   if (sessionStorage[key] != 'open') {
+      ul.style.display = 'none';
+   }
+   link.addEventListener('click', function (event) {
+      if (!ul.style.display || ul.style.display == 'none') {
+         ul.style.display = 'block';
+         sessionStorage[key] = 'open';
+      } else {
+         ul.style.display = 'none';
+         sessionStorage[key] = 'closed';
+      }
+   });
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+   var links = document.querySelectorAll('#index > li > a');
+   for (var i = 0; i < links.length; i++) {
+      bindHandler(links[i]);
+   }
+});
+</script>
+   </head>
+   <body>
+      <div id="masthead" class="sev-3"></div>
+      <div id="page">
+         <p id="srclink">
+            <a title="View full annotated source"
+               href="mkdocs_gallery.utils.source.html">
+               <img src="file.svg" alt="&#x2261;">
+            </a></p>
+         <h1>
+            <a href="index.html">
+               <img src="back.svg" alt="&#x2B05;">
+               mkdocs_gallery/utils.py
+            </a>
+         </h1>
+
+         <ul id="index">
+         
+         <li>
+            <a data-code="S101">
+               <span class="count sev-3">
+                  7
+               </span>
+               <strong>S101:</strong> Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.utils.source.html#l169">
+                  <tt><i>169</i>     <span class="k">assert</span> <span class="n">new_file</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.new&#39;</span><span class="p">)</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.utils.source.html#l192">
+                  <tt><i>192</i>     <span class="k">assert</span> <span class="n">src_file</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span> <span class="ow">and</span> <span class="n">dst_file</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.utils.source.html#l193">
+                  <tt><i>193</i>     <span class="k">assert</span> <span class="n">src_file</span> <span class="o">!=</span> <span class="n">dst_file</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.utils.source.html#l201">
+                  <tt><i>201</i>         <span class="k">assert</span> <span class="n">dst_file</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.utils.source.html#l249">
+                  <tt><i>249</i>     <span class="k">assert</span> <span class="n">src_file</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span> <span class="ow">and</span> <span class="n">dst_file</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.utils.source.html#l250">
+                  <tt><i>250</i>     <span class="k">assert</span> <span class="n">src_file</span> <span class="o">!=</span> <span class="n">dst_file</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.utils.source.html#l263">
+                  <tt><i>263</i>     <span class="k">assert</span> <span class="n">dst_file</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="S603">
+               <span class="count sev-3">
+                  2
+               </span>
+               <strong>S603:</strong> subprocess call - check for execution of untrusted input.
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.utils.source.html#l100">
+                  <tt><i>100</i>             <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="mkdocs_gallery.utils.source.html#l112">
+                  <tt><i>112</i>         <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s1">&#39;optipng&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">],</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="S303">
+               <span class="count sev-3">
+                  1
+               </span>
+               <strong>S303:</strong> Use of insecure MD2, MD4, MD5, or SHA1 hash function.
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.utils.source.html#l164">
+                  <tt><i>164</i>         <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">src_content</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="S404">
+               <span class="count sev-3">
+                  1
+               </span>
+               <strong>S404:</strong> Consider possible security implications associated with the subprocess module.
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.utils.source.html#l17">
+                  <tt><i>17</i> <span class="kn">import</span> <span class="nn">subprocess</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         <li>
+            <a data-code="S607">
+               <span class="count sev-3">
+                  1
+               </span>
+               <strong>S607:</strong> Starting a process with a partial executable path
+               
+            </a>
+            <ul class="details">
+            <li>
+               
+               <a href="mkdocs_gallery.utils.source.html#l112">
+                  <tt><i>112</i>         <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s1">&#39;optipng&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">],</span></tt>
+               </a>
+            </li>
+            </ul>
+         </li>
+         
+         </ul>
+      </div>
+   </body>
+</html>
