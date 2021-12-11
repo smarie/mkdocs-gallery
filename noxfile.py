@@ -26,7 +26,7 @@ ENVS = {
 
 
 # set the default activated sessions, minimal for CI
-nox.options.sessions = ["tests", "flake8"]  # , "docs", "gh_pages"
+nox.options.sessions = ["tests", "flake8", "docs"]  # , "docs", "gh_pages"
 nox.options.reuse_existing_virtualenvs = True  # this can be done using -r
 # if platform.system() == "Windows":  >> always use this for better control
 nox.options.default_venv_backend = "conda"
@@ -168,6 +168,7 @@ def docs(session: PowerSession):
         "statsmodels",
         "plotly",
         # "memory_profiler",
+        "pillow"  # required for image rescaling
     ])
 
     # Install the plugin
@@ -186,6 +187,7 @@ def publish(session: PowerSession):
 
     session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs-material", "mkdocs", "pymdown-extensions", "pygments",
                                                      # "memory_profiler"
+                                                     "pillow"  # required for image rescaling
                                                      ])
 
     # Install the plugin
