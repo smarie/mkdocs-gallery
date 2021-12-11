@@ -388,7 +388,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="generated/gallery/">Gallery of Examples</a>
+          <a href="generated/gallery/">Gallery of examples</a>
           
             <label for="__nav_2">
               <span class="md-nav__icon md-icon"></span>
@@ -396,10 +396,10 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="Gallery of Examples" data-md-level="1">
+      <nav class="md-nav" aria-label="Gallery of examples" data-md-level="1">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          Gallery of Examples
+          Gallery of examples
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -871,7 +871,18 @@ docs/                # base mkdocs source directory
 <p class="admonition-title">Note</p>
 <p>The <code>search</code> plugin is not related with mkdocs-gallery. It is activated by default in mkdocs but if you edit the <code>plugins</code> configuration you have to add it explicitly again.</p>
 </div>
-<p>See <a href="https://www.mkdocs.org/user-guide/configuration/">mkdocs configuration</a> for general information about the <code>mkdocs.yml</code> file.</p>
+<p>Once you've done this, the corresponding gallery will be created the next time you call <code>mkdocs build</code> or <code>mkdocs serve</code>. However the gallery will not yet appear in the table of contents (mkdocs <code>nav</code>). For this you should add the generated gallery to the nav in <code>mkdocs.yml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">nav</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">Home</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">index.md</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">generated/gallery</span>  <span class="c1"># This node will automatically be named and have sub-nodes.</span>
+</code></pre></div>
+<p>When the root folder or the root <code>index.md</code> of a gallery is added to the nav, it will be automatically populated with sub-nodes for all examples and subgalleries. If you prefer to select examples or subgalleries to include one by one, you may refer to any of them directly in the nav. In that case, no nav automation will be performed - just the usual explicit mkdocs nav.</p>
+<p>You may wish to change the gallery's names for display and still benefit from this automation:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">nav</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">Home</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">index.md</span>
+  <span class="p p-Indicator">-</span> <span class="nt">My Gallery</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">generated/gallery</span>  <span class="c1"># This node will automatically be named and have sub-nodes.</span>
+</code></pre></div>
+<p>See <a href="https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml">this site's config</a> for an example. See also <a href="https://www.mkdocs.org/user-guide/configuration/">mkdocs configuration</a> for general information about the <code>mkdocs.yml</code> file.</p>
 <h4 id="b-advanced">b. Advanced<a class="headerlink" href="#b-advanced" title="Permanent link">&para;</a></h4>
 <p>You may wish to use the special <code>conf_script</code> option to create the base configuration using a python script, like what was done in Sphinx-gallery:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span>
@@ -957,13 +968,13 @@ docs/                # base mkdocs source directory
       
       
         
-        <a href="generated/gallery/" class="md-footer__link md-footer__link--next" aria-label="Next: Gallery of Examples" rel="next">
+        <a href="generated/gallery/" class="md-footer__link md-footer__link--next" aria-label="Next: Gallery of examples" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Gallery of Examples
+              Gallery of examples
             </div>
           </div>
           <div class="md-footer__button md-icon">
