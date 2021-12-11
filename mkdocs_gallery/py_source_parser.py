@@ -19,7 +19,7 @@ import sys
 import tokenize
 from textwrap import dedent
 
-from sphinx.errors import ExtensionError
+from .errors import ExtensionError
 from .mkdocs_compatibility import getLogger
 
 logger = getLogger('mkdocs-gallery')

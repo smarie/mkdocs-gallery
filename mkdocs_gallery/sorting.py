@@ -18,7 +18,7 @@ from typing import Type, Iterable
 import os
 import types
 
-from sphinx.errors import ConfigError
+from .errors import ConfigError
 
 from .gen_single import extract_intro_and_title
 from .py_source_parser import split_code_and_text_blocks

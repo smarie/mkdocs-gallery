@@ -19,7 +19,7 @@
 # import urllib.parse as urllib_parse
 # from urllib.error import HTTPError, URLError
 #
-# from sphinx.errors import ExtensionError
+# from .errors import ExtensionError
 # from sphinx.search import js_index
 #
 # from . import sphinx_compatibility
