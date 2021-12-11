@@ -66,7 +66,25 @@ Most [sphinx-gallery configuration options](https://sphinx-gallery.github.io/sta
 !!! note
     The `search` plugin is not related with mkdocs-gallery. It is activated by default in mkdocs but if you edit the `plugins` configuration you have to add it explicitly again.
 
-See [mkdocs configuration](https://www.mkdocs.org/user-guide/configuration/) for general information about the `mkdocs.yml` file.
+Once you've done this, the corresponding gallery will be created the next time you call `mkdocs build` or `mkdocs serve`. However the gallery will not yet appear in the table of contents (mkdocs `nav`). For this you should add the generated gallery to the nav in `mkdocs.yml`:
+
+```yaml
+nav:
+  - Home: index.md
+  - generated/gallery  # This node will automatically be named and have sub-nodes.
+```
+
+When the root folder or the root `index.md` of a gallery is added to the nav, it will be automatically populated with sub-nodes for all examples and subgalleries. If you prefer to select examples or subgalleries to include one by one, you may refer to any of them directly in the nav. In that case, no nav automation will be performed - just the usual explicit mkdocs nav.
+
+You may wish to change the gallery's names for display and still benefit from this automation:
+
+```yaml
+nav:
+  - Home: index.md
+  - My Gallery: generated/gallery  # This node will automatically be named and have sub-nodes.
+```
+
+See [this site's config](https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml) for an example. See also [mkdocs configuration](https://www.mkdocs.org/user-guide/configuration/) for general information about the `mkdocs.yml` file.
 
 #### b. Advanced
 
