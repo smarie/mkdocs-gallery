@@ -154,22 +154,21 @@ def flake8(session: PowerSession):
     rm_file(Folders.flake8_intermediate_file)
 
 
+MKDOCS_GALLERY_EXAMPLES_REQS = [
+    "matplotlib",
+    "seaborn",
+    "statsmodels",
+    "plotly",
+    # "memory_profiler",
+    "pillow"  # required for image rescaling
+]
+
+
 @power_session(python=[PY37])
 def docs(session: PowerSession):
     """Generates the doc and serves it on a local http server. Pass '-- build' to build statically instead."""
 
-    session.install_reqs(phase="docs", phase_reqs=[
-        "mkdocs-material",
-        "mkdocs",
-        "pymdown-extensions",
-        "pygments",
-        "matplotlib",
-        "seaborn",
-        "statsmodels",
-        "plotly",
-        # "memory_profiler",
-        "pillow"  # required for image rescaling
-    ])
+    session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS)
 
     # Install the plugin
     session.run2("pip install -e .")
@@ -185,10 +184,10 @@ def docs(session: PowerSession):
 def publish(session: PowerSession):
     """Deploy the docs+reports on github pages. Note: this rebuilds the docs"""
 
-    session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs-material", "mkdocs", "pymdown-extensions", "pygments",
-                                                     # "memory_profiler"
-                                                     "pillow"  # required for image rescaling
-                                                     ])
+    session.install_reqs(
+        phase="mkdocs",
+        phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS
+    )
 
     # Install the plugin
     session.run2("pip install -e .")
