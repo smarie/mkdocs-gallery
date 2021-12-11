@@ -7,23 +7,10 @@ from __future__ import (division, absolute_import, print_function,
 from pathlib import Path
 
 import ast
-import codecs
-import importlib
-import tempfile
-import re
-import os
-import shutil
-import zipfile
-import codeop
-
 import pytest
 
-from sphinx.errors import ExtensionError
 import mkdocs_gallery.gen_single as sg
-from mkdocs_gallery import downloads
-from mkdocs_gallery.gen_gallery import generate_gallery_md
-from mkdocs_gallery.scrapers import figure_md_or_html
-from mkdocs_gallery.gen_data_model import ImagePathIterator
+
 
 CONTENT = [
     '"""',
