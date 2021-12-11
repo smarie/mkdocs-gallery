@@ -11,7 +11,9 @@ Initial release with:
    - gallery synthesis with proper icons and subgalleries
    - auto inclusion in the ToC (nav) with support for the [section index pages feature](https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/#section-index-pages)
    - working `mkdocs serve`: correctly ignoring generated files to avoid infinite build loop
- 
+   - working `mkdocs.yml` configuration for most options
+   - New option `conf_script` to configure via a script as in Sphinx-gallery.
+
  - All gallery examples from Sphinx-Gallery successfully translated, in particular:
    - LaTeX support works
 

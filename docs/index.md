@@ -42,6 +42,8 @@ docs/                # base mkdocs source directory
 
 ### 2. Configure mkdocs
 
+#### a. Basics
+
 Simply add the following configuration to you `mkdocs.yml`:
 
 ```yaml
@@ -66,6 +68,28 @@ Most [sphinx-gallery configuration options](https://sphinx-gallery.github.io/sta
 
 See [mkdocs configuration](https://www.mkdocs.org/user-guide/configuration/) for general information about the `mkdocs.yml` file.
 
+#### b. Advanced
+
+You may wish to use the special `conf_script` option to create the base configuration using a python script, like what was done in Sphinx-gallery:
+
+```yaml
+plugins:
+  - gallery:
+      conf_script: docs/gallery_conf.py
+      # ... other options can still be added here
+```
+
+The python script should be executable without error, and at the end of execution should contain a `conf` variable defined at the module level. For example this is a valid script:
+
+```python
+from mkdocs_gallery.gen_gallery import DefaultResetArgv
+
+conf = {
+    'reset_argv': DefaultResetArgv(),
+}
+```
+
+You can set options both in the script and in the yaml. In case of duplicates, the yaml options override the script-defined ones.
 
 ### 3. Add gallery examples
 

@@ -821,12 +821,10 @@ class AllInformation:
         if not isinstance(gallery_dirs, list):
             gallery_dirs = [gallery_dirs]
 
-        # Back references ?
-        # TODO make sure we replicate this
-        if bool(gallery_conf['backreferences_dir']):
-            backreferences_dir = os.path.join(mkdocs_srcdir, gallery_conf['backreferences_dir'])
-            if not os.path.exists(backreferences_dir):
-                os.makedirs(backreferences_dir)
+        # Back references page
+        backreferences_dir = gallery_conf['backreferences_dir']
+        if backreferences_dir:
+            backreferences_dir.mkdir(parents=True, exist_ok=True)
 
         # Create galleries
         for e_dir, g_dir in zip(examples_dirs, gallery_dirs):

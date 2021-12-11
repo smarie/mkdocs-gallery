@@ -12,6 +12,8 @@ when building the documentation.
 
 from __future__ import division, print_function, absolute_import
 
+from importlib.util import spec_from_file_location, module_from_spec
+
 from typing import Dict, Iterable, Tuple, List, Set
 
 import codecs
@@ -114,9 +116,40 @@ def _bool_eval(x):
 def parse_config(mkdocs_gallery_conf, mkdocs_conf, check_keys=True):
     """Process the Sphinx Gallery configuration."""
 
-    gallery_conf = _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf=mkdocs_conf, check_keys=check_keys)
+    # Import the base configuration script
+    gallery_conf = load_base_conf(mkdocs_gallery_conf.pop("conf_script", None))
+    # Transform all strings to paths: not needed
+
+    # Merge configs
+    for opt_name, opt_value in mkdocs_gallery_conf.items():
+        # Did the user override the option in mkdocs.yml ? (for SubConfigswe do not receive None but {})
+        if opt_value is None or (opt_name in ('binder',) and len(opt_value) == 0):
+            continue  # Not user-specified, skip
+
+        # User has overridden it. Use it
+        gallery_conf[opt_name] = opt_value
+
+    gallery_conf = _complete_gallery_conf(gallery_conf, mkdocs_conf=mkdocs_conf, check_keys=check_keys)
 
     return gallery_conf
+
+
+def load_base_conf(script: Path = None) -> Dict:
+    if script is None:
+        return dict()
+
+    try:
+        spec = spec_from_file_location("__mkdocs_gallery_conf", script)
+        foo = module_from_spec(spec)
+        spec.loader.exec_module(foo)
+    except ImportError:
+        raise ExtensionError(f"Error importing base configuration from `base_conf_py` {script}")
+
+    try:
+        return foo.conf
+    except AttributeError:
+        raise ExtensionError(f"Error loading base configuration from `base_conf_py` {script}, module does not contain "
+                             f"a `conf` variable.")
 
 
 def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
@@ -147,10 +180,12 @@ def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
     # Text to Class for sorting methods
     _order = gallery_conf['subsection_order']
     if isinstance(_order, str):
+        # the option was passed from the mkdocs.yml file
         gallery_conf['subsection_order'] = str_to_sorting_method(_order)
 
     _order = gallery_conf['within_subsection_order']
     if isinstance(_order, str):
+        # the option was passed from the mkdocs.yml file
         gallery_conf['within_subsection_order'] = str_to_sorting_method(_order)
 
     # XXX anything that can only be a bool (rather than str) should probably be
@@ -335,10 +370,9 @@ def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
         raise ConfigError("The 'backreferences_dir' parameter must be of type "
                           "str, Path or None, "
                           "found type %s" % type(backref))
-    # if 'backreferences_dir' is Path, make str for Python <=3.5
-    # compatibility
-    if isinstance(backref, Path):
-        gallery_conf['backreferences_dir'] = str(backref)
+    # if 'backreferences_dir' is str, make Path
+    if isinstance(backref, str):
+        gallery_conf['backreferences_dir'] = Path(backref)
 
     # binder
     gallery_conf['binder'] = check_binder_conf(gallery_conf['binder'])

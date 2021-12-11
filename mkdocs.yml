@@ -16,6 +16,7 @@ nav:
 plugins:
   - search
   - gallery:
+      conf_script: docs/gallery_conf.py  # Base conf. Possibly modified by items below
       examples_dirs:
         - docs/examples          # path to your example scripts, relative to mkdocs.yml
         - docs/tutorials
@@ -24,28 +25,28 @@ plugins:
         - docs/generated/gallery  # where to save gallery generated output. Note that you may or may not include them in
         - docs/generated/tutorials
         # TODO tutorials and mayavi_examples
-      # backreferences_dir: gen_modules/backreferences  # where to generate the back references summary
-      # doc_module: ['sphinx_gallery', 'numpy']
+
+      backreferences_dir: gen_modules/backreferences  # where to generate the back references summary
+#      doc_module: ['sphinx_gallery', 'numpy'] TODO does not seem to work
       # reference_url: {sphinx_gallery: None},
-#      image_scrapers: ['matplotlib']
-#      compress_images: ['images', 'thumbnails']
+      image_scrapers: matplotlib
+      compress_images: ['images', 'thumbnails']
       # specify the order of examples to be according to filename
       within_subsection_order: FileNameSortKey
       expected_failing_examples:
          - docs/examples/no_output/plot_raise.py
          - docs/examples/no_output/plot_syntaxerror.py
 
-#      min_reported_time: min_reported_time,
+#      min_reported_time: min_reported_time,  in conf file
 #      binder:
-#        org: sphinx-gallery
-#        repo: sphinx-gallery.github.io
+#        org: smarie
+#        repo: mkdocs-gallery.github.io
 #        branch: master
 #        binderhub_url: https://mybinder.org
 #        dependencies: ./binder/requirements.txt
 #        notebooks_dir: notebooks
 #        use_jupyter_lab: True
-#
-#      show_memory: True,
+      show_memory: True
 #      junit: os.path.join('sphinx-gallery', 'junit-results.xml'),
 #      # capture raw HTML or, if not present, __repr__ of last expression in each code block
 #      capture_repr: ['_repr_html_', '__repr__']

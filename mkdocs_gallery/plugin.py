@@ -1,18 +1,13 @@
-from mkdocs.config.base import ValidationError
-from mkdocs.config.config_options import OptionallyRequired, BaseConfigOption
-
 from pathlib import Path
 
+from mkdocs.config.base import ValidationError
+from mkdocs.config import config_options as co
+from mkdocs.plugins import BasePlugin
 from mkdocs.structure.files import Files
 
 from typing import Dict, Any
 
-import re
-
 import os
-
-from mkdocs.plugins import BasePlugin, log
-from mkdocs.config import config_options
 
 from . import glr_path_static
 from .binder import copy_binder_files
@@ -20,10 +15,10 @@ from .binder import copy_binder_files
 from .gen_gallery import parse_config, _KNOWN_CSS, generate_gallery_md, summarize_failing_examples, fill_mkdocs_nav
 
 
-class ConfigList(OptionallyRequired):
+class ConfigList(co.OptionallyRequired):
     """A list or single element of configuration matching a specific ConfigOption"""
 
-    def __init__(self, item_config: BaseConfigOption, single_elt_allowed: bool = True, **kwargs):
+    def __init__(self, item_config: co.BaseConfigOption, single_elt_allowed: bool = True, **kwargs):
         super().__init__(**kwargs)
         self.single_elt_allowed = single_elt_allowed
         self.item_config = item_config
@@ -46,25 +41,79 @@ class ConfigList(OptionallyRequired):
         return result
 
 
+class MySubConfig(co.SubConfig):
+    """Same as SubConfig except that it will be an empty dict when nothing is provided by user,
+    instead of a dict with all options containing their default values."""
+
+    def validate(self, value):
+        if value is None or len(value) == 0:
+            return None
+        else:
+            return super(MySubConfig, self).validate(value)
+
+
 class GalleryPlugin(BasePlugin):
     #     # Mandatory to display plotly graph within the site
     #     import plotly.io as pio
     #     pio.renderers.default = "sphinx_gallery"
 
-    # TODO check more config options from mkdocs-gallery.gen_gallery.DEFAULT_GALLERY_CONF
     config_scheme = (
-        ('examples_dirs', ConfigList(config_options.Dir(exists=True), default="examples", required=True)),
-        ('expected_failing_examples', ConfigList(config_options.File(exists=True))),
-        ('gallery_dirs', ConfigList(config_options.Dir(exists=False), default="generated/gallery", required=True)),
-        ('filename_pattern', config_options.Type(str, default=re.escape(os.sep) + 'plot')),
-        ('subsection_order', config_options.Choice(choices=(None, "ExplicitOrder"), default=None)),
-        ('within_subsection_order', config_options.Choice(choices=("FileNameSortKey", "NumberOfCodeLinesSortKey"),
-                                                          default="FileNameSortKey")),
+        ('conf_script', co.File(exists=True)),
+        ('filename_pattern', co.Type(str)),
+        ('ignore_pattern', co.Type(str)),
+        ('examples_dirs', ConfigList(co.Dir(exists=True))),
+        # 'reset_argv': DefaultResetArgv(),
+        ('subsection_order', co.Choice(choices=(None, "ExplicitOrder"))),
+        ('within_subsection_order', co.Choice(choices=("FileNameSortKey", "NumberOfCodeLinesSortKey"))),
+
+        ('gallery_dirs', ConfigList(co.Dir(exists=False))),
+        ('backreferences_dir', co.Dir(exists=False)),
+        ('doc_module', ConfigList(co.Type(str))),
+        # 'reference_url': {},  TODO how to link code to external functions?
+        ('capture_repr', ConfigList(co.Type(str))),
+        ('ignore_repr_types', co.Type(str)),
         # Build options
-        ('plot_gallery', config_options.Type(bool, default=True, required=True)),
-        ('download_all_examples', config_options.Type(bool, default=True, required=True)),
-        ('abort_on_example_error', config_options.Type(bool, default=False, required=True)),
-        ('only_warn_on_example_error', config_options.Type(bool, default=False, required=True)),
+        ('plot_gallery', co.Type(bool)),
+        ('download_all_examples', co.Type(bool)),
+        ('abort_on_example_error', co.Type(bool)),
+        ('only_warn_on_example_error', co.Type(bool)),
+        # 'failing_examples': {},  # type: Set[str]
+        # 'passing_examples': [],
+        # 'stale_examples': [],
+        ('run_stale_examples', co.Type(bool)),
+        ('expected_failing_examples', ConfigList(co.File(exists=True))),
+        ('thumbnail_size', ConfigList(co.Type(int), single_elt_allowed=False)),
+        ('min_reported_time', co.Type(int)),
+        ('binder', MySubConfig(
+            # Required keys
+            ('org', co.Type(str, required=True)),
+            ('repo', co.Type(str, required=True)),
+            ('branch', co.Type(str, required=True)),
+            ('binderhub_url', co.URL(required=True)),
+            ('dependencies', ConfigList(co.File(exists=True), required=True)),
+            # Optional keys
+            ('filepath_prefix', co.Type(str)),
+            ('notebooks_dir', co.Type(str)),
+            ('use_jupyter_lab', co.Type(bool)),
+        )),
+        ('image_scrapers', ConfigList(co.Type(str))),
+        ('compress_images', ConfigList(co.Type(str))),
+        ('reset_modules', ConfigList(co.Type(str))),
+        ('first_notebook_cell', co.Type(str)),
+        ('last_notebook_cell', co.Type(str)),
+        ('notebook_images', co.Type(bool)),
+        # # 'pypandoc': False,
+        ('remove_config_comments', co.Type(bool)),
+        ('show_memory', co.Type(bool)),
+        ('show_signature', co.Type(bool)),
+        # 'junit': '',
+        # 'log_level': {'backreference_missing': 'warning'},
+        ('inspect_global_variables', co.Type(bool)),
+        # 'css': _KNOWN_CSS,
+        ('matplotlib_animations', co.Type(bool)),
+        ('image_srcset', ConfigList(co.Type(str))),
+        ('default_thumb_file', co.File(exists=True)),
+        ('line_numbers', co.Type(bool)),
     )
 
     def on_config(self, config, **kwargs):
@@ -256,10 +305,10 @@ def merge_extra_config(extra_config: Dict[str, Any], config):
 #
 #     config_scheme = (
 #         ('lang', LangOption()),
-#         ('separator', config_options.Type(str, default=r'[\s\-]+')),
-#         ('min_search_length', config_options.Type(int, default=3)),
-#         ('prebuild_index', config_options.Choice((False, True, 'node', 'python'), default=False)),
-#         ('indexing', config_options.Choice(('full', 'sections', 'titles'), default='full'))
+#         ('separator', co.Type(str, default=r'[\s\-]+')),
+#         ('min_search_length', co.Type(int, default=3)),
+#         ('prebuild_index', co.Choice((False, True, 'node', 'python'), default=False)),
+#         ('indexing', co.Choice(('full', 'sections', 'titles'), default='full'))
 #     )
 #
 #     def on_config(self, config, **kwargs):
