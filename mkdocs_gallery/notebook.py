@@ -257,7 +257,7 @@ def fill_notebook(work_notebook, script_blocks):
     """
     # heading_level_counter = count(start=1)
     # heading_levels = defaultdict(lambda: next(heading_level_counter))
-    for blabel, bcontent, lineno in script_blocks:
+    for blabel, bcontent, _lineno in script_blocks:
         if blabel == 'code':
             add_code_cell(work_notebook, bcontent)
         else:
@@ -299,7 +299,7 @@ def python_to_jupyter_cli(args=None, namespace=None):
 
     for src_file in args.python_src_file:
         file_conf, blocks = split_code_and_text_blocks(src_file)
-        print('Converting {0}'.format(src_file))
+        print('Converting {0}'.format(src_file))  # noqa  # this is a cli
         gallery_conf = copy.deepcopy(gen_gallery.DEFAULT_GALLERY_CONF)
         target_dir = os.path.dirname(src_file)
         example_nb = jupyter_notebook(blocks, gallery_conf, target_dir)

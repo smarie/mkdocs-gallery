@@ -450,7 +450,8 @@ def figure_md_or_html(
         if raw_html:
             # html version
             figure_path_rel_to_mkdocs_dir = figure_path.relative_to(sources_dir).as_posix().lstrip('/')
-            images_md = f'<img alt="{alt}" src="{figure_path_rel_to_mkdocs_dir}" srcset="{srcset}", class="sphx-glr-single-img" />'
+            images_md = f'<img alt="{alt}" src="{figure_path_rel_to_mkdocs_dir}" srcset="{srcset}", ' \
+                        f'class="sphx-glr-single-img" />'
         else:
             # markdown version
             figure_path_rel_to_script_md_dir = figure_path.relative_to(script_md_dir).as_posix().lstrip('/')

@@ -812,8 +812,17 @@ class AllInformation:
     def get_all_script_files(self):
         return [f for g in self.galleries for f in g.get_all_script_files()]
 
+    @property
+    def backrefs_dir(self) -> Path:
+        """The absolute path to the backreferences dir"""
+        return self.gallery_conf['backreferences_dir']
+
+    def get_backreferences_file(self, module_name) -> Path:
+        """Return the path to the backreferences file to use for `module_name` """
+        return self.backrefs_dir / f"{module_name}.examples"
+
     @classmethod
-    def from_cfg(self, gallery_conf, mkdocs_conf):
+    def from_cfg(self, gallery_conf: Dict, mkdocs_conf: Dict):
         """Factory to create this object from the configuration.
 
         It creates all galleries and populates their subsections.

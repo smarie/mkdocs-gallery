@@ -128,6 +128,9 @@ def parse_config(mkdocs_gallery_conf, mkdocs_conf, check_keys=True):
         # User has overridden it. Use it
         gallery_conf[opt_name] = opt_value
 
+    if isinstance(gallery_conf["doc_module"], list):
+        gallery_conf["doc_module"] = tuple(gallery_conf["doc_module"])
+
     gallery_conf = _complete_gallery_conf(gallery_conf, mkdocs_conf=mkdocs_conf, check_keys=check_keys)
 
     return gallery_conf
@@ -476,8 +479,7 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
         # Remove the .new suffix and update the md5
         index_md = _replace_by_new_if_needed(index_md_new, md5_mode='t')
 
-    # TODO what does this mean?
-    _finalize_backreferences(seen_backrefs, gallery_conf)
+    _finalize_backreferences(seen_backrefs, all_info)
 
     if gallery_conf['plot_gallery']:
         logger.info("computation time summary:")  # , color='white')

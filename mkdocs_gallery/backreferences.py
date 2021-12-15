@@ -27,8 +27,8 @@ import warnings
 from .errors import ExtensionError
 
 from . import mkdocs_compatibility
-from .gen_data_model import GalleryScript, GalleryScriptResults
-from .utils import _replace_by_new_if_needed
+from .gen_data_model import GalleryScriptResults, AllInformation
+from .utils import _replace_by_new_if_needed, _new_file
 
 
 class DummyClass(object):
@@ -235,10 +235,10 @@ def identify_names(script_blocks, global_variables=None, node=''):
         if len(splitted) == 1:
             splitted = ('builtins', splitted[0])
         elif len(splitted) == 3:  # class-like
-            assert class_like
+            assert class_like  # noqa
             splitted = (splitted[0], '.'.join(splitted[1:]))
         else:
-            assert not class_like
+            assert not class_like  # noqa
 
         module, attribute = splitted
 
@@ -314,7 +314,7 @@ def _thumbnail_div(script_results: GalleryScriptResults, is_backref: bool = Fals
                            example_html=example_html)
 
 
-def _write_backreferences(backrefs: Set, seen_backrefs: Set, snippet: str, script: GalleryScript):
+def _write_backreferences(backrefs: Set, seen_backrefs: Set, script_results: GalleryScriptResults):
     """
     Write backreference file including a thumbnail list of examples.
 
@@ -324,51 +324,49 @@ def _write_backreferences(backrefs: Set, seen_backrefs: Set, snippet: str, scrip
 
     seen_backrefs : set
 
-    snippet : str
-
-    script : GalleryScript
+    script_results : GalleryScriptResults
 
     Returns
     -------
 
     """
+    all_info = script_results.script.gallery.all_info
+
     for backref in backrefs:
-        # TODO use _new_file and also create a property
-        include_path = os.path.join(script.gallery.all_info.mkdocs_conf['docs_dir'],
-                                    script.gallery_conf['backreferences_dir'],
-                                    '%s.examples.new' % backref)
+        # Get the backref file to use for this module, according to config
+        include_path = _new_file(all_info.get_backreferences_file(backref))
+
+        # Create new or append to existing file
         seen = backref in seen_backrefs
-        with codecs.open(include_path, 'a' if seen else 'w',
-                         encoding='utf-8') as ex_file:
+        with codecs.open(str(include_path), 'a' if seen else 'w', encoding='utf-8') as ex_file:
+            # If first ref: write header
             if not seen:
                 # Be aware that if the number of lines of this heading changes,
                 #   the minigallery directive should be modified accordingly
                 heading = 'Examples using ``%s``' % backref
                 ex_file.write('\n\n' + heading + '\n')
                 ex_file.write('^' * len(heading) + '\n')
-            ex_file.write(_thumbnail_div(target_dir, mkdocs_conf['docs_dir'],
-                                         subsection_path,
-                                         fname, snippet, title,
-                                         is_backref=True))
+
+            # Write the thumbnail
+            ex_file.write(_thumbnail_div(script_results, is_backref=True))
             seen_backrefs.add(backref)
 
 
-def _finalize_backreferences(seen_backrefs, gallery_conf):
+def _finalize_backreferences(seen_backrefs, all_info: AllInformation):
     """Replace backref files only if necessary."""
     logger = mkdocs_compatibility.getLogger('mkdocs-gallery')
-    if gallery_conf['backreferences_dir'] is None:
+    if all_info.gallery_conf['backreferences_dir'] is None:
         return
 
     for backref in seen_backrefs:
-        # TODO use _new_file ?
-        path = os.path.join(mkdocs_conf['docs_dir'],
-                            gallery_conf['backreferences_dir'],
-                            '%s.examples.new' % backref)
-        if os.path.isfile(path):
+        # Get the backref file to use for this module, according to config
+        path = _new_file(all_info.get_backreferences_file(backref))
+        if path.exists():
+            # Simply drop the .new suffix
             _replace_by_new_if_needed(path, md5_mode='t')
         else:
-            level = gallery_conf['log_level'].get('backreference_missing',
-                                                  'warning')
+            # No file: warn
+            level = all_info.gallery_conf['log_level'].get('backreference_missing', 'warning')
             func = getattr(logger, level)
             func('Could not find backreferences file: %s' % (path,))
             func('The backreferences are likely to be erroneous '

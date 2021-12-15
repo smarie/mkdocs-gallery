@@ -26,8 +26,8 @@ plugins:
         - docs/generated/tutorials
         # TODO tutorials and mayavi_examples
 
-      backreferences_dir: gen_modules/backreferences  # where to generate the back references summary
-#      doc_module: ['sphinx_gallery', 'numpy'] TODO does not seem to work
+      backreferences_dir: docs/generated/backreferences  # where to generate the back references summary
+      doc_module: ['mkdocs_gallery', 'numpy']
       # reference_url: {sphinx_gallery: None},
       image_scrapers: matplotlib
       compress_images: ['images', 'thumbnails']

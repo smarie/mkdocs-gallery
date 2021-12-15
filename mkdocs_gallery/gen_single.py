@@ -1061,12 +1061,14 @@ def generate_file_md(script: GalleryScript, seen_backrefs=None) -> GalleryScript
                    for cobj in cobjs
                    if cobj['module'].startswith(script.gallery_conf['doc_module']))
 
+    # Create results object
+    res = GalleryScriptResults(script=script, intro=intro, exec_time=time_elapsed, memory=memory_used, thumb=thumb_file)
+
     # Write backreferences if required
     if script.gallery_conf['backreferences_dir'] is not None:
-        _write_backreferences(backrefs, seen_backrefs, snippet=intro, script=script)
+        _write_backreferences(backrefs, seen_backrefs, script_results=res)
 
-    return GalleryScriptResults(script=script, intro=intro, exec_time=time_elapsed, memory=memory_used,
-                                thumb=thumb_file)
+    return res
 
 
 # TODO the note should only appear in html mode. (.. only:: html)
