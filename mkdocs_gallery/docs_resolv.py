@@ -1,6 +1,8 @@
-# # -*- coding: utf-8 -*-
-# # Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
-# # License: 3-clause BSD
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
 # """
 # Link resolver objects
 # =====================

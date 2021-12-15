@@ -1,12 +1,14 @@
-# -*- coding: utf-8 -*-
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
 """
 Utilities
 =========
 
 Miscellaneous utilities.
 """
-# Author: Eric Larson
-# License: 3-clause BSD
 
 from __future__ import division, absolute_import, print_function
 
@@ -166,7 +168,7 @@ def get_md5sum(src_file: Path, mode='b'):
 
 def _get_old_file(new_file: Path) -> Path:
     """Return the same file without the .new suffix"""
-    assert new_file.name.endswith('.new')
+    assert new_file.name.endswith('.new')  # noqa
     return new_file.with_name(new_file.stem)  # this removes the .new suffix
 
 
@@ -189,8 +191,8 @@ def _smart_move_md5(src_file: Path, dst_file: Path, md5_mode: str = 'b'):
     md5_mode : str
         A string representing the md5 computation mode, 'b' or 't'
     """
-    assert src_file.is_absolute() and dst_file.is_absolute()
-    assert src_file != dst_file
+    assert src_file.is_absolute() and dst_file.is_absolute()  # noqa
+    assert src_file != dst_file  # noqa
 
     if dst_file.exists() and _have_same_md5(dst_file, src_file, mode=md5_mode):
         # Shortcut: destination is already identical, just delete the source
@@ -198,7 +200,7 @@ def _smart_move_md5(src_file: Path, dst_file: Path, md5_mode: str = 'b'):
     else:
         # Proceed to the move operation
         move(str(src_file), dst_file)
-        assert dst_file.exists()
+        assert dst_file.exists()  # noqa
 
     return dst_file
 
@@ -246,8 +248,8 @@ def _smart_copy_md5(src_file: Path, dst_file: Path, src_md5: str = None, md5_mod
     md5 : str
         The md5 of the file, if it has been provided or computed in the process, or None.
     """
-    assert src_file.is_absolute() and dst_file.is_absolute()
-    assert src_file != dst_file
+    assert src_file.is_absolute() and dst_file.is_absolute()  # noqa
+    assert src_file != dst_file  # noqa
 
     if dst_file.exists():
         if src_md5 is None:
@@ -260,7 +262,7 @@ def _smart_copy_md5(src_file: Path, dst_file: Path, src_md5: str = None, md5_mod
 
     # Proceed to the copy operation
     copyfile(src_file, dst_file)
-    assert dst_file.exists()
+    assert dst_file.exists()  # noqa
 
     return src_md5
 

@@ -1,18 +1,10 @@
-# -*- coding: utf-8 -*-
-# Author: Chris Holdgraf
-# License: 3-clause BSD
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
 """
 Binder utility functions
-========================
-
-Integration with Binder is on an experimental stage. Note that this API may
-change in the future.
-
-.. warning::
-
-   Binder is still beta technology, so there may be instability in the
-   experience of users who click Binder links.
-
 """
 
 import os
@@ -114,7 +106,7 @@ def gen_binder_md(script: GalleryScript, binder_conf: Dict):
         physical_path.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(os.path.join(glr_path_static(), 'binder_badge_logo.svg'), str(physical_path))
     else:
-        assert physical_path.is_file()
+        assert physical_path.is_file()  # noqa
 
     # Create the markdown entry TODO
     md = (
@@ -141,7 +133,7 @@ def copy_binder_files(gallery_conf, mkdocs_conf):
     if not len(binder_conf) > 0:
         return
 
-    logger.info('copying binder requirements...')  #, color='white')
+    logger.info('copying binder requirements...')  # , color='white')
     _copy_binder_reqs(app, binder_conf)
     _copy_binder_notebooks(app)
 

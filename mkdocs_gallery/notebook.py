@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
-r"""
-Parser for Jupyter notebooks
-============================
-
-Class that holds the Jupyter notebook information
-
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
 """
-# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
-# License: 3-clause BSD
+Parser for Jupyter notebooks
+"""
 
 from __future__ import division, absolute_import, print_function
 from functools import partial

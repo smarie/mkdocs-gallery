@@ -1,3 +1,12 @@
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
+"""
+The mkdocs plugin entry point
+"""
+
 from pathlib import Path
 
 from mkdocs.config.base import ValidationError
@@ -28,7 +37,7 @@ class ConfigList(co.OptionallyRequired):
             if self.single_elt_allowed:
                 value = (value, )
             else:
-                msg = f"Expected a list but received a single element."
+                msg = f"Expected a list but received a single element: {value}."
                 raise ValidationError(msg)
 
         # Validate all elements in the list
@@ -225,7 +234,8 @@ markdown_extensions:
     #     return nav
 
     # def on_page_content(self, html, page: Page, config: Config, files: Files):
-    #     """Edit the 'edit this page' link, see https://github.com/oprypin/mkdocs-gen-files/blob/master/mkdocs_gen_files/plugin.py"""
+    #     """Edit the 'edit this page' link,
+    #     see https://github.com/oprypin/mkdocs-gen-files/blob/master/mkdocs_gen_files/plugin.py"""
     #
     #     # TODO
     #     repo_url = config.get("repo_url", None)
@@ -261,7 +271,7 @@ markdown_extensions:
 
         # TODO this is an ugly hack...
         # Find the objects in charge of monitoring the dirs and modify their callbacks
-        for watch, handlers in server.observer._handlers.items():
+        for _watch, handlers in server.observer._handlers.items():
             for h in handlers:
                 h.on_any_event = wrap_callback(h.on_any_event)
 
@@ -270,7 +280,7 @@ markdown_extensions:
     def on_post_build(self, config, **kwargs):
         """Create one md file for each python example in the gallery."""
 
-        # TODO copy_binder_files(gallery_conf=self.config, mkdocs_conf=config)
+        copy_binder_files(gallery_conf=self.config, mkdocs_conf=config)
         summarize_failing_examples(gallery_conf=self.config, mkdocs_conf=config)
         # TODO embed_code_links()
 
@@ -284,7 +294,7 @@ def merge_extra_config(extra_config: Dict[str, Any], config):
             if extension_name not in config['markdown_extensions']:
                 config['markdown_extensions'].append(extension_name)
         elif isinstance(extension_cfg, dict):
-            assert len(extension_cfg) == 1
+            assert len(extension_cfg) == 1  # noqa
             extension_name, extension_options = extension_cfg.popitem()
             if extension_name not in config['markdown_extensions']:
                 config['markdown_extensions'].append(extension_name)

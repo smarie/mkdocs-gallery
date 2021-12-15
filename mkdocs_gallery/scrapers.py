@@ -1,6 +1,8 @@
-# -*- coding: utf-8 -*-
-# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
-# License: 3-clause BSD
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
 """
 Scrapers for embedding images
 =============================
@@ -12,6 +14,7 @@ live in modules that will support them (e.g., PyVista, Plotly).  Scraped
 images are injected as rst ``image-sg`` directives into the ``.md``
 file generated for each example script.
 """
+
 from typing import Dict, Optional, List
 
 import os
@@ -207,8 +210,16 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
     plt.close('all')
 
     # Create the markdown or html output
-    # <li><img src="../_images/mkd_glr_plot_1_exp_001.png" srcset="../_images/mkd_glr_plot_1_exp_001.png, ../_images/mkd_glr_plot_1_exp_001_2_0x.png 2.0x" alt="Exponential function" class="sphx-glr-multi-img"></li>
-    # <li><img src="../_images/mkd_glr_plot_1_exp_002.png" srcset="../_images/mkd_glr_plot_1_exp_002.png, ../_images/mkd_glr_plot_1_exp_002_2_0x.png 2.0x" alt="Negative exponential function" class="sphx-glr-multi-img"></li>
+    # <li>
+    # <img src="../_images/mkd_glr_plot_1_exp_001.png"
+    #      srcset="../_images/mkd_glr_plot_1_exp_001.png, ../_images/mkd_glr_plot_1_exp_001_2_0x.png 2.0x"
+    #      alt="Exponential function" class="sphx-glr-multi-img">
+    # </li>
+    # <li>
+    # <img src="../_images/mkd_glr_plot_1_exp_002.png"
+    #      srcset="../_images/mkd_glr_plot_1_exp_002.png, ../_images/mkd_glr_plot_1_exp_002_2_0x.png 2.0x"
+    #      alt="Negative exponential function" class="sphx-glr-multi-img">
+    # </li>
 
     md = ''
     if len(image_mds) == 1:
@@ -366,7 +377,13 @@ def save_figures(block, script: GalleryScript):
     return all_md
 
 
-def figure_md_or_html(figure_paths: List[Path], script: GalleryScript, fig_titles: str = '', srcsetpaths: List[Dict[float, Path]]=None, raw_html=False):
+def figure_md_or_html(
+    figure_paths: List[Path],
+    script: GalleryScript,
+    fig_titles: str = '',
+    srcsetpaths: List[Dict[float, Path]] = None,
+    raw_html=False
+):
     """Generate md or raw html for a list of image filenames.
 
     Depending on whether we have one or more figures, we use a
@@ -444,9 +461,8 @@ def figure_md_or_html(figure_paths: List[Path], script: GalleryScript, fig_title
         for nn, figure_path in enumerate(figure_paths):
             hinames = srcsetpaths[nn]
             srcset = _get_srcset_st(sources_dir, hinames)
-
-            images_md += (HLIST_SG_TEMPLATE %
-                          (figure_path_rel_to_mkdocs_dir, alt, srcset))
+            figure_path_rel_to_mkdocs_dir = figure_path.relative_to(sources_dir).as_posix().lstrip('/')
+            images_md += (HLIST_SG_TEMPLATE % (figure_path_rel_to_mkdocs_dir, alt, srcset))
 
     return images_md
 

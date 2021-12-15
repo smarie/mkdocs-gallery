@@ -1,3 +1,8 @@
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
 """
 Tests for the md files generator
 """
@@ -44,7 +49,7 @@ CONTENT = [
 ]
 
 TESTS_ROOT = Path(__file__).parent
-DOCS_ROOT = TESTS_ROOT / "../../docs"
+DOCS_ROOT = TESTS_ROOT / "../docs"
 EXAMPLES_DIR = DOCS_ROOT / "examples"
 TUTORIALS_DIR = DOCS_ROOT / "tutorials"
 

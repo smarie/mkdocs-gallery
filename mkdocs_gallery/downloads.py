@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
-r"""
-Utilities for downloadable items
-================================
-
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
 """
-# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
-# License: 3-clause BSD
+Utilities for downloadable items
+"""
 
 from __future__ import absolute_import, division, print_function
 
@@ -85,5 +85,5 @@ def generate_zipfiles(gallery: Gallery):
 [{icon} Download all examples in Python source code: {gallery.zipfile_python.name}](./{gallery.zipfile_python_rel_index_md}){{ .md-button .center}}
 
 [{icon} Download all examples in Jupyter notebooks: {gallery.zipfile_jupyter.name}](./{gallery.zipfile_jupyter_rel_index_md}){{ .md-button .center}}
-"""
+"""  # noqa
     return dw_md

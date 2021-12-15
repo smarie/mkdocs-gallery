@@ -1,6 +1,8 @@
-# -*- coding: utf-8 -*-
-# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
-# License: 3-clause BSD
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
 """
 Backreferences Generator
 ========================
@@ -8,6 +10,8 @@ Backreferences Generator
 Parses example file code in order to keep track of used functions
 """
 from __future__ import print_function, unicode_literals
+
+from importlib import import_module
 
 from typing import Set
 
@@ -146,12 +150,18 @@ class NameFinder(ast.NodeVisitor):
 
 
 def _from_import(a, b):
-    imp_line = 'from %s import %s' % (a, b)
-    scope = dict()
+    # imp_line = 'from %s import %s' % (a, b)
+    # scope = dict()
+    # with warnings.catch_warnings(record=True):  # swallow warnings
+    #     warnings.simplefilter('ignore')
+    #     exec(imp_line, scope, scope)
+    # return scope
     with warnings.catch_warnings(record=True):  # swallow warnings
         warnings.simplefilter('ignore')
-        exec(imp_line, scope, scope)
-    return scope
+        m = import_module(a)
+        obj = getattr(m, b)
+
+    return obj
 
 
 def _get_short_module_name(module_name, obj_name):
@@ -160,14 +170,14 @@ def _get_short_module_name(module_name, obj_name):
         obj_name, attr = obj_name.split('.')
     else:
         attr = None
-    scope = {}
+    # scope = {}
     try:
         # Find out what the real object is supposed to be.
-        scope = _from_import(module_name, obj_name)
+        imported_obj = _from_import(module_name, obj_name)
     except Exception:  # wrong object
         return None
     else:
-        real_obj = scope[obj_name]
+        real_obj = imported_obj
         if attr is not None and not hasattr(real_obj, attr):  # wrong class
             return None  # wrong object
 
@@ -175,11 +185,11 @@ def _get_short_module_name(module_name, obj_name):
     short_name = module_name
     for i in range(len(parts) - 1, 0, -1):
         short_name = '.'.join(parts[:i])
-        scope = {}
+        # scope = {}
         try:
-            scope = _from_import(short_name, obj_name)
+            imported_obj = _from_import(short_name, obj_name)
             # Ensure shortened object is the same as what we expect.
-            assert real_obj is scope[obj_name]
+            assert real_obj is imported_obj  # noqa
         except Exception:  # libraries can throw all sorts of exceptions...
             # get the last working module name
             short_name = '.'.join(parts[:(i + 1)])

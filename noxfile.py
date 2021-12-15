@@ -110,7 +110,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # finally run all tests
     if not coverage:
         # simple: pytest only
-        session.run2("python -m pytest --cache-clear -v %s/tests/" % pkg_name)
+        session.run2("python -m pytest --cache-clear -v tests/")
     else:
         # coverage + junit html reports + badge generation
         session.install_reqs(phase="coverage",
@@ -119,7 +119,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
 
         # --coverage + junit html reports
         session.run2("coverage run --source {pkg_name} "
-                     "-m pytest --cache-clear --junitxml={test_xml} --html={test_html} -v {pkg_name}/tests/"
+                     "-m pytest --cache-clear --junitxml={test_xml} --html={test_html} -v tests/"
                      "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
         session.run2("coverage report")
         session.run2("coverage xml -o {covxml}".format(covxml=Folders.coverage_xml))

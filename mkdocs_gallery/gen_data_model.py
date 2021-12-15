@@ -1,3 +1,12 @@
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
+"""
+Classes holding information related to gallery examples and exposing derived information, typically paths.
+"""
+
 from shutil import copyfile
 
 from abc import abstractmethod, ABC
@@ -23,7 +32,7 @@ def _has_readme(folder: Path) -> bool:
 def _get_readme(dir_: Path, raise_error=True) -> Path:
     """Return the file path for the readme file, if found."""
 
-    assert dir_.is_absolute()
+    assert dir_.is_absolute()  # noqa
 
     # extensions = ['.txt'] + sorted(gallery_conf['app'].config['source_suffix'])
     extensions = ['.txt'] + ['.md']  # TODO should this be read from mkdocs config ? like above
@@ -65,7 +74,7 @@ class ImagePathIterator:
     def __iter__(self):
         """Iterate over paths."""
         # we should really never have 1e6, let's prevent some user pain
-        for ii in range(self._stop):
+        for _ii in range(self._stop):
             yield next(self)
         else:
             raise ExtensionError(f"Generated over {self._stop} images")
@@ -99,7 +108,9 @@ class GalleryScriptResults:
 
 class ScriptRunVars:
     """The variables created when a script is run."""
-    __slots__ = ("image_path_iterator", "example_globals", "memory_used_in_blocks", "memory_delta", "fake_main", "stop_executing")
+    __slots__ = (
+        "image_path_iterator", "example_globals", "memory_used_in_blocks", "memory_delta", "fake_main", "stop_executing"
+    )
 
     def __init__(self, image_path_iterator: ImagePathIterator):
         # The iterator returning the next image file paths
@@ -130,9 +141,9 @@ class GalleryScript:
         self._gallery = weakref.ref(gallery)
 
         # Make sure the script complies with the gallery
-        assert script_src_file.parent == gallery.scripts_dir
-        assert script_src_file.suffix == ".py"
-        
+        assert script_src_file.parent == gallery.scripts_dir  # noqa
+        assert script_src_file.suffix == ".py"  # noqa
+
         # Only save the stem
         self.script_stem = script_src_file.stem
 
@@ -154,7 +165,7 @@ class GalleryScript:
     @property
     def py_file_name(self) -> str:
         """The script name, e.g. 'my_demo.py'"""
-        return  f"{self.script_stem}.py"
+        return f"{self.script_stem}.py"
 
     @property
     def src_py_file(self) -> Path:
@@ -190,7 +201,7 @@ class GalleryScript:
 
     @property
     def dwnld_py_file(self) -> Path:
-        """The absolute file path of the script in the generated gallery dir, e.g. <project>/generated/gallery/my_script.py"""
+        """The absolute path of the script in the generated gallery dir,e.g. <project>/generated/gallery/my_script.py"""
         return self.gallery.generated_dir / self.py_file_name
 
     @property
@@ -347,7 +358,7 @@ class GalleryScript:
 
     def get_thumbnail_file(self, ext: str) -> Path:
         """Return the thumbnail file to use, for the given image file extension"""
-        assert ext[0] == "."
+        assert ext[0] == "."  # noqa
         return self.gallery.thumb_dir / ("mkd_glr_%s_thumb%s" % (self.script_stem, ext))
 
 
@@ -369,7 +380,7 @@ class GalleryBase(ABC):
     @abstractmethod
     def subpath(self) -> Path:
         """Return the subpath for this subgallery. If this is not a subgallery, return `.` """
-    
+
     @property
     @abstractmethod
     def conf(self) -> Dict:
@@ -414,7 +425,7 @@ class GalleryBase(ABC):
         sort_files : bool
             A boolean indicating if the 'within_subsection_order' gallery config option should be applied.
         """
-        assert not hasattr(self, "scripts"), "This can only be called once!"
+        assert not hasattr(self, "scripts"), "This can only be called once!"  # noqa
 
         # get python files
         listdir = list(self.scripts_dir.glob("*.py"))
@@ -433,7 +444,7 @@ class GalleryBase(ABC):
     def get_all_script_files(self) -> List[Path]:
         """Return the list of all script file paths in this (sub)gallery"""
         return [f.src_py_file for f in self.scripts]
-    
+
     @property
     @abstractmethod
     def generated_dir(self) -> Path:
@@ -453,7 +464,7 @@ class GalleryBase(ABC):
         """Make sure that the `generated_dir` exists"""
         if not self.generated_dir.exists():
             self.generated_dir.mkdir(parents=True)
-    
+
     @property
     def images_dir(self) -> Path:
         """The absolute path of the directory where images will be generated."""
@@ -464,7 +475,7 @@ class GalleryBase(ABC):
         if not self.images_dir.exists():
             self.images_dir.mkdir(parents=True)
         else:
-            assert self.images_dir.is_dir()
+            assert self.images_dir.is_dir()  # noqa
 
     @property
     def thumb_dir(self) -> Path:
@@ -476,7 +487,7 @@ class GalleryBase(ABC):
         if not self.thumb_dir.exists():
             self.thumb_dir.mkdir(parents=True)
         else:
-            assert self.thumb_dir.is_dir()
+            assert self.thumb_dir.is_dir()  # noqa
 
     @abstractmethod
     def has_subsections(self) -> bool:
@@ -501,7 +512,7 @@ class GallerySubSection(GalleryBase):
         subpath : Path
             The path to this subgallery, from its parent gallery. Must be relative.
         """
-        assert not subpath.is_absolute()
+        assert not subpath.is_absolute()  # noqa
         self.subpath = subpath
         self._parent = weakref.ref(parent)
 
@@ -580,12 +591,12 @@ class Gallery(GalleryBase):
         """
         # note: this is the old examples_dir
         scripts_dir_rel_project = Path(scripts_dir_rel_project)
-        assert not scripts_dir_rel_project.is_absolute()
+        assert not scripts_dir_rel_project.is_absolute()  # noqa
         self.scripts_dir_rel_project = scripts_dir_rel_project
 
         # note: this is the old gallery_dir/target_dirsite_root
         generated_dir_rel_project = Path(generated_dir_rel_project)
-        assert not generated_dir_rel_project.is_absolute()
+        assert not generated_dir_rel_project.is_absolute()  # noqa
         self.generated_dir_rel_project = generated_dir_rel_project
 
         self.subsections: Tuple[GallerySubSection] = None  # type: ignore
@@ -628,7 +639,7 @@ class Gallery(GalleryBase):
     def populate_subsections(self):
         """Moved from the legacy `get_subsections`."""
 
-        assert self.subsections is None, "This method can only be called once !"
+        assert self.subsections is None, "This method can only be called once !"  # noqa
 
         # List all subfolders with a valid readme
         subfolders = [subfolder for subfolder in self.scripts_dir.iterdir()
@@ -644,7 +655,10 @@ class Gallery(GalleryBase):
 
         sorted_subfolders = sorted(subfolders, key=sortkey)
 
-        self.subsections = tuple((GallerySubSection(self, subpath=f.relative_to(self.scripts_dir)) for f in sorted_subfolders))
+        self.subsections = tuple((
+            GallerySubSection(self, subpath=f.relative_to(self.scripts_dir))
+            for f in sorted_subfolders
+        ))
 
     def collect_script_files(self, recurse: bool = True, apply_ignore_pattern: bool = True, sort_files: bool = True):
         """Collects script files to process in this gallery and sort them according to configuration.
@@ -744,7 +758,7 @@ class AllInformation:
         """
         self.gallery_conf = gallery_conf
 
-        assert project_root_dir.is_absolute()
+        assert project_root_dir.is_absolute()  # noqa
         self.project_root_dir = project_root_dir
 
         self.mkdocs_conf = mkdocs_conf
@@ -786,10 +800,14 @@ class AllInformation:
         for g in self.galleries:
             g.populate_subsections()
 
-    def collect_script_files(self, do_subgalleries: bool = True, apply_ignore_pattern: bool = True, sort_files: bool = True):
+    def collect_script_files(
+            self, do_subgalleries: bool = True, apply_ignore_pattern: bool = True, sort_files: bool = True
+    ):
         """Triggers the files collection in all galleries."""
         for g in self.galleries:
-            g.collect_script_files(recurse=do_subgalleries, apply_ignore_pattern=apply_ignore_pattern, sort_files=sort_files)
+            g.collect_script_files(
+                recurse=do_subgalleries, apply_ignore_pattern=apply_ignore_pattern, sort_files=sort_files
+            )
 
     def get_all_script_files(self):
         return [f for g in self.galleries for f in g.get_all_script_files()]

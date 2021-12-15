@@ -1,12 +1,14 @@
-# -*- coding: utf-8 -*-
-r"""
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
+"""
 Sorters for mkdocs-gallery (sub)sections
 ========================================
 
 Sorting key functions for gallery subsection folders and section files.
 """
-# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
-# License: 3-clause BSD
 
 from __future__ import division, absolute_import, print_function
 

@@ -1,14 +1,10 @@
-# -*- coding: utf-8 -*-
-# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
-# License: 3-clause BSD
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
 """
-MD file generator
-=================
-
-Generate the md files for the examples by iterating over the python
-example files.
-
-Files that generate images should start with 'plot'.
+Generator for a single script example in a gallery.
 """
 
 from __future__ import division, print_function, absolute_import
@@ -21,7 +17,6 @@ from time import time
 import copy
 import contextlib
 import ast
-import codecs
 from functools import partial
 import gc
 import pickle
@@ -29,7 +24,6 @@ import importlib
 from io import StringIO
 import os
 import re
-import stat
 from textwrap import indent
 import warnings
 from shutil import copyfile
@@ -88,8 +82,7 @@ class _LoggingTee(object):
         self.output.write(data)
 
         if self.first_write:
-            self.logger.verbose('Output from %s', self.src_filename)
-                                # color='brown')
+            self.logger.verbose('Output from %s', self.src_filename)  # color='brown')
             self.first_write = False
 
         data = self.logger_buffer + data
@@ -171,7 +164,7 @@ HTML_HEADER = """
     <br />"""
 
 
-def codestr2md(codestr, lang='python', lineno=None, is_exc: bool=False):
+def codestr2md(codestr, lang: str = 'python', lineno=None, is_exc: bool = False):
     """Return markdown code block from code string."""
 
     # if lineno is not None:
@@ -224,7 +217,7 @@ def _sanitize_md(string):
 RE_3_OR_MORE_NON_ASCII = r"([\W _])\1{3,}"  # 3 or more identical chars
 
 RST_TITLE_MARKER = re.compile(rf'^[ ]*{RE_3_OR_MORE_NON_ASCII}[ ]*$')
-MD_TITLE_MARKER = re.compile(r'^[ ]*[#]+[ ]*(.*)[ ]*$')  # One or more hash at the beginning with optional whitespaces before.
+MD_TITLE_MARKER = re.compile(r'^[ ]*[#]+[ ]*(.*)[ ]*$')  # One or more starting hash with optional whitespaces before.
 FIRST_NON_MARKER_WITHOUT_HASH = re.compile(rf'^[# ]*(?!{RE_3_OR_MORE_NON_ASCII})[# ]*(.+)', re.MULTILINE)
 
 
@@ -528,12 +521,16 @@ def handle_exception(exc_info, script: GalleryScript):
         traceback.format_exception_only(etype, exc))
 
     src_file = script.src_py_file.as_posix()
-    expected = src_file in _expected_failing_examples(gallery_conf=script.gallery_conf, mkdocs_conf=script.gallery.all_info.mkdocs_conf)
+    expected = src_file in _expected_failing_examples(
+        gallery_conf=script.gallery_conf, mkdocs_conf=script.gallery.all_info.mkdocs_conf
+    )
     if expected:
-        func, color = logger.info, 'blue',
+        # func, color = logger.info, 'blue'
+        func = logger.info
     else:
-        func, color = logger.warning, 'red'
-    func(f"{src_file} failed to execute correctly: {formatted_exception}")  #, color=color)
+        # func, color = logger.warning, 'red'
+        func = logger.warning
+    func(f"{src_file} failed to execute correctly: {formatted_exception}")  # , color=color)
 
     except_md = codestr2md(formatted_exception, lang='pytb', is_exc=True)
 
@@ -586,7 +583,7 @@ class _exec_once(object):
             with patch_warnings():
                 sys.modules['__main__'] = self.fake_main
                 try:
-                    exec(self.code, self.fake_main.__dict__)
+                    exec(self.code, self.fake_main.__dict__)  # noqa  # our purpose is to execute code :)
                 finally:
                     if old_main is not None:
                         sys.modules['__main__'] = old_main
@@ -773,7 +770,7 @@ def execute_code_block(compiler, block, script: GalleryScript):
     # Redirect output to stdout
     src_file = script.src_py_file.as_posix()
     logging_tee = _check_reset_logging_tee(src_file)
-    assert isinstance(logging_tee, _LoggingTee)
+    assert isinstance(logging_tee, _LoggingTee)  # noqa
 
     # First cd in the original example dir, so that any file
     # created by the example get created in this directory
@@ -1068,7 +1065,8 @@ def generate_file_md(script: GalleryScript, seen_backrefs=None) -> GalleryScript
     if script.gallery_conf['backreferences_dir'] is not None:
         _write_backreferences(backrefs, seen_backrefs, snippet=intro, script=script)
 
-    return GalleryScriptResults(script=script, intro=intro, exec_time=time_elapsed, memory=memory_used, thumb=thumb_file)
+    return GalleryScriptResults(script=script, intro=intro, exec_time=time_elapsed, memory=memory_used,
+                                thumb=thumb_file)
 
 
 # TODO the note should only appear in html mode. (.. only:: html)

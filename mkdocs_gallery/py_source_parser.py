@@ -1,9 +1,11 @@
-# -*- coding: utf-8 -*-
-r"""
-Parser for python source files
-==============================
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
 """
-# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
+Parser for python source files
+"""
 
 from __future__ import division, absolute_import, print_function
 
@@ -112,7 +114,7 @@ def _get_docstring_and_rest(file: Path):
 
     if LooseVersion(sys.version) >= LooseVersion('3.7'):
         docstring = ast.get_docstring(node)
-        assert docstring is not None  # should be guaranteed above
+        assert docstring is not None  # noqa  # should be guaranteed above
         # This is just for backward compat
         if len(node.body[0].value.s) and node.body[0].value.s[0] == '\n':
             # just for strict backward compat here
@@ -159,7 +161,10 @@ def extract_file_config(content):
     return file_conf
 
 
-def split_code_and_text_blocks(source_file: Path, return_node=False) -> Union[Tuple[Dict, List], Tuple[Dict, List, ast.AST]]:
+def split_code_and_text_blocks(
+    source_file: Path,
+    return_node=False
+) -> Union[Tuple[Dict, List], Tuple[Dict, List, ast.AST]]:
     """Return list with source file separated into code and text blocks.
 
     Parameters

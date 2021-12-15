@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
-# Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera
-# License: 3-clause BSD
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/mkdocs-gallery>
+#
+#  Original idea and code: sphinx-gallery, <https://sphinx-gallery.github.io>
+#  License: 3-clause BSD, <https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE>
 """
-mkdocs-gallery Generator
-========================
-
-Attaches mkdocs-gallery to Sphinx in order to generate the galleries
-when building the documentation.
+Generator for a whole gallery.
 """
-
 
 from __future__ import division, print_function, absolute_import
+
+from ast import literal_eval
 
 from importlib.util import spec_from_file_location, module_from_spec
 
@@ -24,7 +23,7 @@ from importlib import import_module
 import re
 import os
 from pathlib import Path
-from xml.sax.saxutils import quoteattr, escape
+from xml.sax.saxutils import quoteattr, escape  # noqa  # indeed this is just quoting and escaping
 
 from .errors import ConfigError, ExtensionError
 from . import mkdocs_compatibility
@@ -107,7 +106,7 @@ logger = mkdocs_compatibility.getLogger('mkdocs-gallery')
 def _bool_eval(x):
     if isinstance(x, str):
         try:
-            x = eval(x)
+            x = literal_eval(x)
         except TypeError:
             pass
     return bool(x)
@@ -238,7 +237,7 @@ def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
         def call_memory(func):
             return 0., func()
         gallery_conf['call_memory'] = call_memory
-    assert callable(gallery_conf['call_memory'])
+    assert callable(gallery_conf['call_memory'])  # noqa
 
     # deal with scrapers
     scrapers = gallery_conf['image_scrapers']
@@ -253,7 +252,7 @@ def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
                 orig_scraper = scraper
                 try:
                     scraper = import_module(scraper)
-                    scraper = getattr(scraper, '_get_sg_image_scraper')
+                    scraper = scraper._get_sg_image_scraper
                     scraper = scraper()
                 except Exception as exp:
                     raise ConfigError('Unknown image scraper %r, got:\n%s'
@@ -481,7 +480,7 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
     _finalize_backreferences(seen_backrefs, gallery_conf)
 
     if gallery_conf['plot_gallery']:
-        logger.info("computation time summary:")  #, color='white')
+        logger.info("computation time summary:")  # , color='white')
         lines, lens = _format_for_writing(all_results, kind='console')
         for name, t, m in lines:
             text = ('    - %s:   ' % (name,)).ljust(lens[0] + 10)
@@ -575,7 +574,7 @@ def fill_mkdocs_nav(mkdocs_config: Dict, galleries_tocs: Dict[Path, Tuple[str, D
 
         elif isinstance(toc_elt, dict):
             # A dictionary containing a single element: {title: file_name} of title : (list)
-            assert len(toc_elt) == 1
+            assert len(toc_elt) == 1  # noqa
             toc_name, toc_elt = tuple(toc_elt.items())[0]
 
             # Have a look at the element
@@ -622,10 +621,11 @@ def _format_for_writing(results: GalleryScriptResults, kind='md'):
     lines = list()
     for result in sorted(results, key=cost_name_key):
         if kind == 'md':  # like in mg_execution_times
-            text = f"[{result.script.script_stem}](./{result.script.md_file.name}) ({result.script.src_py_file_rel_project.as_posix()})"
+            text = f"[{result.script.script_stem}](./{result.script.md_file.name}) " \
+                   f"({result.script.src_py_file_rel_project.as_posix()})"
             t = _sec_to_readable(result.exec_time)
         else:  # like in generate_gallery
-            assert kind == "console"
+            assert kind == "console"  # noqa
             text = result.script.src_py_file_rel_project.as_posix()
             t = f"{result.exec_time:0.2f} sec"
 
@@ -672,7 +672,7 @@ def write_computation_times(gallery: GalleryBase, results: List[GalleryScriptRes
         for line in lines:
             line = [ll.ljust(len_) for ll, len_ in zip(line, lens)]
             text = format_str.format(*line)
-            assert len(text) == len(hline)
+            assert len(text) == len(hline)  # noqa
             fid.write(text)
             fid.write(hline)
 
@@ -713,7 +713,7 @@ def write_junit_xml(all_info: AllInformation, all_results: List[GalleryScriptRes
         _file = quoteattr(os.path.relpath(fname, src_dir))
         _name = quoteattr(title)
 
-        output += f'<testcase classname={_cls_name!s} file={_file!s} line="1" name={2!s} time="{t!r}">'
+        output += f'<testcase classname={_cls_name!s} file={_file!s} line="1" name={_name!s} time="{t!r}">'
         if fname in failing_as_expected:
             output += '<skipped message="expected example failure"></skipped>'
             n_skips += 1
@@ -735,7 +735,7 @@ def write_junit_xml(all_info: AllInformation, all_results: List[GalleryScriptRes
 <testsuite errors="0" failures="{n_failures}" name="mkdocs-gallery" skipped="{n_skips}" tests="{n_tests}" time="{elapsed}">
 {output}
 </testsuite>
-"""
+"""  # noqa
 
     # Actually write it at desired file location
     fname = os.path.normpath(os.path.join(target_dir, gallery_conf['junit']))
@@ -754,17 +754,19 @@ def touch_empty_backreferences(mkdocs_conf, what, name, obj, options, lines):
     This avoids inclusion errors/warnings if there are no gallery
     examples for a class / module that is being parsed by autodoc"""
 
-    if not bool(app.config.mkdocs_gallery_conf['backreferences_dir']):
-        return
-
-    examples_path = os.path.join(app.srcdir,
-                                 app.config.mkdocs_gallery_conf[
-                                     "backreferences_dir"],
-                                 "%s.examples" % name)
-
-    if not os.path.exists(examples_path):
-        # touch file
-        open(examples_path, 'w').close()
+    # TODO uncomment below
+    return "TODO"
+    # if not bool(app.config.mkdocs_gallery_conf['backreferences_dir']):
+    #     return
+    #
+    # examples_path = os.path.join(app.srcdir,
+    #                              app.config.mkdocs_gallery_conf[
+    #                                  "backreferences_dir"],
+    #                              "%s.examples" % name)
+    #
+    # if not os.path.exists(examples_path):
+    #     # touch file
+    #     open(examples_path, 'w').close()
 
 
 def _expected_failing_examples(gallery_conf: Dict, mkdocs_conf: Dict) -> Set[str]:
@@ -801,10 +803,11 @@ def summarize_failing_examples(gallery_conf: Dict, mkdocs_conf: Dict):
     # Under no-plot Examples are not run so nothing to summarize
     if not gallery_conf['plot_gallery']:
         logger.info('mkdocs-gallery gallery_conf["plot_gallery"] was '
-                    'False, so no examples were executed.')  #, color='brown')
+                    'False, so no examples were executed.')  # , color='brown')
         return
 
-    failing_as_expected, failing_unexpectedly, passing_unexpectedly = _parse_failures(gallery_conf=gallery_conf, mkdocs_conf=mkdocs_conf)
+    failing_as_expected, failing_unexpectedly, passing_unexpectedly = \
+        _parse_failures(gallery_conf=gallery_conf, mkdocs_conf=mkdocs_conf)
 
     if failing_as_expected:
         logger.info("Examples failing as expected:")  # , color='brown')
@@ -839,8 +842,7 @@ def summarize_failing_examples(gallery_conf: Dict, mkdocs_conf: Dict):
                    gallery_conf['filename_pattern'],
                    gallery_conf['ignore_pattern'],
                    n_stale, 's' if n_stale != 1 else '',
-                   ))
-                # color='brown')
+                   ))  # color='brown')
 
     if fail_msgs:
         fail_message = ("Here is a summary of the problems encountered "
