@@ -406,6 +406,11 @@ class GalleryBase(ABC):
             return self._readme_file
 
     @property
+    def readme_file_rel_project(self) -> Path:
+        """Return the file path to the readme file, relative to the project root."""
+        return self.readme_file.relative_to(self.all_info.project_root_dir)
+
+    @property
     def exec_times_md_file(self) -> Path:
         """The absolute path to the execution times markdown file associated with this gallery"""
         return self.generated_dir / 'mg_execution_times.md'
@@ -625,6 +630,12 @@ class Gallery(GalleryBase):
     def index_md(self) -> Path:
         """Path to this root gallery's index markdown page. Note that subgalleries do not have such a page"""
         return self.generated_dir / "index.md"
+
+    @property
+    def index_md_rel_site_root(self) -> Path:
+        """Path to this root gallery's index markdown page, relative to site root.
+        Note that subgalleries do not have such a page"""
+        return self.generated_dir_rel_site_root / "index.md"
 
     @property
     def generated_dir(self) -> Path:

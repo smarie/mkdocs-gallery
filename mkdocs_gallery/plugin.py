@@ -6,22 +6,23 @@
 """
 The mkdocs plugin entry point
 """
+from mkdocs.structure.pages import Page
 
 from pathlib import Path
 
-from mkdocs.config.base import ValidationError
+from mkdocs.config.base import ValidationError, Config
 from mkdocs.config import config_options as co
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.files import Files
 
-from typing import Dict, Any
+from typing import Dict, Any, List, Union
 
 import os
 
 from . import glr_path_static
 from .binder import copy_binder_files
 # from .docs_resolv import embed_code_links
-from .gen_gallery import parse_config, _KNOWN_CSS, generate_gallery_md, summarize_failing_examples, fill_mkdocs_nav
+from .gen_gallery import parse_config, generate_gallery_md, summarize_failing_examples, fill_mkdocs_nav
 
 
 class ConfigList(co.OptionallyRequired):
@@ -197,11 +198,16 @@ markdown_extensions:
         #   app.add_directive("image-sg", ImageSg)
         #   imagesg_addnode(app)
 
-        galleries_tocs = generate_gallery_md(self.config, config)
+        galleries_tocs, self.md_to_src = generate_gallery_md(self.config, config)
 
         # Update the nav for all galleries if needed
         new_nav = fill_mkdocs_nav(config, galleries_tocs)
         config["nav"] = new_nav
+
+        # Store the docs dir relative to project dir
+        # (note: same as in AllInformation class but we do not store the whole object)
+        project_root_dir = Path(config['config_file_path']).parent
+        self.docs_dir_rel_proj = Path(config['docs_dir']).relative_to(project_root_dir).as_posix()
 
     def on_files(self, files, config):
         """Remove the gallery examples *source* md files (in "examples_dirs") from the built website"""
@@ -237,22 +243,31 @@ markdown_extensions:
     #     # Nav is already modded in on_pre_build, do not change it
     #     return nav
 
-    # def on_page_content(self, html, page: Page, config: Config, files: Files):
-    #     """Edit the 'edit this page' link,
-    #     see https://github.com/oprypin/mkdocs-gen-files/blob/master/mkdocs_gen_files/plugin.py"""
-    #
-    #     # TODO
-    #     repo_url = config.get("repo_url", None)
-    #     edit_uri = config.get("edit_uri", None)
-    #
-    #     if page.file.src_path in self._edit_paths:
-    #         path = self._edit_paths.pop(page.file.src_path)
-    #         if repo_url and edit_uri:
-    #             page.edit_url = path and urllib.parse.urljoin(
-    #                 urllib.parse.urljoin(repo_url, edit_uri), path
-    #             )
-    #
-    #     return html
+    def on_page_content(self, html, page: Page, config: Config, files: Files):
+        """Edit the 'edit this page' link so that it points to gallery example source files.
+        """
+        page_path = Path(page.file.src_path).as_posix()
+        try:
+            # Do we have a gallery example source file path for this page ?
+            src = self.md_to_src[page_path]
+        except KeyError:
+            pass
+        else:
+            # Note: page.edit_url is the concatenation of repo_url and edit_uri
+            # (see https://www.mkdocs.org/user-guide/configuration/)
+
+            # Remove the dest gallery md file path relative to docs_dir
+            assert page.edit_url.endswith("/" + page_path)
+            edit_url = page.edit_url[:-len(page_path)-1]
+
+            # Remove the docs_dir relative path with respect to project root
+            assert edit_url.endswith("/" + self.docs_dir_rel_proj)
+            edit_url = edit_url[:-len(self.docs_dir_rel_proj) - 1]
+
+            # Finally add the example source relative to project root
+            page.edit_url = f"{edit_url}/{src.as_posix()}"
+
+        return html
 
     def on_serve(self, server, config, builder):
         """Exclude gallery target dirs ("gallery_dirs") from monitored files to avoid neverending build loops."""

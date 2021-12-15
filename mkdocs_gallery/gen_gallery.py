@@ -403,12 +403,16 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
     -------
     md_files_toc : Dict[str, Tuple[str, Dict[str, str]]]
         A map of galleries src folders to title and galleries toc (map of title to path)
+
+    md_to_src_file : Dict[str, Path]
+        A map of posix absolute file path to generated markdown example -> Path of the src file relative to project root
     """
     logger.info('generating gallery...')  # , color='white')
     # gallery_conf = parse_config(app)  already done
 
     seen_backrefs = set()
     md_files_toc = dict()
+    md_to_src_file = dict()
 
     # a list of pairs "gallery source" > "gallery dest" dirs
     all_info = AllInformation.from_cfg(gallery_conf, mkdocs_conf)
@@ -430,6 +434,11 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
 
         # Remember the results so that we can write the final summary
         all_results.extend(results)
+
+        # Fill the md-to-srcfile dict
+        md_to_src_file[gallery.index_md_rel_site_root.as_posix()] = gallery.readme_file_rel_project
+        for res in results:
+            md_to_src_file[res.script.md_file_rel_site_root.as_posix()] = res.script.src_py_file_rel_project
 
         # Create the toc entries
         root_md_files = {res.script.title: res.script.md_file_rel_site_root.as_posix() for res in results}
@@ -456,6 +465,10 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
 
                 # Remember the results so that we can write the final summary
                 all_results.extend(sub_results)
+
+                # Fill the md-to-srcfile dict
+                for res in sub_results:
+                    md_to_src_file[res.script.md_file_rel_site_root.as_posix()] = res.script.src_py_file_rel_project
 
                 # Create the toc entries
                 sub_md_files = {res.script.title: res.script.md_file_rel_site_root.as_posix() for res in sub_results}
@@ -500,7 +513,7 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
         if gallery_conf['junit'] and gallery_conf['plot_gallery']:
             write_junit_xml(all_info, all_results)
 
-    return md_files_toc
+    return md_files_toc, md_to_src_file
 
 
 def dict_to_list_of_dicts(dct: Dict) -> List[Dict]:
