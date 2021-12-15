@@ -261,6 +261,9 @@ markdown_extensions:
         excluded_dirs = self.config["gallery_dirs"]
         if isinstance(excluded_dirs, str):
             excluded_dirs = [excluded_dirs]  # a single dir
+        backrefs_dir = self.config["backreferences_dir"]
+        if backrefs_dir:
+            excluded_dirs.append(backrefs_dir)
 
         def wrap_callback(original_callback):
             def _callback(event):

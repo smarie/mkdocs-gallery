@@ -373,8 +373,9 @@ def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
                           "str, Path or None, "
                           "found type %s" % type(backref))
     # if 'backreferences_dir' is str, make Path
-    if isinstance(backref, str):
-        gallery_conf['backreferences_dir'] = Path(backref)
+    # NO: we need it to remain a str so that plugin.py works (it uses it to exclude the dir in serve mode)
+    # if isinstance(backref, str):
+    #     gallery_conf['backreferences_dir'] = Path(backref)
 
     # binder
     gallery_conf['binder'] = check_binder_conf(gallery_conf['binder'])

@@ -815,7 +815,7 @@ class AllInformation:
     @property
     def backrefs_dir(self) -> Path:
         """The absolute path to the backreferences dir"""
-        return self.gallery_conf['backreferences_dir']
+        return Path(self.gallery_conf['backreferences_dir'])
 
     def get_backreferences_file(self, module_name) -> Path:
         """Return the path to the backreferences file to use for `module_name` """
@@ -851,7 +851,7 @@ class AllInformation:
         # Back references page
         backreferences_dir = gallery_conf['backreferences_dir']
         if backreferences_dir:
-            backreferences_dir.mkdir(parents=True, exist_ok=True)
+            Path(backreferences_dir).mkdir(parents=True, exist_ok=True)
 
         # Create galleries
         for e_dir, g_dir in zip(examples_dirs, gallery_dirs):
