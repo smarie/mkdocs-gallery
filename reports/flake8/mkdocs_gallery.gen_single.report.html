@@ -33,7 +33,7 @@ window.addEventListener('DOMContentLoaded', function () {
 </script>
    </head>
    <body>
-      <div id="masthead" class="sev-1"></div>
+      <div id="masthead" class="sev-3"></div>
       <div id="page">
          <p id="srclink">
             <a title="View full annotated source"
@@ -50,181 +50,6 @@ window.addEventListener('DOMContentLoaded', function () {
          <ul id="index">
          
          <li>
-            <a data-code="F401">
-               <span class="count sev-1">
-                  2
-               </span>
-               <strong>F401:</strong> 'codecs' imported but unused
-               
-                  (and 1 similar)
-               
-            </a>
-            <ul class="details">
-            <li>
-               
-               <p>'codecs' imported but unused:</p>
-               
-               <a href="mkdocs_gallery.gen_single.source.html#l24">
-                  <tt><i>24</i> <span class="kn">import</span> <span class="nn">codecs</span></tt>
-               </a>
-            </li><li>
-               
-               <p>'stat' imported but unused:</p>
-               
-               <a href="mkdocs_gallery.gen_single.source.html#l32">
-                  <tt><i>32</i> <span class="kn">import</span> <span class="nn">stat</span></tt>
-               </a>
-            </li>
-            </ul>
-         </li>
-         
-         <li>
-            <a data-code="F841">
-               <span class="count sev-1">
-                  1
-               </span>
-               <strong>F841:</strong> local variable 'color' is assigned to but never used
-               
-            </a>
-            <ul class="details">
-            <li>
-               
-               <a href="mkdocs_gallery.gen_single.source.html#l535">
-                  <tt><i>535</i>         <span class="n">func</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span></tt>
-               </a>
-            </li>
-            </ul>
-         </li>
-         
-         <li>
-            <a data-code="E501">
-               <span class="count sev-2">
-                  3
-               </span>
-               <strong>E501:</strong> line too long (126 > 120 characters)
-               
-                  (and 2 similar)
-               
-            </a>
-            <ul class="details">
-            <li>
-               
-               <p>Line too long (126 > 120 characters):</p>
-               
-               <a href="mkdocs_gallery.gen_single.source.html#l227">
-                  <tt><i>227</i> <span class="n">MD_TITLE_MARKER</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[ ]*[#]+[ ]*(.*)[ ]*$&#39;</span><span class="p">)</span>  <span class="c1"># One or more hash at the beginning with optional whitespaces before.</span></tt>
-               </a>
-            </li><li>
-               
-               <p>Line too long (136 > 120 characters):</p>
-               
-               <a href="mkdocs_gallery.gen_single.source.html#l531">
-                  <tt><i>531</i>     <span class="n">expected</span> <span class="o">=</span> <span class="n">src_file</span> <span class="ow">in</span> <span class="n">_expected_failing_examples</span><span class="p">(</span><span class="n">gallery_conf</span><span class="o">=</span><span class="n">script</span><span class="o">.</span><span class="n">gallery_conf</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="o">=</span><span class="n">script</span><span class="o">.</span><span class="n">gallery</span><span class="o">.</span><span class="n">all_info</span><span class="o">.</span><span class="n">mkdocs_conf</span><span class="p">)</span></tt>
-               </a>
-            </li><li>
-               
-               <p>Line too long (121 > 120 characters):</p>
-               
-               <a href="mkdocs_gallery.gen_single.source.html#l1071">
-                  <tt><i>1071</i>     <span class="k">return</span> <span class="n">GalleryScriptResults</span><span class="p">(</span><span class="n">script</span><span class="o">=</span><span class="n">script</span><span class="p">,</span> <span class="n">intro</span><span class="o">=</span><span class="n">intro</span><span class="p">,</span> <span class="n">exec_time</span><span class="o">=</span><span class="n">time_elapsed</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="n">memory_used</span><span class="p">,</span> <span class="n">thumb</span><span class="o">=</span><span class="n">thumb_file</span><span class="p">)</span></tt>
-               </a>
-            </li>
-            </ul>
-         </li>
-         
-         <li>
-            <a data-code="E252">
-               <span class="count sev-2">
-                  2
-               </span>
-               <strong>E252:</strong> missing whitespace around parameter equals
-               
-            </a>
-            <ul class="details">
-            <li>
-               
-               <p>Missing whitespace around parameter equals (in 2 places):</p>
-               
-               <a href="mkdocs_gallery.gen_single.source.html#l174">
-                  <tt><i>174</i> <span class="k">def</span> <span class="nf">codestr2md</span><span class="p">(</span><span class="n">codestr</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">lineno</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_exc</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span></tt>
-               </a>
-            </li>
-            </ul>
-         </li>
-         
-         <li>
-            <a data-code="E116">
-               <span class="count sev-2">
-                  1
-               </span>
-               <strong>E116:</strong> unexpected indentation (comment)
-               
-            </a>
-            <ul class="details">
-            <li>
-               
-               <a href="mkdocs_gallery.gen_single.source.html#l92">
-                  <tt><i>92</i>                                 <span class="c1"># color=&#39;brown&#39;)</span></tt>
-               </a>
-            </li>
-            </ul>
-         </li>
-         
-         <li>
-            <a data-code="E262">
-               <span class="count sev-2">
-                  1
-               </span>
-               <strong>E262:</strong> inline comment should start with '# '
-               
-            </a>
-            <ul class="details">
-            <li>
-               
-               <a href="mkdocs_gallery.gen_single.source.html#l536">
-                  <tt><i>536</i>     <span class="n">func</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">src_file</span><span class="si">}</span><span class="s2"> failed to execute correctly: </span><span class="si">{</span><span class="n">formatted_exception</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1">#, color=color)</span></tt>
-               </a>
-            </li>
-            </ul>
-         </li>
-         
-         <li>
-            <a data-code="S101">
-               <span class="count sev-3">
-                  1
-               </span>
-               <strong>S101:</strong> Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
-               
-            </a>
-            <ul class="details">
-            <li>
-               
-               <a href="mkdocs_gallery.gen_single.source.html#l776">
-                  <tt><i>776</i>     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logging_tee</span><span class="p">,</span> <span class="n">_LoggingTee</span><span class="p">)</span></tt>
-               </a>
-            </li>
-            </ul>
-         </li>
-         
-         <li>
-            <a data-code="S102">
-               <span class="count sev-3">
-                  1
-               </span>
-               <strong>S102:</strong> Use of exec detected.
-               
-            </a>
-            <ul class="details">
-            <li>
-               
-               <a href="mkdocs_gallery.gen_single.source.html#l589">
-                  <tt><i>589</i>                     <span class="n">exec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fake_main</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span></tt>
-               </a>
-            </li>
-            </ul>
-         </li>
-         
-         <li>
             <a data-code="S403">
                <span class="count sev-3">
                   1
@@ -235,8 +60,8 @@ window.addEventListener('DOMContentLoaded', function () {
             <ul class="details">
             <li>
                
-               <a href="mkdocs_gallery.gen_single.source.html#l27">
-                  <tt><i>27</i> <span class="kn">import</span> <span class="nn">pickle</span></tt>
+               <a href="mkdocs_gallery.gen_single.source.html#l22">
+                  <tt><i>22</i> <span class="kn">import</span> <span class="nn">pickle</span></tt>
                </a>
             </li>
             </ul>
@@ -253,8 +78,8 @@ window.addEventListener('DOMContentLoaded', function () {
             <ul class="details">
             <li>
                
-               <a href="mkdocs_gallery.gen_single.source.html#l36">
-                  <tt><i>36</i> <span class="kn">import</span> <span class="nn">subprocess</span></tt>
+               <a href="mkdocs_gallery.gen_single.source.html#l30">
+                  <tt><i>30</i> <span class="kn">import</span> <span class="nn">subprocess</span></tt>
                </a>
             </li>
             </ul>
@@ -271,8 +96,8 @@ window.addEventListener('DOMContentLoaded', function () {
             <ul class="details">
             <li>
                
-               <a href="mkdocs_gallery.gen_single.source.html#l605">
-                  <tt><i>605</i>     <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span></tt>
+               <a href="mkdocs_gallery.gen_single.source.html#l602">
+                  <tt><i>602</i>     <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span></tt>
                </a>
             </li>
             </ul>

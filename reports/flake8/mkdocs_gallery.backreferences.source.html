@@ -17,723 +17,717 @@
 
          <div id="doc">
             <div id="l1"
-               class="code sev- "><tt><i>1</i> <span class="c1"># -*- coding: utf-8 -*-</span></tt>
+               class="code sev- "><tt><i>1</i> <span class="c1">#  Authors: Sylvain MARIE &lt;sylvain.marie@se.com&gt;</span></tt>
             </div>
             <div id="l2"
-               class="code sev- "><tt><i>2</i> <span class="c1"># Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera</span></tt>
+               class="code sev- "><tt><i>2</i> <span class="c1">#            + All contributors to &lt;https://github.com/smarie/mkdocs-gallery&gt;</span></tt>
             </div>
             <div id="l3"
-               class="code sev- "><tt><i>3</i> <span class="c1"># License: 3-clause BSD</span></tt>
+               class="code sev- "><tt><i>3</i> <span class="c1">#</span></tt>
             </div>
             <div id="l4"
-               class="code sev- "><tt><i>4</i> <span class="sd">&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>4</i> <span class="c1">#  Original idea and code: sphinx-gallery, &lt;https://sphinx-gallery.github.io&gt;</span></tt>
             </div>
             <div id="l5"
-               class="code sev- "><tt><i>5</i> <span class="sd">Backreferences Generator</span></tt>
+               class="code sev- "><tt><i>5</i> <span class="c1">#  License: 3-clause BSD, &lt;https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE&gt;</span></tt>
             </div>
             <div id="l6"
-               class="code sev- "><tt><i>6</i> <span class="sd">========================</span></tt>
+               class="code sev- "><tt><i>6</i> <span class="sd">&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l7"
-               class="code sev- "><tt><i>7</i> &nbsp;</tt>
+               class="code sev- "><tt><i>7</i> <span class="sd">Backreferences Generator</span></tt>
             </div>
             <div id="l8"
-               class="code sev- "><tt><i>8</i> <span class="sd">Parses example file code in order to keep track of used functions</span></tt>
+               class="code sev- "><tt><i>8</i> <span class="sd">========================</span></tt>
             </div>
             <div id="l9"
-               class="code sev- "><tt><i>9</i> <span class="sd">&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>9</i> &nbsp;</tt>
             </div>
             <div id="l10"
-               class="code sev- "><tt><i>10</i> <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span></tt>
+               class="code sev- "><tt><i>10</i> <span class="sd">Parses example file code in order to keep track of used functions</span></tt>
             </div>
             <div id="l11"
-               class="code sev- "><tt><i>11</i> &nbsp;</tt>
+               class="code sev- "><tt><i>11</i> <span class="sd">&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l12"
-               class="code sev- "><tt><i>12</i> <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Set</span></tt>
+               class="code sev- "><tt><i>12</i> <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span></tt>
             </div>
             <div id="l13"
                class="code sev- "><tt><i>13</i> &nbsp;</tt>
             </div>
             <div id="l14"
-               class="code sev- "><tt><i>14</i> <span class="kn">import</span> <span class="nn">ast</span></tt>
+               class="code sev- "><tt><i>14</i> <span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span></tt>
             </div>
             <div id="l15"
-               class="code sev- "><tt><i>15</i> <span class="kn">import</span> <span class="nn">codecs</span></tt>
+               class="code sev- "><tt><i>15</i> &nbsp;</tt>
             </div>
             <div id="l16"
-               class="code sev- "><tt><i>16</i> <span class="kn">import</span> <span class="nn">collections</span></tt>
+               class="code sev- "><tt><i>16</i> <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Set</span></tt>
             </div>
             <div id="l17"
-               class="code sev- "><tt><i>17</i> <span class="kn">from</span> <span class="nn">html</span> <span class="kn">import</span> <span class="n">escape</span></tt>
+               class="code sev- "><tt><i>17</i> &nbsp;</tt>
             </div>
             <div id="l18"
-               class="code sev- "><tt><i>18</i> <span class="kn">import</span> <span class="nn">inspect</span></tt>
+               class="code sev- "><tt><i>18</i> <span class="kn">import</span> <span class="nn">ast</span></tt>
             </div>
             <div id="l19"
-               class="code sev- "><tt><i>19</i> <span class="kn">import</span> <span class="nn">os</span></tt>
+               class="code sev- "><tt><i>19</i> <span class="kn">import</span> <span class="nn">codecs</span></tt>
             </div>
             <div id="l20"
-               class="code sev- "><tt><i>20</i> <span class="kn">import</span> <span class="nn">re</span></tt>
+               class="code sev- "><tt><i>20</i> <span class="kn">import</span> <span class="nn">collections</span></tt>
             </div>
             <div id="l21"
-               class="code sev- "><tt><i>21</i> <span class="kn">import</span> <span class="nn">warnings</span></tt>
+               class="code sev- "><tt><i>21</i> <span class="kn">from</span> <span class="nn">html</span> <span class="kn">import</span> <span class="n">escape</span></tt>
             </div>
             <div id="l22"
-               class="code sev- "><tt><i>22</i> &nbsp;</tt>
+               class="code sev- "><tt><i>22</i> <span class="kn">import</span> <span class="nn">inspect</span></tt>
             </div>
             <div id="l23"
-               class="code sev- "><tt><i>23</i> <span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">ExtensionError</span></tt>
+               class="code sev- "><tt><i>23</i> <span class="kn">import</span> <span class="nn">os</span></tt>
             </div>
             <div id="l24"
-               class="code sev- "><tt><i>24</i> &nbsp;</tt>
+               class="code sev- "><tt><i>24</i> <span class="kn">import</span> <span class="nn">re</span></tt>
             </div>
             <div id="l25"
-               class="code sev- "><tt><i>25</i> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">mkdocs_compatibility</span></tt>
+               class="code sev- "><tt><i>25</i> <span class="kn">import</span> <span class="nn">warnings</span></tt>
             </div>
             <div id="l26"
-               class="code sev- "><tt><i>26</i> <span class="kn">from</span> <span class="nn">.gen_data_model</span> <span class="kn">import</span> <span class="n">GalleryScript</span><span class="p">,</span> <span class="n">GalleryScriptResults</span></tt>
+               class="code sev- "><tt><i>26</i> &nbsp;</tt>
             </div>
             <div id="l27"
-               class="code sev- "><tt><i>27</i> <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">_replace_by_new_if_needed</span></tt>
+               class="code sev- "><tt><i>27</i> <span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">ExtensionError</span></tt>
             </div>
             <div id="l28"
                class="code sev- "><tt><i>28</i> &nbsp;</tt>
             </div>
             <div id="l29"
-               class="code sev- "><tt><i>29</i> &nbsp;</tt>
+               class="code sev- "><tt><i>29</i> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">mkdocs_compatibility</span></tt>
             </div>
             <div id="l30"
-               class="code sev- "><tt><i>30</i> <span class="k">class</span> <span class="nc">DummyClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>30</i> <span class="kn">from</span> <span class="nn">.gen_data_model</span> <span class="kn">import</span> <span class="n">GalleryScript</span><span class="p">,</span> <span class="n">GalleryScriptResults</span></tt>
             </div>
             <div id="l31"
-               class="code sev- "><tt><i>31</i>     <span class="sd">&quot;&quot;&quot;Dummy class for testing method resolution.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>31</i> <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">_replace_by_new_if_needed</span></tt>
             </div>
             <div id="l32"
                class="code sev- "><tt><i>32</i> &nbsp;</tt>
             </div>
             <div id="l33"
-               class="code sev- "><tt><i>33</i>     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>33</i> &nbsp;</tt>
             </div>
             <div id="l34"
-               class="code sev- "><tt><i>34</i>         <span class="sd">&quot;&quot;&quot;Do nothing.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>34</i> <span class="k">class</span> <span class="nc">DummyClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></tt>
             </div>
             <div id="l35"
-               class="code sev- "><tt><i>35</i>         <span class="k">pass</span></tt>
+               class="code sev- "><tt><i>35</i>     <span class="sd">&quot;&quot;&quot;Dummy class for testing method resolution.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l36"
                class="code sev- "><tt><i>36</i> &nbsp;</tt>
             </div>
             <div id="l37"
-               class="code sev- "><tt><i>37</i>     <span class="nd">@property</span></tt>
+               class="code sev- "><tt><i>37</i>     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></tt>
             </div>
             <div id="l38"
-               class="code sev- "><tt><i>38</i>     <span class="k">def</span> <span class="nf">prop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>38</i>         <span class="sd">&quot;&quot;&quot;Do nothing.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l39"
-               class="code sev- "><tt><i>39</i>         <span class="sd">&quot;&quot;&quot;Property.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>39</i>         <span class="k">pass</span></tt>
             </div>
             <div id="l40"
-               class="code sev- "><tt><i>40</i>         <span class="k">return</span> <span class="s1">&#39;Property&#39;</span></tt>
+               class="code sev- "><tt><i>40</i> &nbsp;</tt>
             </div>
             <div id="l41"
-               class="code sev- "><tt><i>41</i> &nbsp;</tt>
+               class="code sev- "><tt><i>41</i>     <span class="nd">@property</span></tt>
             </div>
             <div id="l42"
-               class="code sev- "><tt><i>42</i> &nbsp;</tt>
+               class="code sev- "><tt><i>42</i>     <span class="k">def</span> <span class="nf">prop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></tt>
             </div>
             <div id="l43"
-               class="code sev- "><tt><i>43</i> <span class="k">class</span> <span class="nc">NameFinder</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>43</i>         <span class="sd">&quot;&quot;&quot;Property.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l44"
-               class="code sev- "><tt><i>44</i>     <span class="sd">&quot;&quot;&quot;Finds the longest form of variable names and their imports in code.</span></tt>
+               class="code sev- "><tt><i>44</i>         <span class="k">return</span> <span class="s1">&#39;Property&#39;</span></tt>
             </div>
             <div id="l45"
                class="code sev- "><tt><i>45</i> &nbsp;</tt>
             </div>
             <div id="l46"
-               class="code sev- "><tt><i>46</i> <span class="sd">    Only retains names from imported modules.</span></tt>
+               class="code sev- "><tt><i>46</i> &nbsp;</tt>
             </div>
             <div id="l47"
-               class="code sev- "><tt><i>47</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>47</i> <span class="k">class</span> <span class="nc">NameFinder</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">):</span></tt>
             </div>
             <div id="l48"
-               class="code sev- "><tt><i>48</i> &nbsp;</tt>
+               class="code sev- "><tt><i>48</i>     <span class="sd">&quot;&quot;&quot;Finds the longest form of variable names and their imports in code.</span></tt>
             </div>
             <div id="l49"
-               class="code sev- "><tt><i>49</i>     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>49</i> &nbsp;</tt>
             </div>
             <div id="l50"
-               class="code sev- "><tt><i>50</i>         <span class="nb">super</span><span class="p">(</span><span class="n">NameFinder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></tt>
+               class="code sev- "><tt><i>50</i> <span class="sd">    Only retains names from imported modules.</span></tt>
             </div>
             <div id="l51"
-               class="code sev- "><tt><i>51</i>         <span class="bp">self</span><span class="o">.</span><span class="n">imported_names</span> <span class="o">=</span> <span class="p">{}</span></tt>
+               class="code sev- "><tt><i>51</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l52"
-               class="code sev- "><tt><i>52</i>         <span class="bp">self</span><span class="o">.</span><span class="n">global_variables</span> <span class="o">=</span> <span class="n">global_variables</span> <span class="ow">or</span> <span class="p">{}</span></tt>
+               class="code sev- "><tt><i>52</i> &nbsp;</tt>
             </div>
             <div id="l53"
-               class="code sev- "><tt><i>53</i>         <span class="bp">self</span><span class="o">.</span><span class="n">accessed_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span></tt>
+               class="code sev- "><tt><i>53</i>     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span></tt>
             </div>
             <div id="l54"
-               class="code sev- "><tt><i>54</i> &nbsp;</tt>
+               class="code sev- "><tt><i>54</i>         <span class="nb">super</span><span class="p">(</span><span class="n">NameFinder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></tt>
             </div>
             <div id="l55"
-               class="code sev- "><tt><i>55</i>     <span class="k">def</span> <span class="nf">visit_Import</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>55</i>         <span class="bp">self</span><span class="o">.</span><span class="n">imported_names</span> <span class="o">=</span> <span class="p">{}</span></tt>
             </div>
             <div id="l56"
-               class="code sev- "><tt><i>56</i>         <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">names</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>56</i>         <span class="bp">self</span><span class="o">.</span><span class="n">global_variables</span> <span class="o">=</span> <span class="n">global_variables</span> <span class="ow">or</span> <span class="p">{}</span></tt>
             </div>
             <div id="l57"
-               class="code sev- "><tt><i>57</i>             <span class="n">local_name</span> <span class="o">=</span> <span class="n">alias</span><span class="o">.</span><span class="n">asname</span> <span class="ow">or</span> <span class="n">alias</span><span class="o">.</span><span class="n">name</span></tt>
+               class="code sev- "><tt><i>57</i>         <span class="bp">self</span><span class="o">.</span><span class="n">accessed_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span></tt>
             </div>
             <div id="l58"
-               class="code sev- "><tt><i>58</i>             <span class="bp">self</span><span class="o">.</span><span class="n">imported_names</span><span class="p">[</span><span class="n">local_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">alias</span><span class="o">.</span><span class="n">name</span></tt>
+               class="code sev- "><tt><i>58</i> &nbsp;</tt>
             </div>
             <div id="l59"
-               class="code sev- "><tt><i>59</i> &nbsp;</tt>
+               class="code sev- "><tt><i>59</i>     <span class="k">def</span> <span class="nf">visit_Import</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span></tt>
             </div>
             <div id="l60"
-               class="code sev- "><tt><i>60</i>     <span class="k">def</span> <span class="nf">visit_ImportFrom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>60</i>         <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">names</span><span class="p">:</span></tt>
             </div>
             <div id="l61"
-               class="code sev- "><tt><i>61</i>         <span class="bp">self</span><span class="o">.</span><span class="n">visit_Import</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">module</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>61</i>             <span class="n">local_name</span> <span class="o">=</span> <span class="n">alias</span><span class="o">.</span><span class="n">asname</span> <span class="ow">or</span> <span class="n">alias</span><span class="o">.</span><span class="n">name</span></tt>
             </div>
             <div id="l62"
-               class="code sev- "><tt><i>62</i> &nbsp;</tt>
+               class="code sev- "><tt><i>62</i>             <span class="bp">self</span><span class="o">.</span><span class="n">imported_names</span><span class="p">[</span><span class="n">local_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">alias</span><span class="o">.</span><span class="n">name</span></tt>
             </div>
             <div id="l63"
-               class="code sev- "><tt><i>63</i>     <span class="k">def</span> <span class="nf">visit_Name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>63</i> &nbsp;</tt>
             </div>
             <div id="l64"
-               class="code sev- "><tt><i>64</i>         <span class="bp">self</span><span class="o">.</span><span class="n">accessed_names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>64</i>     <span class="k">def</span> <span class="nf">visit_ImportFrom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span></tt>
             </div>
             <div id="l65"
-               class="code sev- "><tt><i>65</i> &nbsp;</tt>
+               class="code sev- "><tt><i>65</i>         <span class="bp">self</span><span class="o">.</span><span class="n">visit_Import</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">module</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l66"
-               class="code sev- "><tt><i>66</i>     <span class="k">def</span> <span class="nf">visit_Attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>66</i> &nbsp;</tt>
             </div>
             <div id="l67"
-               class="code sev- "><tt><i>67</i>         <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span></tt>
+               class="code sev- "><tt><i>67</i>     <span class="k">def</span> <span class="nf">visit_Name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span></tt>
             </div>
             <div id="l68"
-               class="code sev- "><tt><i>68</i>         <span class="k">while</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>68</i>         <span class="bp">self</span><span class="o">.</span><span class="n">accessed_names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></tt>
             </div>
             <div id="l69"
-               class="code sev- "><tt><i>69</i>             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>69</i> &nbsp;</tt>
             </div>
             <div id="l70"
-               class="code sev- "><tt><i>70</i>             <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span></tt>
+               class="code sev- "><tt><i>70</i>     <span class="k">def</span> <span class="nf">visit_Attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span></tt>
             </div>
             <div id="l71"
-               class="code sev- "><tt><i>71</i> &nbsp;</tt>
+               class="code sev- "><tt><i>71</i>         <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span></tt>
             </div>
             <div id="l72"
-               class="code sev- "><tt><i>72</i>         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>72</i>         <span class="k">while</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span></tt>
             </div>
             <div id="l73"
-               class="code sev- "><tt><i>73</i>             <span class="c1"># This is a.b, not e.g. a().b</span></tt>
+               class="code sev- "><tt><i>73</i>             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">)</span></tt>
             </div>
             <div id="l74"
-               class="code sev- "><tt><i>74</i>             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>74</i>             <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span></tt>
             </div>
             <div id="l75"
-               class="code sev- "><tt><i>75</i>             <span class="bp">self</span><span class="o">.</span><span class="n">accessed_names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">attrs</span><span class="p">)))</span></tt>
+               class="code sev- "><tt><i>75</i> &nbsp;</tt>
             </div>
             <div id="l76"
-               class="code sev- "><tt><i>76</i>         <span class="k">else</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>76</i>         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span></tt>
             </div>
             <div id="l77"
-               class="code sev- "><tt><i>77</i>             <span class="c1"># need to get a in a().b</span></tt>
+               class="code sev- "><tt><i>77</i>             <span class="c1"># This is a.b, not e.g. a().b</span></tt>
             </div>
             <div id="l78"
-               class="code sev- "><tt><i>78</i>             <span class="bp">self</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>78</i>             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></tt>
             </div>
             <div id="l79"
-               class="code sev- "><tt><i>79</i> &nbsp;</tt>
+               class="code sev- "><tt><i>79</i>             <span class="bp">self</span><span class="o">.</span><span class="n">accessed_names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">attrs</span><span class="p">)))</span></tt>
             </div>
             <div id="l80"
-               class="code sev- "><tt><i>80</i>     <span class="k">def</span> <span class="nf">get_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>80</i>         <span class="k">else</span><span class="p">:</span></tt>
             </div>
             <div id="l81"
-               class="code sev- "><tt><i>81</i>         <span class="n">options</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span></tt>
+               class="code sev- "><tt><i>81</i>             <span class="c1"># need to get a in a().b</span></tt>
             </div>
             <div id="l82"
-               class="code sev- "><tt><i>82</i>         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accessed_names</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>82</i>             <span class="bp">self</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></tt>
             </div>
             <div id="l83"
-               class="code sev- "><tt><i>83</i>             <span class="n">local_name_split</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>83</i> &nbsp;</tt>
             </div>
             <div id="l84"
-               class="code sev- "><tt><i>84</i>             <span class="c1"># first pass: by global variables and object inspection (preferred)</span></tt>
+               class="code sev- "><tt><i>84</i>     <span class="k">def</span> <span class="nf">get_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></tt>
             </div>
             <div id="l85"
-               class="code sev- "><tt><i>85</i>             <span class="k">for</span> <span class="n">split_level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">local_name_split</span><span class="p">)):</span></tt>
+               class="code sev- "><tt><i>85</i>         <span class="n">options</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span></tt>
             </div>
             <div id="l86"
-               class="code sev- "><tt><i>86</i>                 <span class="n">local_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_name_split</span><span class="p">[:</span><span class="n">split_level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span></tt>
+               class="code sev- "><tt><i>86</i>         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accessed_names</span><span class="p">:</span></tt>
             </div>
             <div id="l87"
-               class="code sev- "><tt><i>87</i>                 <span class="n">remainder</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">local_name</span><span class="p">):]</span></tt>
+               class="code sev- "><tt><i>87</i>             <span class="n">local_name_split</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l88"
-               class="code sev- "><tt><i>88</i>                 <span class="k">if</span> <span class="n">local_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_variables</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>88</i>             <span class="c1"># first pass: by global variables and object inspection (preferred)</span></tt>
             </div>
             <div id="l89"
-               class="code sev- "><tt><i>89</i>                     <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_variables</span><span class="p">[</span><span class="n">local_name</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>89</i>             <span class="k">for</span> <span class="n">split_level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">local_name_split</span><span class="p">)):</span></tt>
             </div>
             <div id="l90"
-               class="code sev- "><tt><i>90</i>                     <span class="n">class_attr</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="p">[]</span></tt>
+               class="code sev- "><tt><i>90</i>                 <span class="n">local_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_name_split</span><span class="p">[:</span><span class="n">split_level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span></tt>
             </div>
             <div id="l91"
-               class="code sev- "><tt><i>91</i>                     <span class="k">if</span> <span class="n">remainder</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>91</i>                 <span class="n">remainder</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">local_name</span><span class="p">):]</span></tt>
             </div>
             <div id="l92"
-               class="code sev- "><tt><i>92</i>                         <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">remainder</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>92</i>                 <span class="k">if</span> <span class="n">local_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_variables</span><span class="p">:</span></tt>
             </div>
             <div id="l93"
-               class="code sev- "><tt><i>93</i>                             <span class="n">last_obj</span> <span class="o">=</span> <span class="n">obj</span></tt>
+               class="code sev- "><tt><i>93</i>                     <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_variables</span><span class="p">[</span><span class="n">local_name</span><span class="p">]</span></tt>
             </div>
             <div id="l94"
-               class="code sev- "><tt><i>94</i>                             <span class="c1"># determine if it&#39;s a property</span></tt>
+               class="code sev- "><tt><i>94</i>                     <span class="n">class_attr</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="p">[]</span></tt>
             </div>
             <div id="l95"
-               class="code sev- "><tt><i>95</i>                             <span class="n">prop</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">last_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>95</i>                     <span class="k">if</span> <span class="n">remainder</span><span class="p">:</span></tt>
             </div>
             <div id="l96"
-               class="code sev- "><tt><i>96</i>                             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>96</i>                         <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">remainder</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span></tt>
             </div>
             <div id="l97"
-               class="code sev- "><tt><i>97</i>                                 <span class="n">obj</span> <span class="o">=</span> <span class="n">last_obj</span></tt>
+               class="code sev- "><tt><i>97</i>                             <span class="n">last_obj</span> <span class="o">=</span> <span class="n">obj</span></tt>
             </div>
             <div id="l98"
-               class="code sev- "><tt><i>98</i>                                 <span class="n">class_attr</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="n">level</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>98</i>                             <span class="c1"># determine if it&#39;s a property</span></tt>
             </div>
             <div id="l99"
-               class="code sev- "><tt><i>99</i>                                 <span class="k">break</span></tt>
+               class="code sev- "><tt><i>99</i>                             <span class="n">prop</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">last_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></tt>
             </div>
             <div id="l100"
-               class="code sev- "><tt><i>100</i>                             <span class="k">try</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>100</i>                             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span></tt>
             </div>
             <div id="l101"
-               class="code sev- "><tt><i>101</i>                                 <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>101</i>                                 <span class="n">obj</span> <span class="o">=</span> <span class="n">last_obj</span></tt>
             </div>
             <div id="l102"
-               class="code sev- "><tt><i>102</i>                             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>102</i>                                 <span class="n">class_attr</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="n">level</span><span class="p">]</span></tt>
             </div>
             <div id="l103"
                class="code sev- "><tt><i>103</i>                                 <span class="k">break</span></tt>
             </div>
             <div id="l104"
-               class="code sev- "><tt><i>104</i>                             <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>104</i>                             <span class="k">try</span><span class="p">:</span></tt>
             </div>
             <div id="l105"
-               class="code sev- "><tt><i>105</i>                                 <span class="n">obj</span> <span class="o">=</span> <span class="n">last_obj</span></tt>
+               class="code sev- "><tt><i>105</i>                                 <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></tt>
             </div>
             <div id="l106"
-               class="code sev- "><tt><i>106</i>                                 <span class="n">class_attr</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="n">level</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>106</i>                             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span></tt>
             </div>
             <div id="l107"
                class="code sev- "><tt><i>107</i>                                 <span class="k">break</span></tt>
             </div>
             <div id="l108"
-               class="code sev- "><tt><i>108</i>                     <span class="k">del</span> <span class="n">remainder</span></tt>
+               class="code sev- "><tt><i>108</i>                             <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span></tt>
             </div>
             <div id="l109"
-               class="code sev- "><tt><i>109</i>                     <span class="n">is_class</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>109</i>                                 <span class="n">obj</span> <span class="o">=</span> <span class="n">last_obj</span></tt>
             </div>
             <div id="l110"
-               class="code sev- "><tt><i>110</i>                     <span class="k">if</span> <span class="n">is_class</span> <span class="ow">or</span> <span class="n">class_attr</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>110</i>                                 <span class="n">class_attr</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="n">level</span><span class="p">]</span></tt>
             </div>
             <div id="l111"
-               class="code sev- "><tt><i>111</i>                         <span class="c1"># Traverse all bases</span></tt>
+               class="code sev- "><tt><i>111</i>                                 <span class="k">break</span></tt>
             </div>
             <div id="l112"
-               class="code sev- "><tt><i>112</i>                         <span class="n">classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span> <span class="k">if</span> <span class="n">is_class</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>112</i>                     <span class="k">del</span> <span class="n">remainder</span></tt>
             </div>
             <div id="l113"
-               class="code sev- "><tt><i>113</i>                         <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span></tt>
+               class="code sev- "><tt><i>113</i>                     <span class="n">is_class</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></tt>
             </div>
             <div id="l114"
-               class="code sev- "><tt><i>114</i>                         <span class="k">while</span> <span class="n">offset</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>114</i>                     <span class="k">if</span> <span class="n">is_class</span> <span class="ow">or</span> <span class="n">class_attr</span><span class="p">:</span></tt>
             </div>
             <div id="l115"
-               class="code sev- "><tt><i>115</i>                             <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">[</span><span class="n">offset</span><span class="p">]</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>115</i>                         <span class="c1"># Traverse all bases</span></tt>
             </div>
             <div id="l116"
-               class="code sev- "><tt><i>116</i>                                 <span class="c1"># &quot;object&quot; as a base class is not very useful</span></tt>
+               class="code sev- "><tt><i>116</i>                         <span class="n">classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span> <span class="k">if</span> <span class="n">is_class</span> <span class="k">else</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span></tt>
             </div>
             <div id="l117"
-               class="code sev- "><tt><i>117</i>                                 <span class="k">if</span> <span class="n">base</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">classes</span> <span class="ow">and</span> <span class="n">base</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">object</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>117</i>                         <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span></tt>
             </div>
             <div id="l118"
-               class="code sev- "><tt><i>118</i>                                     <span class="n">classes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>118</i>                         <span class="k">while</span> <span class="n">offset</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">):</span></tt>
             </div>
             <div id="l119"
-               class="code sev- "><tt><i>119</i>                             <span class="n">offset</span> <span class="o">+=</span> <span class="mi">1</span></tt>
+               class="code sev- "><tt><i>119</i>                             <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">[</span><span class="n">offset</span><span class="p">]</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">:</span></tt>
             </div>
             <div id="l120"
-               class="code sev- "><tt><i>120</i>                     <span class="k">else</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>120</i>                                 <span class="c1"># &quot;object&quot; as a base class is not very useful</span></tt>
             </div>
             <div id="l121"
-               class="code sev- "><tt><i>121</i>                         <span class="n">classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>121</i>                                 <span class="k">if</span> <span class="n">base</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">classes</span> <span class="ow">and</span> <span class="n">base</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">object</span><span class="p">:</span></tt>
             </div>
             <div id="l122"
-               class="code sev- "><tt><i>122</i>                     <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>122</i>                                     <span class="n">classes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span><span class="p">)</span></tt>
             </div>
             <div id="l123"
-               class="code sev- "><tt><i>123</i>                         <span class="n">module</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmodule</span><span class="p">(</span><span class="n">cc</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>123</i>                             <span class="n">offset</span> <span class="o">+=</span> <span class="mi">1</span></tt>
             </div>
             <div id="l124"
-               class="code sev- "><tt><i>124</i>                         <span class="k">if</span> <span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>124</i>                     <span class="k">else</span><span class="p">:</span></tt>
             </div>
             <div id="l125"
-               class="code sev- "><tt><i>125</i>                             <span class="n">module</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>125</i>                         <span class="n">classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span></tt>
             </div>
             <div id="l126"
-               class="code sev- "><tt><i>126</i>                             <span class="n">class_name</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="vm">__qualname__</span></tt>
+               class="code sev- "><tt><i>126</i>                     <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">:</span></tt>
             </div>
             <div id="l127"
-               class="code sev- "><tt><i>127</i>                             <span class="c1"># a.b.C.meth could be documented as a.C.meth,</span></tt>
+               class="code sev- "><tt><i>127</i>                         <span class="n">module</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmodule</span><span class="p">(</span><span class="n">cc</span><span class="p">)</span></tt>
             </div>
             <div id="l128"
-               class="code sev- "><tt><i>128</i>                             <span class="c1"># so go down the list</span></tt>
+               class="code sev- "><tt><i>128</i>                         <span class="k">if</span> <span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></tt>
             </div>
             <div id="l129"
-               class="code sev- "><tt><i>129</i>                             <span class="k">for</span> <span class="n">depth</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">module</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>129</i>                             <span class="n">module</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l130"
-               class="code sev- "><tt><i>130</i>                                 <span class="n">full_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>130</i>                             <span class="n">class_name</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="vm">__qualname__</span></tt>
             </div>
             <div id="l131"
-               class="code sev- "><tt><i>131</i>                                     <span class="n">module</span><span class="p">[:</span><span class="n">depth</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">class_name</span><span class="p">]</span> <span class="o">+</span> <span class="n">method</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>131</i>                             <span class="c1"># a.b.C.meth could be documented as a.C.meth,</span></tt>
             </div>
             <div id="l132"
-               class="code sev- "><tt><i>132</i>                                 <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>132</i>                             <span class="c1"># so go down the list</span></tt>
             </div>
             <div id="l133"
-               class="code sev- "><tt><i>133</i>                                     <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">full_name</span><span class="p">,</span> <span class="n">class_attr</span><span class="p">,</span> <span class="n">is_class</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>133</i>                             <span class="k">for</span> <span class="n">depth</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">module</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span></tt>
             </div>
             <div id="l134"
-               class="code sev- "><tt><i>134</i>             <span class="c1"># second pass: by import (can&#39;t resolve as well without doing</span></tt>
+               class="code sev- "><tt><i>134</i>                                 <span class="n">full_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span></tt>
             </div>
             <div id="l135"
-               class="code sev- "><tt><i>135</i>             <span class="c1"># some actions like actually importing the modules, so use it</span></tt>
+               class="code sev- "><tt><i>135</i>                                     <span class="n">module</span><span class="p">[:</span><span class="n">depth</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">class_name</span><span class="p">]</span> <span class="o">+</span> <span class="n">method</span><span class="p">)</span></tt>
             </div>
             <div id="l136"
-               class="code sev- "><tt><i>136</i>             <span class="c1"># as a last resort)</span></tt>
+               class="code sev- "><tt><i>136</i>                                 <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span></tt>
             </div>
             <div id="l137"
-               class="code sev- "><tt><i>137</i>             <span class="k">for</span> <span class="n">split_level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">local_name_split</span><span class="p">)):</span></tt>
+               class="code sev- "><tt><i>137</i>                                     <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">full_name</span><span class="p">,</span> <span class="n">class_attr</span><span class="p">,</span> <span class="n">is_class</span><span class="p">))</span></tt>
             </div>
             <div id="l138"
-               class="code sev- "><tt><i>138</i>                 <span class="n">local_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_name_split</span><span class="p">[:</span><span class="n">split_level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span></tt>
+               class="code sev- "><tt><i>138</i>             <span class="c1"># second pass: by import (can&#39;t resolve as well without doing</span></tt>
             </div>
             <div id="l139"
-               class="code sev- "><tt><i>139</i>                 <span class="n">remainder</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">local_name</span><span class="p">):]</span></tt>
+               class="code sev- "><tt><i>139</i>             <span class="c1"># some actions like actually importing the modules, so use it</span></tt>
             </div>
             <div id="l140"
-               class="code sev- "><tt><i>140</i>                 <span class="k">if</span> <span class="n">local_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">imported_names</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>140</i>             <span class="c1"># as a last resort)</span></tt>
             </div>
             <div id="l141"
-               class="code sev- "><tt><i>141</i>                     <span class="n">full_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imported_names</span><span class="p">[</span><span class="n">local_name</span><span class="p">]</span> <span class="o">+</span> <span class="n">remainder</span></tt>
+               class="code sev- "><tt><i>141</i>             <span class="k">for</span> <span class="n">split_level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">local_name_split</span><span class="p">)):</span></tt>
             </div>
             <div id="l142"
-               class="code sev- "><tt><i>142</i>                     <span class="n">is_class</span> <span class="o">=</span> <span class="n">class_attr</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># can&#39;t tell without import</span></tt>
+               class="code sev- "><tt><i>142</i>                 <span class="n">local_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_name_split</span><span class="p">[:</span><span class="n">split_level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span></tt>
             </div>
             <div id="l143"
-               class="code sev- "><tt><i>143</i>                     <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>143</i>                 <span class="n">remainder</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">local_name</span><span class="p">):]</span></tt>
             </div>
             <div id="l144"
-               class="code sev- "><tt><i>144</i>                         <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">full_name</span><span class="p">,</span> <span class="n">class_attr</span><span class="p">,</span> <span class="n">is_class</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>144</i>                 <span class="k">if</span> <span class="n">local_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">imported_names</span><span class="p">:</span></tt>
             </div>
             <div id="l145"
-               class="code sev- "><tt><i>145</i>         <span class="k">return</span> <span class="n">options</span></tt>
+               class="code sev- "><tt><i>145</i>                     <span class="n">full_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imported_names</span><span class="p">[</span><span class="n">local_name</span><span class="p">]</span> <span class="o">+</span> <span class="n">remainder</span></tt>
             </div>
             <div id="l146"
-               class="code sev- "><tt><i>146</i> &nbsp;</tt>
+               class="code sev- "><tt><i>146</i>                     <span class="n">is_class</span> <span class="o">=</span> <span class="n">class_attr</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># can&#39;t tell without import</span></tt>
             </div>
             <div id="l147"
-               class="code sev- "><tt><i>147</i> &nbsp;</tt>
+               class="code sev- "><tt><i>147</i>                     <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span></tt>
             </div>
             <div id="l148"
-               class="code sev- "><tt><i>148</i> <span class="k">def</span> <span class="nf">_from_import</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>148</i>                         <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">full_name</span><span class="p">,</span> <span class="n">class_attr</span><span class="p">,</span> <span class="n">is_class</span><span class="p">))</span></tt>
             </div>
             <div id="l149"
-               class="code sev- "><tt><i>149</i>     <span class="n">imp_line</span> <span class="o">=</span> <span class="s1">&#39;from </span><span class="si">%s</span><span class="s1"> import </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>149</i>         <span class="k">return</span> <span class="n">options</span></tt>
             </div>
             <div id="l150"
-               class="code sev- "><tt><i>150</i>     <span class="n">scope</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span></tt>
+               class="code sev- "><tt><i>150</i> &nbsp;</tt>
             </div>
             <div id="l151"
-               class="code sev- "><tt><i>151</i>     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>  <span class="c1"># swallow warnings</span></tt>
+               class="code sev- "><tt><i>151</i> &nbsp;</tt>
             </div>
             <div id="l152"
-               class="code sev- "><tt><i>152</i>         <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>152</i> <span class="k">def</span> <span class="nf">_from_import</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span></tt>
             </div>
             <div id="l153"
-               class="code sev-3  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-3">
-                        S102
-                     </span>
-                     Use of exec detected.</li>
-               
-               </ul><tt><i>153</i>         <span class="n">exec</span><span class="p">(</span><span class="n">imp_line</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">scope</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>153</i>     <span class="c1"># imp_line = &#39;from %s import %s&#39; % (a, b)</span></tt>
             </div>
             <div id="l154"
-               class="code sev- "><tt><i>154</i>     <span class="k">return</span> <span class="n">scope</span></tt>
+               class="code sev- "><tt><i>154</i>     <span class="c1"># scope = dict()</span></tt>
             </div>
             <div id="l155"
-               class="code sev- "><tt><i>155</i> &nbsp;</tt>
+               class="code sev- "><tt><i>155</i>     <span class="c1"># with warnings.catch_warnings(record=True):  # swallow warnings</span></tt>
             </div>
             <div id="l156"
-               class="code sev- "><tt><i>156</i> &nbsp;</tt>
+               class="code sev- "><tt><i>156</i>     <span class="c1">#     warnings.simplefilter(&#39;ignore&#39;)</span></tt>
             </div>
             <div id="l157"
-               class="code sev- "><tt><i>157</i> <span class="k">def</span> <span class="nf">_get_short_module_name</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>157</i>     <span class="c1">#     exec(imp_line, scope, scope)</span></tt>
             </div>
             <div id="l158"
-               class="code sev- "><tt><i>158</i>     <span class="sd">&quot;&quot;&quot;Get the shortest possible module name.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>158</i>     <span class="c1"># return scope</span></tt>
             </div>
             <div id="l159"
-               class="code sev- "><tt><i>159</i>     <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">obj_name</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>159</i>     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>  <span class="c1"># swallow warnings</span></tt>
             </div>
             <div id="l160"
-               class="code sev- "><tt><i>160</i>         <span class="n">obj_name</span><span class="p">,</span> <span class="n">attr</span> <span class="o">=</span> <span class="n">obj_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>160</i>         <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l161"
-               class="code sev- "><tt><i>161</i>     <span class="k">else</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>161</i>         <span class="n">m</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">a</span><span class="p">)</span></tt>
             </div>
             <div id="l162"
-               class="code sev- "><tt><i>162</i>         <span class="n">attr</span> <span class="o">=</span> <span class="kc">None</span></tt>
+               class="code sev- "><tt><i>162</i>         <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></tt>
             </div>
             <div id="l163"
-               class="code sev- "><tt><i>163</i>     <span class="n">scope</span> <span class="o">=</span> <span class="p">{}</span></tt>
+               class="code sev- "><tt><i>163</i> &nbsp;</tt>
             </div>
             <div id="l164"
-               class="code sev- "><tt><i>164</i>     <span class="k">try</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>164</i>     <span class="k">return</span> <span class="n">obj</span></tt>
             </div>
             <div id="l165"
-               class="code sev- "><tt><i>165</i>         <span class="c1"># Find out what the real object is supposed to be.</span></tt>
+               class="code sev- "><tt><i>165</i> &nbsp;</tt>
             </div>
             <div id="l166"
-               class="code sev- "><tt><i>166</i>         <span class="n">scope</span> <span class="o">=</span> <span class="n">_from_import</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>166</i> &nbsp;</tt>
             </div>
             <div id="l167"
-               class="code sev- "><tt><i>167</i>     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># wrong object</span></tt>
+               class="code sev- "><tt><i>167</i> <span class="k">def</span> <span class="nf">_get_short_module_name</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">):</span></tt>
             </div>
             <div id="l168"
-               class="code sev- "><tt><i>168</i>         <span class="k">return</span> <span class="kc">None</span></tt>
+               class="code sev- "><tt><i>168</i>     <span class="sd">&quot;&quot;&quot;Get the shortest possible module name.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l169"
-               class="code sev- "><tt><i>169</i>     <span class="k">else</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>169</i>     <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">obj_name</span><span class="p">:</span></tt>
             </div>
             <div id="l170"
-               class="code sev- "><tt><i>170</i>         <span class="n">real_obj</span> <span class="o">=</span> <span class="n">scope</span><span class="p">[</span><span class="n">obj_name</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>170</i>         <span class="n">obj_name</span><span class="p">,</span> <span class="n">attr</span> <span class="o">=</span> <span class="n">obj_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l171"
-               class="code sev- "><tt><i>171</i>         <span class="k">if</span> <span class="n">attr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">real_obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>  <span class="c1"># wrong class</span></tt>
+               class="code sev- "><tt><i>171</i>     <span class="k">else</span><span class="p">:</span></tt>
             </div>
             <div id="l172"
-               class="code sev- "><tt><i>172</i>             <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># wrong object</span></tt>
+               class="code sev- "><tt><i>172</i>         <span class="n">attr</span> <span class="o">=</span> <span class="kc">None</span></tt>
             </div>
             <div id="l173"
-               class="code sev- "><tt><i>173</i> &nbsp;</tt>
+               class="code sev- "><tt><i>173</i>     <span class="c1"># scope = {}</span></tt>
             </div>
             <div id="l174"
-               class="code sev- "><tt><i>174</i>     <span class="n">parts</span> <span class="o">=</span> <span class="n">module_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>174</i>     <span class="k">try</span><span class="p">:</span></tt>
             </div>
             <div id="l175"
-               class="code sev- "><tt><i>175</i>     <span class="n">short_name</span> <span class="o">=</span> <span class="n">module_name</span></tt>
+               class="code sev- "><tt><i>175</i>         <span class="c1"># Find out what the real object is supposed to be.</span></tt>
             </div>
             <div id="l176"
-               class="code sev- "><tt><i>176</i>     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>176</i>         <span class="n">imported_obj</span> <span class="o">=</span> <span class="n">_from_import</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">)</span></tt>
             </div>
             <div id="l177"
-               class="code sev- "><tt><i>177</i>         <span class="n">short_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:</span><span class="n">i</span><span class="p">])</span></tt>
+               class="code sev- "><tt><i>177</i>     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># wrong object</span></tt>
             </div>
             <div id="l178"
-               class="code sev- "><tt><i>178</i>         <span class="n">scope</span> <span class="o">=</span> <span class="p">{}</span></tt>
+               class="code sev- "><tt><i>178</i>         <span class="k">return</span> <span class="kc">None</span></tt>
             </div>
             <div id="l179"
-               class="code sev- "><tt><i>179</i>         <span class="k">try</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>179</i>     <span class="k">else</span><span class="p">:</span></tt>
             </div>
             <div id="l180"
-               class="code sev- "><tt><i>180</i>             <span class="n">scope</span> <span class="o">=</span> <span class="n">_from_import</span><span class="p">(</span><span class="n">short_name</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>180</i>         <span class="n">real_obj</span> <span class="o">=</span> <span class="n">imported_obj</span></tt>
             </div>
             <div id="l181"
-               class="code sev- "><tt><i>181</i>             <span class="c1"># Ensure shortened object is the same as what we expect.</span></tt>
+               class="code sev- "><tt><i>181</i>         <span class="k">if</span> <span class="n">attr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">real_obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>  <span class="c1"># wrong class</span></tt>
             </div>
             <div id="l182"
-               class="code sev-3  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-3">
-                        S101
-                     </span>
-                     Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.</li>
-               
-               </ul><tt><i>182</i>             <span class="k">assert</span> <span class="n">real_obj</span> <span class="ow">is</span> <span class="n">scope</span><span class="p">[</span><span class="n">obj_name</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>182</i>             <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># wrong object</span></tt>
             </div>
             <div id="l183"
-               class="code sev- "><tt><i>183</i>         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># libraries can throw all sorts of exceptions...</span></tt>
+               class="code sev- "><tt><i>183</i> &nbsp;</tt>
             </div>
             <div id="l184"
-               class="code sev- "><tt><i>184</i>             <span class="c1"># get the last working module name</span></tt>
+               class="code sev- "><tt><i>184</i>     <span class="n">parts</span> <span class="o">=</span> <span class="n">module_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l185"
-               class="code sev- "><tt><i>185</i>             <span class="n">short_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span></tt>
+               class="code sev- "><tt><i>185</i>     <span class="n">short_name</span> <span class="o">=</span> <span class="n">module_name</span></tt>
             </div>
             <div id="l186"
-               class="code sev- "><tt><i>186</i>             <span class="k">break</span></tt>
+               class="code sev- "><tt><i>186</i>     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span></tt>
             </div>
             <div id="l187"
-               class="code sev- "><tt><i>187</i>     <span class="k">return</span> <span class="n">short_name</span></tt>
+               class="code sev- "><tt><i>187</i>         <span class="n">short_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:</span><span class="n">i</span><span class="p">])</span></tt>
             </div>
             <div id="l188"
-               class="code sev- "><tt><i>188</i> &nbsp;</tt>
+               class="code sev- "><tt><i>188</i>         <span class="c1"># scope = {}</span></tt>
             </div>
             <div id="l189"
-               class="code sev- "><tt><i>189</i> &nbsp;</tt>
+               class="code sev- "><tt><i>189</i>         <span class="k">try</span><span class="p">:</span></tt>
             </div>
             <div id="l190"
-               class="code sev- "><tt><i>190</i> <span class="n">_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;:(?:&#39;</span></tt>
+               class="code sev- "><tt><i>190</i>             <span class="n">imported_obj</span> <span class="o">=</span> <span class="n">_from_import</span><span class="p">(</span><span class="n">short_name</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">)</span></tt>
             </div>
             <div id="l191"
-               class="code sev- "><tt><i>191</i>                     <span class="sa">r</span><span class="s1">&#39;func(?:tion)?|&#39;</span></tt>
+               class="code sev- "><tt><i>191</i>             <span class="c1"># Ensure shortened object is the same as what we expect.</span></tt>
             </div>
             <div id="l192"
-               class="code sev- "><tt><i>192</i>                     <span class="sa">r</span><span class="s1">&#39;meth(?:od)?|&#39;</span></tt>
+               class="code sev- "><tt><i>192</i>             <span class="k">assert</span> <span class="n">real_obj</span> <span class="ow">is</span> <span class="n">imported_obj</span>  <span class="c1"># noqa</span></tt>
             </div>
             <div id="l193"
-               class="code sev- "><tt><i>193</i>                     <span class="sa">r</span><span class="s1">&#39;attr(?:ibute)?|&#39;</span></tt>
+               class="code sev- "><tt><i>193</i>         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># libraries can throw all sorts of exceptions...</span></tt>
             </div>
             <div id="l194"
-               class="code sev- "><tt><i>194</i>                     <span class="sa">r</span><span class="s1">&#39;obj(?:ect)?|&#39;</span></tt>
+               class="code sev- "><tt><i>194</i>             <span class="c1"># get the last working module name</span></tt>
             </div>
             <div id="l195"
-               class="code sev- "><tt><i>195</i>                     <span class="sa">r</span><span class="s1">&#39;class):`~?(\S*)`&#39;</span></tt>
+               class="code sev- "><tt><i>195</i>             <span class="n">short_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span></tt>
             </div>
             <div id="l196"
-               class="code sev- "><tt><i>196</i>                     <span class="p">)</span></tt>
+               class="code sev- "><tt><i>196</i>             <span class="k">break</span></tt>
             </div>
             <div id="l197"
-               class="code sev- "><tt><i>197</i> &nbsp;</tt>
+               class="code sev- "><tt><i>197</i>     <span class="k">return</span> <span class="n">short_name</span></tt>
             </div>
             <div id="l198"
                class="code sev- "><tt><i>198</i> &nbsp;</tt>
             </div>
             <div id="l199"
-               class="code sev- "><tt><i>199</i> <span class="k">def</span> <span class="nf">identify_names</span><span class="p">(</span><span class="n">script_blocks</span><span class="p">,</span> <span class="n">global_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>199</i> &nbsp;</tt>
             </div>
             <div id="l200"
-               class="code sev- "><tt><i>200</i>     <span class="sd">&quot;&quot;&quot;Build a codeobj summary by identifying and resolving used names.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>200</i> <span class="n">_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;:(?:&#39;</span></tt>
             </div>
             <div id="l201"
-               class="code sev- "><tt><i>201</i> &nbsp;</tt>
+               class="code sev- "><tt><i>201</i>                     <span class="sa">r</span><span class="s1">&#39;func(?:tion)?|&#39;</span></tt>
             </div>
             <div id="l202"
-               class="code sev- "><tt><i>202</i>     <span class="k">if</span> <span class="n">node</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>  <span class="c1"># mostly convenience for testing functions</span></tt>
+               class="code sev- "><tt><i>202</i>                     <span class="sa">r</span><span class="s1">&#39;meth(?:od)?|&#39;</span></tt>
             </div>
             <div id="l203"
-               class="code sev- "><tt><i>203</i>         <span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt</span> <span class="k">for</span> <span class="n">kind</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">script_blocks</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;code&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>203</i>                     <span class="sa">r</span><span class="s1">&#39;attr(?:ibute)?|&#39;</span></tt>
             </div>
             <div id="l204"
-               class="code sev- "><tt><i>204</i>         <span class="n">node</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">c</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>204</i>                     <span class="sa">r</span><span class="s1">&#39;obj(?:ect)?|&#39;</span></tt>
             </div>
             <div id="l205"
-               class="code sev- "><tt><i>205</i> &nbsp;</tt>
+               class="code sev- "><tt><i>205</i>                     <span class="sa">r</span><span class="s1">&#39;class):`~?(\S*)`&#39;</span></tt>
             </div>
             <div id="l206"
-               class="code sev- "><tt><i>206</i>     <span class="c1"># Get matches from the code (AST)</span></tt>
+               class="code sev- "><tt><i>206</i>                     <span class="p">)</span></tt>
             </div>
             <div id="l207"
-               class="code sev- "><tt><i>207</i>     <span class="n">finder</span> <span class="o">=</span> <span class="n">NameFinder</span><span class="p">(</span><span class="n">global_variables</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>207</i> &nbsp;</tt>
             </div>
             <div id="l208"
-               class="code sev- "><tt><i>208</i>     <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>208</i> &nbsp;</tt>
             </div>
             <div id="l209"
-               class="code sev- "><tt><i>209</i>         <span class="n">finder</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>209</i> <span class="k">def</span> <span class="nf">identify_names</span><span class="p">(</span><span class="n">script_blocks</span><span class="p">,</span> <span class="n">global_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span></tt>
             </div>
             <div id="l210"
-               class="code sev- "><tt><i>210</i>     <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">finder</span><span class="o">.</span><span class="n">get_mapping</span><span class="p">())</span></tt>
+               class="code sev- "><tt><i>210</i>     <span class="sd">&quot;&quot;&quot;Build a codeobj summary by identifying and resolving used names.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l211"
                class="code sev- "><tt><i>211</i> &nbsp;</tt>
             </div>
             <div id="l212"
-               class="code sev- "><tt><i>212</i>     <span class="c1"># Get matches from docstring inspection</span></tt>
+               class="code sev- "><tt><i>212</i>     <span class="k">if</span> <span class="n">node</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>  <span class="c1"># mostly convenience for testing functions</span></tt>
             </div>
             <div id="l213"
-               class="code sev- "><tt><i>213</i>     <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt</span> <span class="k">for</span> <span class="n">kind</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">script_blocks</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;text&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>213</i>         <span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt</span> <span class="k">for</span> <span class="n">kind</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">script_blocks</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;code&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l214"
-               class="code sev- "><tt><i>214</i>     <span class="n">names</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">_regex</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>214</i>         <span class="n">node</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">c</span><span class="p">)</span></tt>
             </div>
             <div id="l215"
-               class="code sev- "><tt><i>215</i>     <span class="n">example_code_obj</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>  <span class="c1"># order is important</span></tt>
+               class="code sev- "><tt><i>215</i> &nbsp;</tt>
             </div>
             <div id="l216"
-               class="code sev- "><tt><i>216</i> &nbsp;</tt>
+               class="code sev- "><tt><i>216</i>     <span class="c1"># Get matches from the code (AST)</span></tt>
             </div>
             <div id="l217"
-               class="code sev- "><tt><i>217</i>     <span class="c1"># Make a list of all guesses, in `_embed_code_links` we will break when we find a match</span></tt>
+               class="code sev- "><tt><i>217</i>     <span class="n">finder</span> <span class="o">=</span> <span class="n">NameFinder</span><span class="p">(</span><span class="n">global_variables</span><span class="p">)</span></tt>
             </div>
             <div id="l218"
-               class="code sev- "><tt><i>218</i>     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">full_name</span><span class="p">,</span> <span class="n">class_like</span><span class="p">,</span> <span class="n">is_class</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>218</i>     <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></tt>
             </div>
             <div id="l219"
-               class="code sev- "><tt><i>219</i>         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">example_code_obj</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>219</i>         <span class="n">finder</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></tt>
             </div>
             <div id="l220"
-               class="code sev- "><tt><i>220</i>             <span class="n">example_code_obj</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span></tt>
+               class="code sev- "><tt><i>220</i>     <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">finder</span><span class="o">.</span><span class="n">get_mapping</span><span class="p">())</span></tt>
             </div>
             <div id="l221"
                class="code sev- "><tt><i>221</i> &nbsp;</tt>
             </div>
             <div id="l222"
-               class="code sev- "><tt><i>222</i>         <span class="c1"># name is as written in file (e.g. np.asarray)</span></tt>
+               class="code sev- "><tt><i>222</i>     <span class="c1"># Get matches from docstring inspection</span></tt>
             </div>
             <div id="l223"
-               class="code sev- "><tt><i>223</i>         <span class="c1"># full_name includes resolved import path (e.g. numpy.asarray)</span></tt>
+               class="code sev- "><tt><i>223</i>     <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt</span> <span class="k">for</span> <span class="n">kind</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">script_blocks</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;text&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l224"
-               class="code sev- "><tt><i>224</i>         <span class="n">splitted</span> <span class="o">=</span> <span class="n">full_name</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">class_like</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>224</i>     <span class="n">names</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">_regex</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span></tt>
             </div>
             <div id="l225"
-               class="code sev- "><tt><i>225</i>         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">splitted</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>225</i>     <span class="n">example_code_obj</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>  <span class="c1"># order is important</span></tt>
             </div>
             <div id="l226"
-               class="code sev- "><tt><i>226</i>             <span class="n">splitted</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;builtins&#39;</span><span class="p">,</span> <span class="n">splitted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></tt>
+               class="code sev- "><tt><i>226</i> &nbsp;</tt>
             </div>
             <div id="l227"
-               class="code sev- "><tt><i>227</i>         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">splitted</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># class-like</span></tt>
+               class="code sev- "><tt><i>227</i>     <span class="c1"># Make a list of all guesses, in `_embed_code_links` we will break when we find a match</span></tt>
             </div>
             <div id="l228"
-               class="code sev-3  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-3">
-                        S101
-                     </span>
-                     Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.</li>
-               
-               </ul><tt><i>228</i>             <span class="k">assert</span> <span class="n">class_like</span></tt>
+               class="code sev- "><tt><i>228</i>     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">full_name</span><span class="p">,</span> <span class="n">class_like</span><span class="p">,</span> <span class="n">is_class</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span></tt>
             </div>
             <div id="l229"
-               class="code sev- "><tt><i>229</i>             <span class="n">splitted</span> <span class="o">=</span> <span class="p">(</span><span class="n">splitted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">splitted</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></tt>
+               class="code sev- "><tt><i>229</i>         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">example_code_obj</span><span class="p">:</span></tt>
             </div>
             <div id="l230"
-               class="code sev- "><tt><i>230</i>         <span class="k">else</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>230</i>             <span class="n">example_code_obj</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span></tt>
             </div>
             <div id="l231"
+               class="code sev- "><tt><i>231</i> &nbsp;</tt>
+            </div>
+            <div id="l232"
+               class="code sev- "><tt><i>232</i>         <span class="c1"># name is as written in file (e.g. np.asarray)</span></tt>
+            </div>
+            <div id="l233"
+               class="code sev- "><tt><i>233</i>         <span class="c1"># full_name includes resolved import path (e.g. numpy.asarray)</span></tt>
+            </div>
+            <div id="l234"
+               class="code sev- "><tt><i>234</i>         <span class="n">splitted</span> <span class="o">=</span> <span class="n">full_name</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">class_like</span><span class="p">)</span></tt>
+            </div>
+            <div id="l235"
+               class="code sev- "><tt><i>235</i>         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">splitted</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span></tt>
+            </div>
+            <div id="l236"
+               class="code sev- "><tt><i>236</i>             <span class="n">splitted</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;builtins&#39;</span><span class="p">,</span> <span class="n">splitted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></tt>
+            </div>
+            <div id="l237"
+               class="code sev- "><tt><i>237</i>         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">splitted</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># class-like</span></tt>
+            </div>
+            <div id="l238"
                class="code sev-3  le">
                <ul class="violations">
                
@@ -743,330 +737,348 @@
                      </span>
                      Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.</li>
                
-               </ul><tt><i>231</i>             <span class="k">assert</span> <span class="ow">not</span> <span class="n">class_like</span></tt>
-            </div>
-            <div id="l232"
-               class="code sev- "><tt><i>232</i> &nbsp;</tt>
-            </div>
-            <div id="l233"
-               class="code sev- "><tt><i>233</i>         <span class="n">module</span><span class="p">,</span> <span class="n">attribute</span> <span class="o">=</span> <span class="n">splitted</span></tt>
-            </div>
-            <div id="l234"
-               class="code sev- "><tt><i>234</i> &nbsp;</tt>
-            </div>
-            <div id="l235"
-               class="code sev- "><tt><i>235</i>         <span class="c1"># get shortened module name</span></tt>
-            </div>
-            <div id="l236"
-               class="code sev- "><tt><i>236</i>         <span class="n">module_short</span> <span class="o">=</span> <span class="n">_get_short_module_name</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span></tt>
-            </div>
-            <div id="l237"
-               class="code sev- "><tt><i>237</i>         <span class="n">cobj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">attribute</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="n">module</span><span class="p">,</span></tt>
-            </div>
-            <div id="l238"
-               class="code sev- "><tt><i>238</i>                 <span class="s1">&#39;module_short&#39;</span><span class="p">:</span> <span class="n">module_short</span> <span class="ow">or</span> <span class="n">module</span><span class="p">,</span> <span class="s1">&#39;is_class&#39;</span><span class="p">:</span> <span class="n">is_class</span><span class="p">}</span></tt>
+               </ul><tt><i>238</i>             <span class="k">assert</span> <span class="n">class_like</span></tt>
             </div>
             <div id="l239"
-               class="code sev- "><tt><i>239</i> &nbsp;</tt>
+               class="code sev- "><tt><i>239</i>             <span class="n">splitted</span> <span class="o">=</span> <span class="p">(</span><span class="n">splitted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">splitted</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></tt>
             </div>
             <div id="l240"
-               class="code sev- "><tt><i>240</i>         <span class="n">example_code_obj</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cobj</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>240</i>         <span class="k">else</span><span class="p">:</span></tt>
             </div>
             <div id="l241"
-               class="code sev- "><tt><i>241</i> &nbsp;</tt>
+               class="code sev-3  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-3">
+                        S101
+                     </span>
+                     Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.</li>
+               
+               </ul><tt><i>241</i>             <span class="k">assert</span> <span class="ow">not</span> <span class="n">class_like</span></tt>
             </div>
             <div id="l242"
-               class="code sev- "><tt><i>242</i>     <span class="k">return</span> <span class="n">example_code_obj</span></tt>
+               class="code sev- "><tt><i>242</i> &nbsp;</tt>
             </div>
             <div id="l243"
-               class="code sev- "><tt><i>243</i> &nbsp;</tt>
+               class="code sev- "><tt><i>243</i>         <span class="n">module</span><span class="p">,</span> <span class="n">attribute</span> <span class="o">=</span> <span class="n">splitted</span></tt>
             </div>
             <div id="l244"
                class="code sev- "><tt><i>244</i> &nbsp;</tt>
             </div>
             <div id="l245"
-               class="code sev- "><tt><i>245</i> <span class="c1"># TODO only:: html ?</span></tt>
+               class="code sev- "><tt><i>245</i>         <span class="c1"># get shortened module name</span></tt>
             </div>
             <div id="l246"
-               class="code sev- "><tt><i>246</i> <span class="n">THUMBNAIL_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>246</i>         <span class="n">module_short</span> <span class="o">=</span> <span class="n">_get_short_module_name</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span></tt>
             </div>
             <div id="l247"
-               class="code sev- "><tt><i>247</i> <span class="s2">&lt;div class=&quot;mkd-glr-thumbcontainer&quot; tooltip=&quot;</span><span class="si">{snippet}</span><span class="s2">&quot;&gt;</span></tt>
+               class="code sev- "><tt><i>247</i>         <span class="n">cobj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">attribute</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="n">module</span><span class="p">,</span></tt>
             </div>
             <div id="l248"
-               class="code sev- "><tt><i>248</i> <span class="s2">    &lt;!--div class=&quot;figure align-default&quot; id=&quot;id1&quot;--&gt;</span></tt>
+               class="code sev- "><tt><i>248</i>                 <span class="s1">&#39;module_short&#39;</span><span class="p">:</span> <span class="n">module_short</span> <span class="ow">or</span> <span class="n">module</span><span class="p">,</span> <span class="s1">&#39;is_class&#39;</span><span class="p">:</span> <span class="n">is_class</span><span class="p">}</span></tt>
             </div>
             <div id="l249"
-               class="code sev- "><tt><i>249</i> <span class="s2">        &lt;img alt=&quot;</span><span class="si">{title}</span><span class="s2">&quot; src=&quot;</span><span class="si">{thumbnail}</span><span class="s2">&quot; /&gt;</span></tt>
+               class="code sev- "><tt><i>249</i> &nbsp;</tt>
             </div>
             <div id="l250"
-               class="code sev- "><tt><i>250</i> <span class="s2">        &lt;p class=&quot;caption&quot;&gt;</span></tt>
+               class="code sev- "><tt><i>250</i>         <span class="n">example_code_obj</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cobj</span><span class="p">)</span></tt>
             </div>
             <div id="l251"
-               class="code sev- "><tt><i>251</i> <span class="s2">            &lt;span class=&quot;caption-text&quot;&gt;</span></tt>
+               class="code sev- "><tt><i>251</i> &nbsp;</tt>
             </div>
             <div id="l252"
-               class="code sev- "><tt><i>252</i> <span class="s2">                &lt;a class=&quot;reference internal&quot; href=&quot;</span><span class="si">{example_html}</span><span class="s2">&quot;&gt;</span></tt>
+               class="code sev- "><tt><i>252</i>     <span class="k">return</span> <span class="n">example_code_obj</span></tt>
             </div>
             <div id="l253"
-               class="code sev- "><tt><i>253</i> <span class="s2">                    &lt;span class=&quot;std std-ref&quot;&gt;</span><span class="si">{title}</span><span class="s2">&lt;/span&gt;</span></tt>
+               class="code sev- "><tt><i>253</i> &nbsp;</tt>
             </div>
             <div id="l254"
-               class="code sev- "><tt><i>254</i> <span class="s2">                &lt;/a&gt;</span></tt>
+               class="code sev- "><tt><i>254</i> &nbsp;</tt>
             </div>
             <div id="l255"
-               class="code sev- "><tt><i>255</i> <span class="s2">            &lt;/span&gt;</span></tt>
+               class="code sev- "><tt><i>255</i> <span class="c1"># TODO only:: html ?</span></tt>
             </div>
             <div id="l256"
-               class="code sev- "><tt><i>256</i> <span class="s2">            &lt;!--a class=&quot;headerlink&quot; href=&quot;#id1&quot; title=&quot;Permalink to this image&quot;&gt;&lt;/a--&gt;</span></tt>
+               class="code sev- "><tt><i>256</i> <span class="n">THUMBNAIL_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l257"
-               class="code sev- "><tt><i>257</i> <span class="s2">        &lt;/p&gt;</span></tt>
+               class="code sev- "><tt><i>257</i> <span class="s2">&lt;div class=&quot;mkd-glr-thumbcontainer&quot; tooltip=&quot;</span><span class="si">{snippet}</span><span class="s2">&quot;&gt;</span></tt>
             </div>
             <div id="l258"
-               class="code sev- "><tt><i>258</i> <span class="s2">    &lt;!--/div--&gt;</span></tt>
+               class="code sev- "><tt><i>258</i> <span class="s2">    &lt;!--div class=&quot;figure align-default&quot; id=&quot;id1&quot;--&gt;</span></tt>
             </div>
             <div id="l259"
-               class="code sev- "><tt><i>259</i> <span class="s2">&lt;/div&gt;</span></tt>
+               class="code sev- "><tt><i>259</i> <span class="s2">        &lt;img alt=&quot;</span><span class="si">{title}</span><span class="s2">&quot; src=&quot;</span><span class="si">{thumbnail}</span><span class="s2">&quot; /&gt;</span></tt>
             </div>
             <div id="l260"
-               class="code sev- "><tt><i>260</i> <span class="s2">&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>260</i> <span class="s2">        &lt;p class=&quot;caption&quot;&gt;</span></tt>
             </div>
             <div id="l261"
-               class="code sev- "><tt><i>261</i> &nbsp;</tt>
+               class="code sev- "><tt><i>261</i> <span class="s2">            &lt;span class=&quot;caption-text&quot;&gt;</span></tt>
             </div>
             <div id="l262"
-               class="code sev- "><tt><i>262</i> <span class="c1"># TODO something specific here ?</span></tt>
+               class="code sev- "><tt><i>262</i> <span class="s2">                &lt;a class=&quot;reference internal&quot; href=&quot;</span><span class="si">{example_html}</span><span class="s2">&quot;&gt;</span></tt>
             </div>
             <div id="l263"
-               class="code sev- "><tt><i>263</i> <span class="n">BACKREF_THUMBNAIL_TEMPLATE</span> <span class="o">=</span> <span class="n">THUMBNAIL_TEMPLATE</span></tt>
+               class="code sev- "><tt><i>263</i> <span class="s2">                    &lt;span class=&quot;std std-ref&quot;&gt;</span><span class="si">{title}</span><span class="s2">&lt;/span&gt;</span></tt>
             </div>
             <div id="l264"
-               class="code sev- "><tt><i>264</i> <span class="c1">#  + &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>264</i> <span class="s2">                &lt;/a&gt;</span></tt>
             </div>
             <div id="l265"
-               class="code sev- "><tt><i>265</i> <span class="c1"># .. only:: not html</span></tt>
+               class="code sev- "><tt><i>265</i> <span class="s2">            &lt;/span&gt;</span></tt>
             </div>
             <div id="l266"
-               class="code sev- "><tt><i>266</i> <span class="c1">#</span></tt>
+               class="code sev- "><tt><i>266</i> <span class="s2">            &lt;!--a class=&quot;headerlink&quot; href=&quot;#id1&quot; title=&quot;Permalink to this image&quot;&gt;&lt;/a--&gt;</span></tt>
             </div>
             <div id="l267"
-               class="code sev- "><tt><i>267</i> <span class="c1">#  * :ref:`mkd_glr_{ref_name}`</span></tt>
+               class="code sev- "><tt><i>267</i> <span class="s2">        &lt;/p&gt;</span></tt>
             </div>
             <div id="l268"
-               class="code sev- "><tt><i>268</i> <span class="c1"># &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>268</i> <span class="s2">    &lt;!--/div--&gt;</span></tt>
             </div>
             <div id="l269"
-               class="code sev- "><tt><i>269</i> &nbsp;</tt>
+               class="code sev- "><tt><i>269</i> <span class="s2">&lt;/div&gt;</span></tt>
             </div>
             <div id="l270"
-               class="code sev- "><tt><i>270</i> &nbsp;</tt>
+               class="code sev- "><tt><i>270</i> <span class="s2">&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l271"
-               class="code sev- "><tt><i>271</i> <span class="k">def</span> <span class="nf">_thumbnail_div</span><span class="p">(</span><span class="n">script_results</span><span class="p">:</span> <span class="n">GalleryScriptResults</span><span class="p">,</span> <span class="n">is_backref</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>271</i> &nbsp;</tt>
             </div>
             <div id="l272"
-               class="code sev- "><tt><i>272</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>272</i> <span class="c1"># TODO something specific here ?</span></tt>
             </div>
             <div id="l273"
-               class="code sev- "><tt><i>273</i> <span class="sd">    Generate MD to place a thumbnail in a gallery.</span></tt>
+               class="code sev- "><tt><i>273</i> <span class="n">BACKREF_THUMBNAIL_TEMPLATE</span> <span class="o">=</span> <span class="n">THUMBNAIL_TEMPLATE</span></tt>
             </div>
             <div id="l274"
-               class="code sev- "><tt><i>274</i> &nbsp;</tt>
+               class="code sev- "><tt><i>274</i> <span class="c1">#  + &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l275"
-               class="code sev- "><tt><i>275</i> <span class="sd">    Parameters</span></tt>
+               class="code sev- "><tt><i>275</i> <span class="c1"># .. only:: not html</span></tt>
             </div>
             <div id="l276"
-               class="code sev- "><tt><i>276</i> <span class="sd">    ----------</span></tt>
+               class="code sev- "><tt><i>276</i> <span class="c1">#</span></tt>
             </div>
             <div id="l277"
-               class="code sev- "><tt><i>277</i> <span class="sd">    script_results : GalleryScriptResults</span></tt>
+               class="code sev- "><tt><i>277</i> <span class="c1">#  * :ref:`mkd_glr_{ref_name}`</span></tt>
             </div>
             <div id="l278"
-               class="code sev- "><tt><i>278</i> <span class="sd">        The results from processing a gallery example</span></tt>
+               class="code sev- "><tt><i>278</i> <span class="c1"># &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l279"
                class="code sev- "><tt><i>279</i> &nbsp;</tt>
             </div>
             <div id="l280"
-               class="code sev- "><tt><i>280</i> <span class="sd">    is_backref : bool</span></tt>
+               class="code sev- "><tt><i>280</i> &nbsp;</tt>
             </div>
             <div id="l281"
-               class="code sev- "><tt><i>281</i> <span class="sd">        ?</span></tt>
+               class="code sev- "><tt><i>281</i> <span class="k">def</span> <span class="nf">_thumbnail_div</span><span class="p">(</span><span class="n">script_results</span><span class="p">:</span> <span class="n">GalleryScriptResults</span><span class="p">,</span> <span class="n">is_backref</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span></tt>
             </div>
             <div id="l282"
-               class="code sev- "><tt><i>282</i> &nbsp;</tt>
+               class="code sev- "><tt><i>282</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l283"
-               class="code sev- "><tt><i>283</i> <span class="sd">    check : bool</span></tt>
+               class="code sev- "><tt><i>283</i> <span class="sd">    Generate MD to place a thumbnail in a gallery.</span></tt>
             </div>
             <div id="l284"
-               class="code sev- "><tt><i>284</i> <span class="sd">        ?</span></tt>
+               class="code sev- "><tt><i>284</i> &nbsp;</tt>
             </div>
             <div id="l285"
-               class="code sev- "><tt><i>285</i> &nbsp;</tt>
+               class="code sev- "><tt><i>285</i> <span class="sd">    Parameters</span></tt>
             </div>
             <div id="l286"
-               class="code sev- "><tt><i>286</i> <span class="sd">    Returns</span></tt>
+               class="code sev- "><tt><i>286</i> <span class="sd">    ----------</span></tt>
             </div>
             <div id="l287"
-               class="code sev- "><tt><i>287</i> <span class="sd">    -------</span></tt>
+               class="code sev- "><tt><i>287</i> <span class="sd">    script_results : GalleryScriptResults</span></tt>
             </div>
             <div id="l288"
-               class="code sev- "><tt><i>288</i> <span class="sd">    md : str</span></tt>
+               class="code sev- "><tt><i>288</i> <span class="sd">        The results from processing a gallery example</span></tt>
             </div>
             <div id="l289"
-               class="code sev- "><tt><i>289</i> <span class="sd">        The markdown to integrate in the global gallery readme. Note that this is also the case for subsections.</span></tt>
+               class="code sev- "><tt><i>289</i> &nbsp;</tt>
             </div>
             <div id="l290"
-               class="code sev- "><tt><i>290</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>290</i> <span class="sd">    is_backref : bool</span></tt>
             </div>
             <div id="l291"
-               class="code sev- "><tt><i>291</i>     <span class="c1"># Absolute path to the thumbnail</span></tt>
+               class="code sev- "><tt><i>291</i> <span class="sd">        ?</span></tt>
             </div>
             <div id="l292"
-               class="code sev- "><tt><i>292</i>     <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">script_results</span><span class="o">.</span><span class="n">thumb</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span></tt>
+               class="code sev- "><tt><i>292</i> &nbsp;</tt>
             </div>
             <div id="l293"
-               class="code sev- "><tt><i>293</i>         <span class="c1"># This means we have done something wrong in creating our thumbnail!</span></tt>
+               class="code sev- "><tt><i>293</i> <span class="sd">    check : bool</span></tt>
             </div>
             <div id="l294"
-               class="code sev- "><tt><i>294</i>         <span class="k">raise</span> <span class="n">ExtensionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find internal mkdocs-gallery thumbnail file:</span><span class="se">\n</span><span class="si">{</span><span class="n">script_results</span><span class="o">.</span><span class="n">thumb</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>294</i> <span class="sd">        ?</span></tt>
             </div>
             <div id="l295"
                class="code sev- "><tt><i>295</i> &nbsp;</tt>
             </div>
             <div id="l296"
-               class="code sev- "><tt><i>296</i>     <span class="c1"># Relative path to the thumbnail (relative to the gallery, not the subsection)</span></tt>
+               class="code sev- "><tt><i>296</i> <span class="sd">    Returns</span></tt>
             </div>
             <div id="l297"
-               class="code sev- "><tt><i>297</i>     <span class="n">thumb</span> <span class="o">=</span> <span class="n">script_results</span><span class="o">.</span><span class="n">thumb_rel_root_gallery</span></tt>
+               class="code sev- "><tt><i>297</i> <span class="sd">    -------</span></tt>
             </div>
             <div id="l298"
-               class="code sev- "><tt><i>298</i> &nbsp;</tt>
+               class="code sev- "><tt><i>298</i> <span class="sd">    md : str</span></tt>
             </div>
             <div id="l299"
-               class="code sev- "><tt><i>299</i>     <span class="c1"># Relative path to the html tutorial that will be generated from the md</span></tt>
+               class="code sev- "><tt><i>299</i> <span class="sd">        The markdown to integrate in the global gallery readme. Note that this is also the case for subsections.</span></tt>
             </div>
             <div id="l300"
-               class="code sev- "><tt><i>300</i>     <span class="n">example_html</span> <span class="o">=</span> <span class="n">script_results</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">md_file_rel_root_gallery</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>300</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l301"
-               class="code sev- "><tt><i>301</i> &nbsp;</tt>
+               class="code sev- "><tt><i>301</i>     <span class="c1"># Absolute path to the thumbnail</span></tt>
             </div>
             <div id="l302"
-               class="code sev- "><tt><i>302</i>     <span class="n">template</span> <span class="o">=</span> <span class="n">BACKREF_THUMBNAIL_TEMPLATE</span> <span class="k">if</span> <span class="n">is_backref</span> <span class="k">else</span> <span class="n">THUMBNAIL_TEMPLATE</span></tt>
+               class="code sev- "><tt><i>302</i>     <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">script_results</span><span class="o">.</span><span class="n">thumb</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span></tt>
             </div>
             <div id="l303"
-               class="code sev- "><tt><i>303</i>     <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">snippet</span><span class="o">=</span><span class="n">escape</span><span class="p">(</span><span class="n">script_results</span><span class="o">.</span><span class="n">intro</span><span class="p">),</span> <span class="n">thumbnail</span><span class="o">=</span><span class="n">thumb</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">script_results</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">title</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>303</i>         <span class="c1"># This means we have done something wrong in creating our thumbnail!</span></tt>
             </div>
             <div id="l304"
-               class="code sev- "><tt><i>304</i>                            <span class="n">example_html</span><span class="o">=</span><span class="n">example_html</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>304</i>         <span class="k">raise</span> <span class="n">ExtensionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find internal mkdocs-gallery thumbnail file:</span><span class="se">\n</span><span class="si">{</span><span class="n">script_results</span><span class="o">.</span><span class="n">thumb</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></tt>
             </div>
             <div id="l305"
                class="code sev- "><tt><i>305</i> &nbsp;</tt>
             </div>
             <div id="l306"
-               class="code sev- "><tt><i>306</i> &nbsp;</tt>
+               class="code sev- "><tt><i>306</i>     <span class="c1"># Relative path to the thumbnail (relative to the gallery, not the subsection)</span></tt>
             </div>
             <div id="l307"
-               class="code sev- "><tt><i>307</i> <span class="k">def</span> <span class="nf">_write_backreferences</span><span class="p">(</span><span class="n">backrefs</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">seen_backrefs</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">snippet</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="n">GalleryScript</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>307</i>     <span class="n">thumb</span> <span class="o">=</span> <span class="n">script_results</span><span class="o">.</span><span class="n">thumb_rel_root_gallery</span></tt>
             </div>
             <div id="l308"
-               class="code sev- "><tt><i>308</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>308</i> &nbsp;</tt>
             </div>
             <div id="l309"
-               class="code sev- "><tt><i>309</i> <span class="sd">    Write backreference file including a thumbnail list of examples.</span></tt>
+               class="code sev- "><tt><i>309</i>     <span class="c1"># Relative path to the html tutorial that will be generated from the md</span></tt>
             </div>
             <div id="l310"
-               class="code sev- "><tt><i>310</i> &nbsp;</tt>
+               class="code sev- "><tt><i>310</i>     <span class="n">example_html</span> <span class="o">=</span> <span class="n">script_results</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">md_file_rel_root_gallery</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></tt>
             </div>
             <div id="l311"
-               class="code sev- "><tt><i>311</i> <span class="sd">    Parameters</span></tt>
+               class="code sev- "><tt><i>311</i> &nbsp;</tt>
             </div>
             <div id="l312"
-               class="code sev- "><tt><i>312</i> <span class="sd">    ----------</span></tt>
+               class="code sev- "><tt><i>312</i>     <span class="n">template</span> <span class="o">=</span> <span class="n">BACKREF_THUMBNAIL_TEMPLATE</span> <span class="k">if</span> <span class="n">is_backref</span> <span class="k">else</span> <span class="n">THUMBNAIL_TEMPLATE</span></tt>
             </div>
             <div id="l313"
-               class="code sev- "><tt><i>313</i> <span class="sd">    backrefs : set</span></tt>
+               class="code sev- "><tt><i>313</i>     <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">snippet</span><span class="o">=</span><span class="n">escape</span><span class="p">(</span><span class="n">script_results</span><span class="o">.</span><span class="n">intro</span><span class="p">),</span> <span class="n">thumbnail</span><span class="o">=</span><span class="n">thumb</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">script_results</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">title</span><span class="p">,</span></tt>
             </div>
             <div id="l314"
-               class="code sev- "><tt><i>314</i> &nbsp;</tt>
+               class="code sev- "><tt><i>314</i>                            <span class="n">example_html</span><span class="o">=</span><span class="n">example_html</span><span class="p">)</span></tt>
             </div>
             <div id="l315"
-               class="code sev- "><tt><i>315</i> <span class="sd">    seen_backrefs : set</span></tt>
+               class="code sev- "><tt><i>315</i> &nbsp;</tt>
             </div>
             <div id="l316"
                class="code sev- "><tt><i>316</i> &nbsp;</tt>
             </div>
             <div id="l317"
-               class="code sev- "><tt><i>317</i> <span class="sd">    snippet : str</span></tt>
+               class="code sev- "><tt><i>317</i> <span class="k">def</span> <span class="nf">_write_backreferences</span><span class="p">(</span><span class="n">backrefs</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">seen_backrefs</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">snippet</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="n">GalleryScript</span><span class="p">):</span></tt>
             </div>
             <div id="l318"
-               class="code sev- "><tt><i>318</i> &nbsp;</tt>
+               class="code sev- "><tt><i>318</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l319"
-               class="code sev- "><tt><i>319</i> <span class="sd">    script : GalleryScript</span></tt>
+               class="code sev- "><tt><i>319</i> <span class="sd">    Write backreference file including a thumbnail list of examples.</span></tt>
             </div>
             <div id="l320"
                class="code sev- "><tt><i>320</i> &nbsp;</tt>
             </div>
             <div id="l321"
-               class="code sev- "><tt><i>321</i> <span class="sd">    Returns</span></tt>
+               class="code sev- "><tt><i>321</i> <span class="sd">    Parameters</span></tt>
             </div>
             <div id="l322"
-               class="code sev- "><tt><i>322</i> <span class="sd">    -------</span></tt>
+               class="code sev- "><tt><i>322</i> <span class="sd">    ----------</span></tt>
             </div>
             <div id="l323"
-               class="code sev- "><tt><i>323</i> &nbsp;</tt>
+               class="code sev- "><tt><i>323</i> <span class="sd">    backrefs : set</span></tt>
             </div>
             <div id="l324"
-               class="code sev- "><tt><i>324</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>324</i> &nbsp;</tt>
             </div>
             <div id="l325"
-               class="code sev- "><tt><i>325</i>     <span class="k">for</span> <span class="n">backref</span> <span class="ow">in</span> <span class="n">backrefs</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>325</i> <span class="sd">    seen_backrefs : set</span></tt>
             </div>
             <div id="l326"
-               class="code sev- "><tt><i>326</i>         <span class="c1"># TODO use _new_file and also create a property</span></tt>
+               class="code sev- "><tt><i>326</i> &nbsp;</tt>
             </div>
             <div id="l327"
-               class="code sev- "><tt><i>327</i>         <span class="n">include_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script</span><span class="o">.</span><span class="n">gallery</span><span class="o">.</span><span class="n">all_info</span><span class="o">.</span><span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">],</span></tt>
+               class="code sev- "><tt><i>327</i> <span class="sd">    snippet : str</span></tt>
             </div>
             <div id="l328"
-               class="code sev- "><tt><i>328</i>                                     <span class="n">script</span><span class="o">.</span><span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;backreferences_dir&#39;</span><span class="p">],</span></tt>
+               class="code sev- "><tt><i>328</i> &nbsp;</tt>
             </div>
             <div id="l329"
-               class="code sev- "><tt><i>329</i>                                     <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.examples.new&#39;</span> <span class="o">%</span> <span class="n">backref</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>329</i> <span class="sd">    script : GalleryScript</span></tt>
             </div>
             <div id="l330"
-               class="code sev- "><tt><i>330</i>         <span class="n">seen</span> <span class="o">=</span> <span class="n">backref</span> <span class="ow">in</span> <span class="n">seen_backrefs</span></tt>
+               class="code sev- "><tt><i>330</i> &nbsp;</tt>
             </div>
             <div id="l331"
-               class="code sev- "><tt><i>331</i>         <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">include_path</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span> <span class="k">if</span> <span class="n">seen</span> <span class="k">else</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>331</i> <span class="sd">    Returns</span></tt>
             </div>
             <div id="l332"
-               class="code sev- "><tt><i>332</i>                          <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex_file</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>332</i> <span class="sd">    -------</span></tt>
             </div>
             <div id="l333"
-               class="code sev- "><tt><i>333</i>             <span class="k">if</span> <span class="ow">not</span> <span class="n">seen</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>333</i> &nbsp;</tt>
             </div>
             <div id="l334"
-               class="code sev- "><tt><i>334</i>                 <span class="c1"># Be aware that if the number of lines of this heading changes,</span></tt>
+               class="code sev- "><tt><i>334</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l335"
-               class="code sev- "><tt><i>335</i>                 <span class="c1">#   the minigallery directive should be modified accordingly</span></tt>
+               class="code sev- "><tt><i>335</i>     <span class="k">for</span> <span class="n">backref</span> <span class="ow">in</span> <span class="n">backrefs</span><span class="p">:</span></tt>
             </div>
             <div id="l336"
-               class="code sev- "><tt><i>336</i>                 <span class="n">heading</span> <span class="o">=</span> <span class="s1">&#39;Examples using ``</span><span class="si">%s</span><span class="s1">``&#39;</span> <span class="o">%</span> <span class="n">backref</span></tt>
+               class="code sev- "><tt><i>336</i>         <span class="c1"># TODO use _new_file and also create a property</span></tt>
             </div>
             <div id="l337"
-               class="code sev- "><tt><i>337</i>                 <span class="n">ex_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">heading</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>337</i>         <span class="n">include_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script</span><span class="o">.</span><span class="n">gallery</span><span class="o">.</span><span class="n">all_info</span><span class="o">.</span><span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">],</span></tt>
             </div>
             <div id="l338"
-               class="code sev- "><tt><i>338</i>                 <span class="n">ex_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;^&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">heading</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>338</i>                                     <span class="n">script</span><span class="o">.</span><span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;backreferences_dir&#39;</span><span class="p">],</span></tt>
             </div>
             <div id="l339"
+               class="code sev- "><tt><i>339</i>                                     <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.examples.new&#39;</span> <span class="o">%</span> <span class="n">backref</span><span class="p">)</span></tt>
+            </div>
+            <div id="l340"
+               class="code sev- "><tt><i>340</i>         <span class="n">seen</span> <span class="o">=</span> <span class="n">backref</span> <span class="ow">in</span> <span class="n">seen_backrefs</span></tt>
+            </div>
+            <div id="l341"
+               class="code sev- "><tt><i>341</i>         <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">include_path</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span> <span class="k">if</span> <span class="n">seen</span> <span class="k">else</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span></tt>
+            </div>
+            <div id="l342"
+               class="code sev- "><tt><i>342</i>                          <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex_file</span><span class="p">:</span></tt>
+            </div>
+            <div id="l343"
+               class="code sev- "><tt><i>343</i>             <span class="k">if</span> <span class="ow">not</span> <span class="n">seen</span><span class="p">:</span></tt>
+            </div>
+            <div id="l344"
+               class="code sev- "><tt><i>344</i>                 <span class="c1"># Be aware that if the number of lines of this heading changes,</span></tt>
+            </div>
+            <div id="l345"
+               class="code sev- "><tt><i>345</i>                 <span class="c1">#   the minigallery directive should be modified accordingly</span></tt>
+            </div>
+            <div id="l346"
+               class="code sev- "><tt><i>346</i>                 <span class="n">heading</span> <span class="o">=</span> <span class="s1">&#39;Examples using ``</span><span class="si">%s</span><span class="s1">``&#39;</span> <span class="o">%</span> <span class="n">backref</span></tt>
+            </div>
+            <div id="l347"
+               class="code sev- "><tt><i>347</i>                 <span class="n">ex_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">heading</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l348"
+               class="code sev- "><tt><i>348</i>                 <span class="n">ex_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;^&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">heading</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l349"
                class="code sev-1  le">
                <ul class="violations">
                
@@ -1082,9 +1094,9 @@
                      </span>
                      Undefined name 'mkdocs_conf'</li>
                
-               </ul><tt><i>339</i>             <span class="n">ex_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_thumbnail_div</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">],</span></tt>
+               </ul><tt><i>349</i>             <span class="n">ex_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_thumbnail_div</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">],</span></tt>
             </div>
-            <div id="l340"
+            <div id="l350"
                class="code sev-1  le">
                <ul class="violations">
                
@@ -1094,9 +1106,9 @@
                      </span>
                      Undefined name 'subsection_path'</li>
                
-               </ul><tt><i>340</i>                                          <span class="n">subsection_path</span><span class="p">,</span></tt>
+               </ul><tt><i>350</i>                                          <span class="n">subsection_path</span><span class="p">,</span></tt>
             </div>
-            <div id="l341"
+            <div id="l351"
                class="code sev-1  le">
                <ul class="violations">
                
@@ -1112,45 +1124,45 @@
                      </span>
                      Undefined name 'title'</li>
                
-               </ul><tt><i>341</i>                                          <span class="n">fname</span><span class="p">,</span> <span class="n">snippet</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span></tt>
-            </div>
-            <div id="l342"
-               class="code sev- "><tt><i>342</i>                                          <span class="n">is_backref</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></tt>
-            </div>
-            <div id="l343"
-               class="code sev- "><tt><i>343</i>             <span class="n">seen_backrefs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">backref</span><span class="p">)</span></tt>
-            </div>
-            <div id="l344"
-               class="code sev- "><tt><i>344</i> &nbsp;</tt>
-            </div>
-            <div id="l345"
-               class="code sev- "><tt><i>345</i> &nbsp;</tt>
-            </div>
-            <div id="l346"
-               class="code sev- "><tt><i>346</i> <span class="k">def</span> <span class="nf">_finalize_backreferences</span><span class="p">(</span><span class="n">seen_backrefs</span><span class="p">,</span> <span class="n">gallery_conf</span><span class="p">):</span></tt>
-            </div>
-            <div id="l347"
-               class="code sev- "><tt><i>347</i>     <span class="sd">&quot;&quot;&quot;Replace backref files only if necessary.&quot;&quot;&quot;</span></tt>
-            </div>
-            <div id="l348"
-               class="code sev- "><tt><i>348</i>     <span class="n">logger</span> <span class="o">=</span> <span class="n">mkdocs_compatibility</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;mkdocs-gallery&#39;</span><span class="p">)</span></tt>
-            </div>
-            <div id="l349"
-               class="code sev- "><tt><i>349</i>     <span class="k">if</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;backreferences_dir&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span></tt>
-            </div>
-            <div id="l350"
-               class="code sev- "><tt><i>350</i>         <span class="k">return</span></tt>
-            </div>
-            <div id="l351"
-               class="code sev- "><tt><i>351</i> &nbsp;</tt>
+               </ul><tt><i>351</i>                                          <span class="n">fname</span><span class="p">,</span> <span class="n">snippet</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span></tt>
             </div>
             <div id="l352"
-               class="code sev- "><tt><i>352</i>     <span class="k">for</span> <span class="n">backref</span> <span class="ow">in</span> <span class="n">seen_backrefs</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>352</i>                                          <span class="n">is_backref</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></tt>
             </div>
             <div id="l353"
-               class="code sev- "><tt><i>353</i>         <span class="c1"># TODO use _new_file ?</span></tt>
+               class="code sev- "><tt><i>353</i>             <span class="n">seen_backrefs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">backref</span><span class="p">)</span></tt>
             </div>
             <div id="l354"
+               class="code sev- "><tt><i>354</i> &nbsp;</tt>
+            </div>
+            <div id="l355"
+               class="code sev- "><tt><i>355</i> &nbsp;</tt>
+            </div>
+            <div id="l356"
+               class="code sev- "><tt><i>356</i> <span class="k">def</span> <span class="nf">_finalize_backreferences</span><span class="p">(</span><span class="n">seen_backrefs</span><span class="p">,</span> <span class="n">gallery_conf</span><span class="p">):</span></tt>
+            </div>
+            <div id="l357"
+               class="code sev- "><tt><i>357</i>     <span class="sd">&quot;&quot;&quot;Replace backref files only if necessary.&quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l358"
+               class="code sev- "><tt><i>358</i>     <span class="n">logger</span> <span class="o">=</span> <span class="n">mkdocs_compatibility</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;mkdocs-gallery&#39;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l359"
+               class="code sev- "><tt><i>359</i>     <span class="k">if</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;backreferences_dir&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span></tt>
+            </div>
+            <div id="l360"
+               class="code sev- "><tt><i>360</i>         <span class="k">return</span></tt>
+            </div>
+            <div id="l361"
+               class="code sev- "><tt><i>361</i> &nbsp;</tt>
+            </div>
+            <div id="l362"
+               class="code sev- "><tt><i>362</i>     <span class="k">for</span> <span class="n">backref</span> <span class="ow">in</span> <span class="n">seen_backrefs</span><span class="p">:</span></tt>
+            </div>
+            <div id="l363"
+               class="code sev- "><tt><i>363</i>         <span class="c1"># TODO use _new_file ?</span></tt>
+            </div>
+            <div id="l364"
                class="code sev-1  le">
                <ul class="violations">
                
@@ -1160,40 +1172,40 @@
                      </span>
                      Undefined name 'mkdocs_conf'</li>
                
-               </ul><tt><i>354</i>         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">],</span></tt>
-            </div>
-            <div id="l355"
-               class="code sev- "><tt><i>355</i>                             <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;backreferences_dir&#39;</span><span class="p">],</span></tt>
-            </div>
-            <div id="l356"
-               class="code sev- "><tt><i>356</i>                             <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.examples.new&#39;</span> <span class="o">%</span> <span class="n">backref</span><span class="p">)</span></tt>
-            </div>
-            <div id="l357"
-               class="code sev- "><tt><i>357</i>         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span></tt>
-            </div>
-            <div id="l358"
-               class="code sev- "><tt><i>358</i>             <span class="n">_replace_by_new_if_needed</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">md5_mode</span><span class="o">=</span><span class="s1">&#39;t&#39;</span><span class="p">)</span></tt>
-            </div>
-            <div id="l359"
-               class="code sev- "><tt><i>359</i>         <span class="k">else</span><span class="p">:</span></tt>
-            </div>
-            <div id="l360"
-               class="code sev- "><tt><i>360</i>             <span class="n">level</span> <span class="o">=</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;log_level&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;backreference_missing&#39;</span><span class="p">,</span></tt>
-            </div>
-            <div id="l361"
-               class="code sev- "><tt><i>361</i>                                                   <span class="s1">&#39;warning&#39;</span><span class="p">)</span></tt>
-            </div>
-            <div id="l362"
-               class="code sev- "><tt><i>362</i>             <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></tt>
-            </div>
-            <div id="l363"
-               class="code sev- "><tt><i>363</i>             <span class="n">func</span><span class="p">(</span><span class="s1">&#39;Could not find backreferences file: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="p">,))</span></tt>
-            </div>
-            <div id="l364"
-               class="code sev- "><tt><i>364</i>             <span class="n">func</span><span class="p">(</span><span class="s1">&#39;The backreferences are likely to be erroneous &#39;</span></tt>
+               </ul><tt><i>364</i>         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">],</span></tt>
             </div>
             <div id="l365"
-               class="code sev- "><tt><i>365</i>                  <span class="s1">&#39;due to file system case insensitivity.&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>365</i>                             <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;backreferences_dir&#39;</span><span class="p">],</span></tt>
+            </div>
+            <div id="l366"
+               class="code sev- "><tt><i>366</i>                             <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.examples.new&#39;</span> <span class="o">%</span> <span class="n">backref</span><span class="p">)</span></tt>
+            </div>
+            <div id="l367"
+               class="code sev- "><tt><i>367</i>         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span></tt>
+            </div>
+            <div id="l368"
+               class="code sev- "><tt><i>368</i>             <span class="n">_replace_by_new_if_needed</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">md5_mode</span><span class="o">=</span><span class="s1">&#39;t&#39;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l369"
+               class="code sev- "><tt><i>369</i>         <span class="k">else</span><span class="p">:</span></tt>
+            </div>
+            <div id="l370"
+               class="code sev- "><tt><i>370</i>             <span class="n">level</span> <span class="o">=</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;log_level&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;backreference_missing&#39;</span><span class="p">,</span></tt>
+            </div>
+            <div id="l371"
+               class="code sev- "><tt><i>371</i>                                                   <span class="s1">&#39;warning&#39;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l372"
+               class="code sev- "><tt><i>372</i>             <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></tt>
+            </div>
+            <div id="l373"
+               class="code sev- "><tt><i>373</i>             <span class="n">func</span><span class="p">(</span><span class="s1">&#39;Could not find backreferences file: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="p">,))</span></tt>
+            </div>
+            <div id="l374"
+               class="code sev- "><tt><i>374</i>             <span class="n">func</span><span class="p">(</span><span class="s1">&#39;The backreferences are likely to be erroneous &#39;</span></tt>
+            </div>
+            <div id="l375"
+               class="code sev- "><tt><i>375</i>                  <span class="s1">&#39;due to file system case insensitivity.&#39;</span><span class="p">)</span></tt>
             </div>
             
          </div>

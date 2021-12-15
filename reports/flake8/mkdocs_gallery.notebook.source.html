@@ -17,516 +17,510 @@
 
          <div id="doc">
             <div id="l1"
-               class="code sev- "><tt><i>1</i> <span class="c1"># -*- coding: utf-8 -*-</span></tt>
+               class="code sev- "><tt><i>1</i> <span class="c1">#  Authors: Sylvain MARIE &lt;sylvain.marie@se.com&gt;</span></tt>
             </div>
             <div id="l2"
-               class="code sev- "><tt><i>2</i> <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>2</i> <span class="c1">#            + All contributors to &lt;https://github.com/smarie/mkdocs-gallery&gt;</span></tt>
             </div>
             <div id="l3"
-               class="code sev- "><tt><i>3</i> <span class="sd">Parser for Jupyter notebooks</span></tt>
+               class="code sev- "><tt><i>3</i> <span class="c1">#</span></tt>
             </div>
             <div id="l4"
-               class="code sev- "><tt><i>4</i> <span class="sd">============================</span></tt>
+               class="code sev- "><tt><i>4</i> <span class="c1">#  Original idea and code: sphinx-gallery, &lt;https://sphinx-gallery.github.io&gt;</span></tt>
             </div>
             <div id="l5"
-               class="code sev- "><tt><i>5</i> &nbsp;</tt>
+               class="code sev- "><tt><i>5</i> <span class="c1">#  License: 3-clause BSD, &lt;https://github.com/smarie/mkdocs-gallery/blob/master/LICENSE&gt;</span></tt>
             </div>
             <div id="l6"
-               class="code sev- "><tt><i>6</i> <span class="sd">Class that holds the Jupyter notebook information</span></tt>
+               class="code sev- "><tt><i>6</i> <span class="sd">&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l7"
-               class="code sev- "><tt><i>7</i> &nbsp;</tt>
+               class="code sev- "><tt><i>7</i> <span class="sd">Parser for Jupyter notebooks</span></tt>
             </div>
             <div id="l8"
                class="code sev- "><tt><i>8</i> <span class="sd">&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l9"
-               class="code sev- "><tt><i>9</i> <span class="c1"># Author: Sylvain Marié, from a fork of sphinx-gallery by Óscar Nájera</span></tt>
+               class="code sev- "><tt><i>9</i> &nbsp;</tt>
             </div>
             <div id="l10"
-               class="code sev- "><tt><i>10</i> <span class="c1"># License: 3-clause BSD</span></tt>
+               class="code sev- "><tt><i>10</i> <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span></tt>
             </div>
             <div id="l11"
-               class="code sev- "><tt><i>11</i> &nbsp;</tt>
+               class="code sev- "><tt><i>11</i> <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span></tt>
             </div>
             <div id="l12"
-               class="code sev- "><tt><i>12</i> <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span></tt>
+               class="code sev- "><tt><i>12</i> <span class="kn">import</span> <span class="nn">argparse</span></tt>
             </div>
             <div id="l13"
-               class="code sev- "><tt><i>13</i> <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span></tt>
+               class="code sev- "><tt><i>13</i> <span class="kn">import</span> <span class="nn">base64</span></tt>
             </div>
             <div id="l14"
-               class="code sev- "><tt><i>14</i> <span class="kn">import</span> <span class="nn">argparse</span></tt>
+               class="code sev- "><tt><i>14</i> <span class="kn">import</span> <span class="nn">json</span></tt>
             </div>
             <div id="l15"
-               class="code sev- "><tt><i>15</i> <span class="kn">import</span> <span class="nn">base64</span></tt>
+               class="code sev- "><tt><i>15</i> <span class="kn">import</span> <span class="nn">mimetypes</span></tt>
             </div>
             <div id="l16"
-               class="code sev- "><tt><i>16</i> <span class="kn">import</span> <span class="nn">json</span></tt>
+               class="code sev- "><tt><i>16</i> <span class="kn">import</span> <span class="nn">os</span></tt>
             </div>
             <div id="l17"
-               class="code sev- "><tt><i>17</i> <span class="kn">import</span> <span class="nn">mimetypes</span></tt>
+               class="code sev- "><tt><i>17</i> <span class="kn">import</span> <span class="nn">re</span></tt>
             </div>
             <div id="l18"
-               class="code sev- "><tt><i>18</i> <span class="kn">import</span> <span class="nn">os</span></tt>
+               class="code sev- "><tt><i>18</i> <span class="kn">import</span> <span class="nn">sys</span></tt>
             </div>
             <div id="l19"
-               class="code sev- "><tt><i>19</i> <span class="kn">import</span> <span class="nn">re</span></tt>
+               class="code sev- "><tt><i>19</i> <span class="kn">import</span> <span class="nn">copy</span></tt>
             </div>
             <div id="l20"
-               class="code sev- "><tt><i>20</i> <span class="kn">import</span> <span class="nn">sys</span></tt>
+               class="code sev- "><tt><i>20</i> <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span></tt>
             </div>
             <div id="l21"
-               class="code sev- "><tt><i>21</i> <span class="kn">import</span> <span class="nn">copy</span></tt>
+               class="code sev- "><tt><i>21</i> <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span></tt>
             </div>
             <div id="l22"
-               class="code sev- "><tt><i>22</i> <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span></tt>
+               class="code sev- "><tt><i>22</i> &nbsp;</tt>
             </div>
             <div id="l23"
-               class="code sev- "><tt><i>23</i> <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span></tt>
+               class="code sev- "><tt><i>23</i> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">mkdocs_compatibility</span></tt>
             </div>
             <div id="l24"
-               class="code sev- "><tt><i>24</i> &nbsp;</tt>
+               class="code sev- "><tt><i>24</i> <span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">ExtensionError</span></tt>
             </div>
             <div id="l25"
-               class="code sev- "><tt><i>25</i> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">mkdocs_compatibility</span></tt>
+               class="code sev- "><tt><i>25</i> <span class="kn">from</span> <span class="nn">.py_source_parser</span> <span class="kn">import</span> <span class="n">split_code_and_text_blocks</span></tt>
             </div>
             <div id="l26"
-               class="code sev- "><tt><i>26</i> <span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">ExtensionError</span></tt>
+               class="code sev- "><tt><i>26</i> <span class="kn">from</span> <span class="nn">.gen_data_model</span> <span class="kn">import</span> <span class="n">GalleryScript</span></tt>
             </div>
             <div id="l27"
-               class="code sev- "><tt><i>27</i> <span class="kn">from</span> <span class="nn">.py_source_parser</span> <span class="kn">import</span> <span class="n">split_code_and_text_blocks</span></tt>
+               class="code sev- "><tt><i>27</i> &nbsp;</tt>
             </div>
             <div id="l28"
-               class="code sev- "><tt><i>28</i> <span class="kn">from</span> <span class="nn">.gen_data_model</span> <span class="kn">import</span> <span class="n">GalleryScript</span></tt>
+               class="code sev- "><tt><i>28</i> <span class="n">logger</span> <span class="o">=</span> <span class="n">mkdocs_compatibility</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;mkdocs-gallery&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l29"
                class="code sev- "><tt><i>29</i> &nbsp;</tt>
             </div>
             <div id="l30"
-               class="code sev- "><tt><i>30</i> <span class="n">logger</span> <span class="o">=</span> <span class="n">mkdocs_compatibility</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;mkdocs-gallery&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>30</i> &nbsp;</tt>
             </div>
             <div id="l31"
-               class="code sev- "><tt><i>31</i> &nbsp;</tt>
+               class="code sev- "><tt><i>31</i> <span class="k">def</span> <span class="nf">jupyter_notebook_skeleton</span><span class="p">():</span></tt>
             </div>
             <div id="l32"
-               class="code sev- "><tt><i>32</i> &nbsp;</tt>
+               class="code sev- "><tt><i>32</i>     <span class="sd">&quot;&quot;&quot;Returns a dictionary with the elements of a Jupyter notebook&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l33"
-               class="code sev- "><tt><i>33</i> <span class="k">def</span> <span class="nf">jupyter_notebook_skeleton</span><span class="p">():</span></tt>
+               class="code sev- "><tt><i>33</i>     <span class="n">py_version</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span></tt>
             </div>
             <div id="l34"
-               class="code sev- "><tt><i>34</i>     <span class="sd">&quot;&quot;&quot;Returns a dictionary with the elements of a Jupyter notebook&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>34</i>     <span class="n">notebook_skeleton</span> <span class="o">=</span> <span class="p">{</span></tt>
             </div>
             <div id="l35"
-               class="code sev- "><tt><i>35</i>     <span class="n">py_version</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span></tt>
+               class="code sev- "><tt><i>35</i>         <span class="s2">&quot;cells&quot;</span><span class="p">:</span> <span class="p">[],</span></tt>
             </div>
             <div id="l36"
-               class="code sev- "><tt><i>36</i>     <span class="n">notebook_skeleton</span> <span class="o">=</span> <span class="p">{</span></tt>
+               class="code sev- "><tt><i>36</i>         <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span></tt>
             </div>
             <div id="l37"
-               class="code sev- "><tt><i>37</i>         <span class="s2">&quot;cells&quot;</span><span class="p">:</span> <span class="p">[],</span></tt>
+               class="code sev- "><tt><i>37</i>             <span class="s2">&quot;kernelspec&quot;</span><span class="p">:</span> <span class="p">{</span></tt>
             </div>
             <div id="l38"
-               class="code sev- "><tt><i>38</i>         <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span></tt>
+               class="code sev- "><tt><i>38</i>                 <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Python &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">py_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span></tt>
             </div>
             <div id="l39"
-               class="code sev- "><tt><i>39</i>             <span class="s2">&quot;kernelspec&quot;</span><span class="p">:</span> <span class="p">{</span></tt>
+               class="code sev- "><tt><i>39</i>                 <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span></tt>
             </div>
             <div id="l40"
-               class="code sev- "><tt><i>40</i>                 <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Python &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">py_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span></tt>
+               class="code sev- "><tt><i>40</i>                 <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">py_version</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></tt>
             </div>
             <div id="l41"
-               class="code sev- "><tt><i>41</i>                 <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>41</i>             <span class="p">},</span></tt>
             </div>
             <div id="l42"
-               class="code sev- "><tt><i>42</i>                 <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">py_version</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></tt>
+               class="code sev- "><tt><i>42</i>             <span class="s2">&quot;language_info&quot;</span><span class="p">:</span> <span class="p">{</span></tt>
             </div>
             <div id="l43"
-               class="code sev- "><tt><i>43</i>             <span class="p">},</span></tt>
+               class="code sev- "><tt><i>43</i>                 <span class="s2">&quot;codemirror_mode&quot;</span><span class="p">:</span> <span class="p">{</span></tt>
             </div>
             <div id="l44"
-               class="code sev- "><tt><i>44</i>             <span class="s2">&quot;language_info&quot;</span><span class="p">:</span> <span class="p">{</span></tt>
+               class="code sev- "><tt><i>44</i>                     <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;ipython&quot;</span><span class="p">,</span></tt>
             </div>
             <div id="l45"
-               class="code sev- "><tt><i>45</i>                 <span class="s2">&quot;codemirror_mode&quot;</span><span class="p">:</span> <span class="p">{</span></tt>
+               class="code sev- "><tt><i>45</i>                     <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">py_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></tt>
             </div>
             <div id="l46"
-               class="code sev- "><tt><i>46</i>                     <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;ipython&quot;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>46</i>                 <span class="p">},</span></tt>
             </div>
             <div id="l47"
-               class="code sev- "><tt><i>47</i>                     <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">py_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>47</i>                 <span class="s2">&quot;file_extension&quot;</span><span class="p">:</span> <span class="s2">&quot;.py&quot;</span><span class="p">,</span></tt>
             </div>
             <div id="l48"
-               class="code sev- "><tt><i>48</i>                 <span class="p">},</span></tt>
+               class="code sev- "><tt><i>48</i>                 <span class="s2">&quot;mimetype&quot;</span><span class="p">:</span> <span class="s2">&quot;text/x-python&quot;</span><span class="p">,</span></tt>
             </div>
             <div id="l49"
-               class="code sev- "><tt><i>49</i>                 <span class="s2">&quot;file_extension&quot;</span><span class="p">:</span> <span class="s2">&quot;.py&quot;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>49</i>                 <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span></tt>
             </div>
             <div id="l50"
-               class="code sev- "><tt><i>50</i>                 <span class="s2">&quot;mimetype&quot;</span><span class="p">:</span> <span class="s2">&quot;text/x-python&quot;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>50</i>                 <span class="s2">&quot;nbconvert_exporter&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span></tt>
             </div>
             <div id="l51"
-               class="code sev- "><tt><i>51</i>                 <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>51</i>                 <span class="s2">&quot;pygments_lexer&quot;</span><span class="p">:</span> <span class="s2">&quot;ipython&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">py_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span></tt>
             </div>
             <div id="l52"
-               class="code sev- "><tt><i>52</i>                 <span class="s2">&quot;nbconvert_exporter&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>52</i>                 <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.</span><span class="si">{1}</span><span class="s1">.</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span></tt>
             </div>
             <div id="l53"
-               class="code sev- "><tt><i>53</i>                 <span class="s2">&quot;pygments_lexer&quot;</span><span class="p">:</span> <span class="s2">&quot;ipython&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">py_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span></tt>
+               class="code sev- "><tt><i>53</i>             <span class="p">}</span></tt>
             </div>
             <div id="l54"
-               class="code sev- "><tt><i>54</i>                 <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.</span><span class="si">{1}</span><span class="s1">.</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span></tt>
+               class="code sev- "><tt><i>54</i>         <span class="p">},</span></tt>
             </div>
             <div id="l55"
-               class="code sev- "><tt><i>55</i>             <span class="p">}</span></tt>
+               class="code sev- "><tt><i>55</i>         <span class="s2">&quot;nbformat&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span></tt>
             </div>
             <div id="l56"
-               class="code sev- "><tt><i>56</i>         <span class="p">},</span></tt>
+               class="code sev- "><tt><i>56</i>         <span class="s2">&quot;nbformat_minor&quot;</span><span class="p">:</span> <span class="mi">0</span></tt>
             </div>
             <div id="l57"
-               class="code sev- "><tt><i>57</i>         <span class="s2">&quot;nbformat&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>57</i>     <span class="p">}</span></tt>
             </div>
             <div id="l58"
-               class="code sev- "><tt><i>58</i>         <span class="s2">&quot;nbformat_minor&quot;</span><span class="p">:</span> <span class="mi">0</span></tt>
+               class="code sev- "><tt><i>58</i>     <span class="k">return</span> <span class="n">notebook_skeleton</span></tt>
             </div>
             <div id="l59"
-               class="code sev- "><tt><i>59</i>     <span class="p">}</span></tt>
+               class="code sev- "><tt><i>59</i> &nbsp;</tt>
             </div>
             <div id="l60"
-               class="code sev- "><tt><i>60</i>     <span class="k">return</span> <span class="n">notebook_skeleton</span></tt>
+               class="code sev- "><tt><i>60</i> &nbsp;</tt>
             </div>
             <div id="l61"
-               class="code sev- "><tt><i>61</i> &nbsp;</tt>
+               class="code sev- "><tt><i>61</i> <span class="k">def</span> <span class="nf">directive_fun</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">directive</span><span class="p">):</span></tt>
             </div>
             <div id="l62"
-               class="code sev- "><tt><i>62</i> &nbsp;</tt>
+               class="code sev- "><tt><i>62</i>     <span class="sd">&quot;&quot;&quot;Helper to fill in directives&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l63"
-               class="code sev- "><tt><i>63</i> <span class="k">def</span> <span class="nf">directive_fun</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">directive</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>63</i>     <span class="n">directive_to_alert</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">note</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">warning</span><span class="o">=</span><span class="s2">&quot;danger&quot;</span><span class="p">)</span></tt>
             </div>
             <div id="l64"
-               class="code sev- "><tt><i>64</i>     <span class="sd">&quot;&quot;&quot;Helper to fill in directives&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>64</i>     <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;alert alert-</span><span class="si">{0}</span><span class="s1">&quot;&gt;&lt;h4&gt;</span><span class="si">{1}</span><span class="s1">&lt;/h4&gt;&lt;p&gt;</span><span class="si">{2}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;&#39;</span></tt>
             </div>
             <div id="l65"
-               class="code sev- "><tt><i>65</i>     <span class="n">directive_to_alert</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">note</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">warning</span><span class="o">=</span><span class="s2">&quot;danger&quot;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>65</i>             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">directive_to_alert</span><span class="p">[</span><span class="n">directive</span><span class="p">],</span> <span class="n">directive</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span></tt>
             </div>
             <div id="l66"
-               class="code sev- "><tt><i>66</i>     <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;alert alert-</span><span class="si">{0}</span><span class="s1">&quot;&gt;&lt;h4&gt;</span><span class="si">{1}</span><span class="s1">&lt;/h4&gt;&lt;p&gt;</span><span class="si">{2}</span><span class="s1">&lt;/p&gt;&lt;/div&gt;&#39;</span></tt>
+               class="code sev- "><tt><i>66</i>                     <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span></tt>
             </div>
             <div id="l67"
-               class="code sev- "><tt><i>67</i>             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">directive_to_alert</span><span class="p">[</span><span class="n">directive</span><span class="p">],</span> <span class="n">directive</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span></tt>
+               class="code sev- "><tt><i>67</i> &nbsp;</tt>
             </div>
             <div id="l68"
-               class="code sev- "><tt><i>68</i>                     <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span></tt>
+               class="code sev- "><tt><i>68</i> &nbsp;</tt>
             </div>
             <div id="l69"
-               class="code sev- "><tt><i>69</i> &nbsp;</tt>
+               class="code sev- "><tt><i>69</i> <span class="k">def</span> <span class="nf">rst2md</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">gallery_conf</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">,</span> <span class="n">heading_levels</span><span class="p">):</span></tt>
             </div>
             <div id="l70"
-               class="code sev- "><tt><i>70</i> &nbsp;</tt>
+               class="code sev- "><tt><i>70</i>     <span class="sd">&quot;&quot;&quot;Converts the RST text from the examples docstrings and comments</span></tt>
             </div>
             <div id="l71"
-               class="code sev- "><tt><i>71</i> <span class="k">def</span> <span class="nf">rst2md</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">gallery_conf</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">,</span> <span class="n">heading_levels</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>71</i> <span class="sd">    into markdown text for the Jupyter notebooks</span></tt>
             </div>
             <div id="l72"
-               class="code sev- "><tt><i>72</i>     <span class="sd">&quot;&quot;&quot;Converts the RST text from the examples docstrings and comments</span></tt>
+               class="code sev- "><tt><i>72</i> &nbsp;</tt>
             </div>
             <div id="l73"
-               class="code sev- "><tt><i>73</i> <span class="sd">    into markdown text for the Jupyter notebooks</span></tt>
+               class="code sev- "><tt><i>73</i> <span class="sd">    Parameters</span></tt>
             </div>
             <div id="l74"
-               class="code sev- "><tt><i>74</i> &nbsp;</tt>
+               class="code sev- "><tt><i>74</i> <span class="sd">    ----------</span></tt>
             </div>
             <div id="l75"
-               class="code sev- "><tt><i>75</i> <span class="sd">    Parameters</span></tt>
+               class="code sev- "><tt><i>75</i> <span class="sd">    text: str</span></tt>
             </div>
             <div id="l76"
-               class="code sev- "><tt><i>76</i> <span class="sd">    ----------</span></tt>
+               class="code sev- "><tt><i>76</i> <span class="sd">        RST input to be converted to MD</span></tt>
             </div>
             <div id="l77"
-               class="code sev- "><tt><i>77</i> <span class="sd">    text: str</span></tt>
+               class="code sev- "><tt><i>77</i> <span class="sd">    gallery_conf : dict</span></tt>
             </div>
             <div id="l78"
-               class="code sev- "><tt><i>78</i> <span class="sd">        RST input to be converted to MD</span></tt>
+               class="code sev- "><tt><i>78</i> <span class="sd">        The mkdocs-gallery configuration dictionary.</span></tt>
             </div>
             <div id="l79"
-               class="code sev- "><tt><i>79</i> <span class="sd">    gallery_conf : dict</span></tt>
+               class="code sev- "><tt><i>79</i> <span class="sd">    target_dir : str</span></tt>
             </div>
             <div id="l80"
-               class="code sev- "><tt><i>80</i> <span class="sd">        The mkdocs-gallery configuration dictionary.</span></tt>
+               class="code sev- "><tt><i>80</i> <span class="sd">        Path that notebook is intended for. Used where relative paths</span></tt>
             </div>
             <div id="l81"
-               class="code sev- "><tt><i>81</i> <span class="sd">    target_dir : str</span></tt>
+               class="code sev- "><tt><i>81</i> <span class="sd">        may be required.</span></tt>
             </div>
             <div id="l82"
-               class="code sev- "><tt><i>82</i> <span class="sd">        Path that notebook is intended for. Used where relative paths</span></tt>
+               class="code sev- "><tt><i>82</i> <span class="sd">    heading_levels: dict</span></tt>
             </div>
             <div id="l83"
-               class="code sev- "><tt><i>83</i> <span class="sd">        may be required.</span></tt>
+               class="code sev- "><tt><i>83</i> <span class="sd">        Mapping of heading style ``(over_char, under_char)`` to heading level.</span></tt>
             </div>
             <div id="l84"
-               class="code sev- "><tt><i>84</i> <span class="sd">    heading_levels: dict</span></tt>
+               class="code sev- "><tt><i>84</i> <span class="sd">        Note that ``over_char`` is `None` when only underline is present.</span></tt>
             </div>
             <div id="l85"
-               class="code sev- "><tt><i>85</i> <span class="sd">        Mapping of heading style ``(over_char, under_char)`` to heading level.</span></tt>
+               class="code sev- "><tt><i>85</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l86"
-               class="code sev- "><tt><i>86</i> <span class="sd">        Note that ``over_char`` is `None` when only underline is present.</span></tt>
+               class="code sev- "><tt><i>86</i> &nbsp;</tt>
             </div>
             <div id="l87"
-               class="code sev- "><tt><i>87</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>87</i>     <span class="c1"># Characters recommended for use with headings</span></tt>
             </div>
             <div id="l88"
-               class="code sev- "><tt><i>88</i> &nbsp;</tt>
+               class="code sev- "><tt><i>88</i>     <span class="c1"># https://docutils.readthedocs.io/en/sphinx-docs/user/rst/quickstart.html#sections</span></tt>
             </div>
             <div id="l89"
-               class="code sev- "><tt><i>89</i>     <span class="c1"># Characters recommended for use with headings</span></tt>
+               class="code sev- "><tt><i>89</i>     <span class="n">adornment_characters</span> <span class="o">=</span> <span class="s2">&quot;=`:.&#39;</span><span class="se">\&quot;</span><span class="s2">~^_*+#&lt;&gt;-&quot;</span></tt>
             </div>
             <div id="l90"
-               class="code sev- "><tt><i>90</i>     <span class="c1"># https://docutils.readthedocs.io/en/sphinx-docs/user/rst/quickstart.html#sections</span></tt>
+               class="code sev- "><tt><i>90</i>     <span class="n">headings</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span></tt>
             </div>
             <div id="l91"
-               class="code sev- "><tt><i>91</i>     <span class="n">adornment_characters</span> <span class="o">=</span> <span class="s2">&quot;=`:.&#39;</span><span class="se">\&quot;</span><span class="s2">~^_*+#&lt;&gt;-&quot;</span></tt>
+               class="code sev- "><tt><i>91</i>         <span class="c1"># Start of string or blank line</span></tt>
             </div>
             <div id="l92"
-               class="code sev- "><tt><i>92</i>     <span class="n">headings</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>92</i>         <span class="sa">r</span><span class="s1">&#39;(?P&lt;pre&gt;\A|^[ \t]*\n)&#39;</span></tt>
             </div>
             <div id="l93"
-               class="code sev- "><tt><i>93</i>         <span class="c1"># Start of string or blank line</span></tt>
+               class="code sev- "><tt><i>93</i>         <span class="c1"># Optional over characters, allowing leading space on heading text</span></tt>
             </div>
             <div id="l94"
-               class="code sev- "><tt><i>94</i>         <span class="sa">r</span><span class="s1">&#39;(?P&lt;pre&gt;\A|^[ \t]*\n)&#39;</span></tt>
+               class="code sev- "><tt><i>94</i>         <span class="sa">r</span><span class="s1">&#39;(?:(?P&lt;over&gt;[</span><span class="si">{0}</span><span class="s1">])(?P=over)*\n[ \t]*)?&#39;</span></tt>
             </div>
             <div id="l95"
-               class="code sev- "><tt><i>95</i>         <span class="c1"># Optional over characters, allowing leading space on heading text</span></tt>
+               class="code sev- "><tt><i>95</i>         <span class="c1"># The heading itself, with at least one non-white space character</span></tt>
             </div>
             <div id="l96"
-               class="code sev- "><tt><i>96</i>         <span class="sa">r</span><span class="s1">&#39;(?:(?P&lt;over&gt;[</span><span class="si">{0}</span><span class="s1">])(?P=over)*\n[ \t]*)?&#39;</span></tt>
+               class="code sev- "><tt><i>96</i>         <span class="sa">r</span><span class="s1">&#39;(?P&lt;heading&gt;\S[^\n]*)\n&#39;</span></tt>
             </div>
             <div id="l97"
-               class="code sev- "><tt><i>97</i>         <span class="c1"># The heading itself, with at least one non-white space character</span></tt>
+               class="code sev- "><tt><i>97</i>         <span class="c1"># Under character, setting to same character if over present.</span></tt>
             </div>
             <div id="l98"
-               class="code sev- "><tt><i>98</i>         <span class="sa">r</span><span class="s1">&#39;(?P&lt;heading&gt;\S[^\n]*)\n&#39;</span></tt>
+               class="code sev- "><tt><i>98</i>         <span class="sa">r</span><span class="s1">&#39;(?P&lt;under&gt;(?(over)(?P=over)|[</span><span class="si">{0}</span><span class="s1">]))(?P=under)*$&#39;</span></tt>
             </div>
             <div id="l99"
-               class="code sev- "><tt><i>99</i>         <span class="c1"># Under character, setting to same character if over present.</span></tt>
+               class="code sev- "><tt><i>99</i>         <span class="sa">r</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">adornment_characters</span><span class="p">),</span></tt>
             </div>
             <div id="l100"
-               class="code sev- "><tt><i>100</i>         <span class="sa">r</span><span class="s1">&#39;(?P&lt;under&gt;(?(over)(?P=over)|[</span><span class="si">{0}</span><span class="s1">]))(?P=under)*$&#39;</span></tt>
+               class="code sev- "><tt><i>100</i>         <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
             </div>
             <div id="l101"
-               class="code sev- "><tt><i>101</i>         <span class="sa">r</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">adornment_characters</span><span class="p">),</span></tt>
+               class="code sev- "><tt><i>101</i> &nbsp;</tt>
             </div>
             <div id="l102"
-               class="code sev- "><tt><i>102</i>         <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>102</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span></tt>
             </div>
             <div id="l103"
-               class="code sev- "><tt><i>103</i> &nbsp;</tt>
+               class="code sev- "><tt><i>103</i>         <span class="n">headings</span><span class="p">,</span></tt>
             </div>
             <div id="l104"
-               class="code sev- "><tt><i>104</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>104</i>         <span class="k">lambda</span> <span class="n">match</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{1}{0}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span></tt>
             </div>
             <div id="l105"
-               class="code sev- "><tt><i>105</i>         <span class="n">headings</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>105</i>             <span class="s1">&#39;#&#39;</span><span class="o">*</span><span class="n">heading_levels</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;over&#39;</span><span class="p">,</span> <span class="s1">&#39;under&#39;</span><span class="p">)],</span></tt>
             </div>
             <div id="l106"
-               class="code sev- "><tt><i>106</i>         <span class="k">lambda</span> <span class="n">match</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{1}{0}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>106</i>             <span class="o">*</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;pre&#39;</span><span class="p">,</span> <span class="s1">&#39;heading&#39;</span><span class="p">)),</span></tt>
             </div>
             <div id="l107"
-               class="code sev- "><tt><i>107</i>             <span class="s1">&#39;#&#39;</span><span class="o">*</span><span class="n">heading_levels</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;over&#39;</span><span class="p">,</span> <span class="s1">&#39;under&#39;</span><span class="p">)],</span></tt>
+               class="code sev- "><tt><i>107</i>         <span class="n">text</span><span class="p">)</span></tt>
             </div>
             <div id="l108"
-               class="code sev- "><tt><i>108</i>             <span class="o">*</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;pre&#39;</span><span class="p">,</span> <span class="s1">&#39;heading&#39;</span><span class="p">)),</span></tt>
+               class="code sev- "><tt><i>108</i> &nbsp;</tt>
             </div>
             <div id="l109"
-               class="code sev- "><tt><i>109</i>         <span class="n">text</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>109</i>     <span class="n">math_eq</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\.\. math::((?:.+)?(?:\n+^  .+)*)&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
             </div>
             <div id="l110"
-               class="code sev- "><tt><i>110</i> &nbsp;</tt>
+               class="code sev- "><tt><i>110</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">math_eq</span><span class="p">,</span></tt>
             </div>
             <div id="l111"
-               class="code sev- "><tt><i>111</i>     <span class="n">math_eq</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\.\. math::((?:.+)?(?:\n+^  .+)*)&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>111</i>                   <span class="k">lambda</span> <span class="n">match</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;\begin{{align}}</span><span class="si">{0}</span><span class="s1">\end{{align}}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span></tt>
             </div>
             <div id="l112"
-               class="code sev- "><tt><i>112</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">math_eq</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>112</i>                       <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()),</span></tt>
             </div>
             <div id="l113"
-               class="code sev- "><tt><i>113</i>                   <span class="k">lambda</span> <span class="n">match</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;\begin{{align}}</span><span class="si">{0}</span><span class="s1">\end{{align}}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>113</i>                   <span class="n">text</span><span class="p">)</span></tt>
             </div>
             <div id="l114"
-               class="code sev- "><tt><i>114</i>                       <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()),</span></tt>
+               class="code sev- "><tt><i>114</i>     <span class="n">inline_math</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;:math:`(.+?)`&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span></tt>
             </div>
             <div id="l115"
-               class="code sev- "><tt><i>115</i>                   <span class="n">text</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>115</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">inline_math</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\1$&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></tt>
             </div>
             <div id="l116"
-               class="code sev- "><tt><i>116</i>     <span class="n">inline_math</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;:math:`(.+?)`&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>116</i> &nbsp;</tt>
             </div>
             <div id="l117"
-               class="code sev- "><tt><i>117</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">inline_math</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\1$&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>117</i>     <span class="n">directives</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;warning&#39;</span><span class="p">,</span> <span class="s1">&#39;note&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l118"
-               class="code sev- "><tt><i>118</i> &nbsp;</tt>
+               class="code sev- "><tt><i>118</i>     <span class="k">for</span> <span class="n">directive</span> <span class="ow">in</span> <span class="n">directives</span><span class="p">:</span></tt>
             </div>
             <div id="l119"
-               class="code sev- "><tt><i>119</i>     <span class="n">directives</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;warning&#39;</span><span class="p">,</span> <span class="s1">&#39;note&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>119</i>         <span class="n">directive_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\.\. </span><span class="si">%s</span><span class="s1">::((?:.+)?(?:\n+^  .+)*)&#39;</span></tt>
             </div>
             <div id="l120"
-               class="code sev- "><tt><i>120</i>     <span class="k">for</span> <span class="n">directive</span> <span class="ow">in</span> <span class="n">directives</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>120</i>                                   <span class="o">%</span> <span class="n">directive</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
             </div>
             <div id="l121"
-               class="code sev- "><tt><i>121</i>         <span class="n">directive_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\.\. </span><span class="si">%s</span><span class="s1">::((?:.+)?(?:\n+^  .+)*)&#39;</span></tt>
+               class="code sev- "><tt><i>121</i>         <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">directive_re</span><span class="p">,</span></tt>
             </div>
             <div id="l122"
-               class="code sev- "><tt><i>122</i>                                   <span class="o">%</span> <span class="n">directive</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>122</i>                       <span class="n">partial</span><span class="p">(</span><span class="n">directive_fun</span><span class="p">,</span> <span class="n">directive</span><span class="o">=</span><span class="n">directive</span><span class="p">),</span> <span class="n">text</span><span class="p">)</span></tt>
             </div>
             <div id="l123"
-               class="code sev- "><tt><i>123</i>         <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">directive_re</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>123</i> &nbsp;</tt>
             </div>
             <div id="l124"
-               class="code sev- "><tt><i>124</i>                       <span class="n">partial</span><span class="p">(</span><span class="n">directive_fun</span><span class="p">,</span> <span class="n">directive</span><span class="o">=</span><span class="n">directive</span><span class="p">),</span> <span class="n">text</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>124</i>     <span class="n">links</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^ *\.\. _.*:.*$\n&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
             </div>
             <div id="l125"
-               class="code sev- "><tt><i>125</i> &nbsp;</tt>
+               class="code sev- "><tt><i>125</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">links</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></tt>
             </div>
             <div id="l126"
-               class="code sev- "><tt><i>126</i>     <span class="n">links</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^ *\.\. _.*:.*$\n&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>126</i> &nbsp;</tt>
             </div>
             <div id="l127"
-               class="code sev- "><tt><i>127</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">links</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>127</i>     <span class="n">refs</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;:ref:`&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l128"
-               class="code sev- "><tt><i>128</i> &nbsp;</tt>
+               class="code sev- "><tt><i>128</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">refs</span><span class="p">,</span> <span class="s1">&#39;`&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></tt>
             </div>
             <div id="l129"
-               class="code sev- "><tt><i>129</i>     <span class="n">refs</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;:ref:`&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>129</i> &nbsp;</tt>
             </div>
             <div id="l130"
-               class="code sev- "><tt><i>130</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">refs</span><span class="p">,</span> <span class="s1">&#39;`&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>130</i>     <span class="n">contents</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*\.\. contents::.*$(\n +:\S+: *$)*\n&#39;</span><span class="p">,</span></tt>
             </div>
             <div id="l131"
-               class="code sev- "><tt><i>131</i> &nbsp;</tt>
+               class="code sev- "><tt><i>131</i>                           <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
             </div>
             <div id="l132"
-               class="code sev- "><tt><i>132</i>     <span class="n">contents</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*\.\. contents::.*$(\n +:\S+: *$)*\n&#39;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>132</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">contents</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></tt>
             </div>
             <div id="l133"
-               class="code sev- "><tt><i>133</i>                           <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>133</i> &nbsp;</tt>
             </div>
             <div id="l134"
-               class="code sev- "><tt><i>134</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">contents</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>134</i>     <span class="n">images</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span></tt>
             </div>
             <div id="l135"
-               class="code sev- "><tt><i>135</i> &nbsp;</tt>
+               class="code sev- "><tt><i>135</i>         <span class="sa">r</span><span class="s1">&#39;^\.\. image::(.*$)((?:\n +:\S+:.*$)*)\n&#39;</span><span class="p">,</span></tt>
             </div>
             <div id="l136"
-               class="code sev- "><tt><i>136</i>     <span class="n">images</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>136</i>         <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
             </div>
             <div id="l137"
-               class="code sev- "><tt><i>137</i>         <span class="sa">r</span><span class="s1">&#39;^\.\. image::(.*$)((?:\n +:\S+:.*$)*)\n&#39;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>137</i>     <span class="n">image_opts</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\n +:(\S+): +(.*)$&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
             </div>
             <div id="l138"
-               class="code sev- "><tt><i>138</i>         <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>138</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span></tt>
             </div>
             <div id="l139"
-               class="code sev- "><tt><i>139</i>     <span class="n">image_opts</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\n +:(\S+): +(.*)$&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>139</i>         <span class="n">images</span><span class="p">,</span></tt>
             </div>
             <div id="l140"
-               class="code sev- "><tt><i>140</i>     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>140</i>         <span class="k">lambda</span> <span class="n">match</span><span class="p">:</span> <span class="s1">&#39;&lt;img src=&quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="si">{}</span><span class="s1">&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span></tt>
             </div>
             <div id="l141"
-               class="code sev- "><tt><i>141</i>         <span class="n">images</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>141</i>             <span class="n">generate_image_src</span><span class="p">(</span></tt>
             </div>
             <div id="l142"
-               class="code sev- "><tt><i>142</i>         <span class="k">lambda</span> <span class="n">match</span><span class="p">:</span> <span class="s1">&#39;&lt;img src=&quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="si">{}</span><span class="s1">&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>142</i>                 <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">gallery_conf</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">),</span></tt>
             </div>
             <div id="l143"
-               class="code sev- "><tt><i>143</i>             <span class="n">generate_image_src</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>143</i>             <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">image_opts</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39; \1=&quot;\2&quot;&#39;</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">)),</span></tt>
             </div>
             <div id="l144"
-               class="code sev- "><tt><i>144</i>                 <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">gallery_conf</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">),</span></tt>
+               class="code sev- "><tt><i>144</i>         <span class="n">text</span><span class="p">)</span></tt>
             </div>
             <div id="l145"
-               class="code sev- "><tt><i>145</i>             <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">image_opts</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39; \1=&quot;\2&quot;&#39;</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">)),</span></tt>
+               class="code sev- "><tt><i>145</i> &nbsp;</tt>
             </div>
             <div id="l146"
-               class="code sev- "><tt><i>146</i>         <span class="n">text</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>146</i>     <span class="k">return</span> <span class="n">text</span></tt>
             </div>
             <div id="l147"
                class="code sev- "><tt><i>147</i> &nbsp;</tt>
             </div>
             <div id="l148"
-               class="code sev- "><tt><i>148</i>     <span class="k">return</span> <span class="n">text</span></tt>
+               class="code sev- "><tt><i>148</i> &nbsp;</tt>
             </div>
             <div id="l149"
-               class="code sev- "><tt><i>149</i> &nbsp;</tt>
+               class="code sev- "><tt><i>149</i> <span class="k">def</span> <span class="nf">generate_image_src</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">gallery_conf</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">):</span></tt>
             </div>
             <div id="l150"
-               class="code sev- "><tt><i>150</i> &nbsp;</tt>
+               class="code sev- "><tt><i>150</i>     <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;https?://&#39;</span><span class="p">,</span> <span class="n">image_path</span><span class="p">):</span></tt>
             </div>
             <div id="l151"
-               class="code sev- "><tt><i>151</i> <span class="k">def</span> <span class="nf">generate_image_src</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">gallery_conf</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>151</i>         <span class="k">return</span> <span class="n">image_path</span></tt>
             </div>
             <div id="l152"
-               class="code sev- "><tt><i>152</i>     <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;https?://&#39;</span><span class="p">,</span> <span class="n">image_path</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>152</i> &nbsp;</tt>
             </div>
             <div id="l153"
-               class="code sev- "><tt><i>153</i>         <span class="k">return</span> <span class="n">image_path</span></tt>
+               class="code sev- "><tt><i>153</i>     <span class="k">if</span> <span class="ow">not</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;notebook_images&#39;</span><span class="p">]:</span></tt>
             </div>
             <div id="l154"
-               class="code sev- "><tt><i>154</i> &nbsp;</tt>
+               class="code sev- "><tt><i>154</i>         <span class="k">return</span> <span class="s2">&quot;file://&quot;</span> <span class="o">+</span> <span class="n">image_path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l155"
-               class="code sev- "><tt><i>155</i>     <span class="k">if</span> <span class="ow">not</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;notebook_images&#39;</span><span class="p">]:</span></tt>
+               class="code sev- "><tt><i>155</i> &nbsp;</tt>
             </div>
             <div id="l156"
-               class="code sev- "><tt><i>156</i>         <span class="k">return</span> <span class="s2">&quot;file://&quot;</span> <span class="o">+</span> <span class="n">image_path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>156</i>     <span class="c1"># If absolute path from source directory given</span></tt>
             </div>
             <div id="l157"
-               class="code sev- "><tt><i>157</i> &nbsp;</tt>
+               class="code sev- "><tt><i>157</i>     <span class="k">if</span> <span class="n">image_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span></tt>
             </div>
             <div id="l158"
-               class="code sev- "><tt><i>158</i>     <span class="c1"># If absolute path from source directory given</span></tt>
+               class="code sev- "><tt><i>158</i>         <span class="c1"># Path should now be relative to source dir, not target dir</span></tt>
             </div>
             <div id="l159"
-               class="code sev- "><tt><i>159</i>     <span class="k">if</span> <span class="n">image_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span></tt>
+               class="code sev-1  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-1">
+                        F821
+                     </span>
+                     Undefined name 'mkdocs_conf'</li>
+               
+               </ul><tt><i>159</i>         <span class="n">target_dir</span> <span class="o">=</span> <span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">]</span></tt>
             </div>
             <div id="l160"
-               class="code sev- "><tt><i>160</i>         <span class="c1"># Path should now be relative to source dir, not target dir</span></tt>
+               class="code sev- "><tt><i>160</i>         <span class="n">image_path</span> <span class="o">=</span> <span class="n">image_path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l161"
-               class="code sev-1  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-1">
-                        F821
-                     </span>
-                     Undefined name 'mkdocs_conf'</li>
-               
-               </ul><tt><i>161</i>         <span class="n">target_dir</span> <span class="o">=</span> <span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>161</i>     <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">image_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">))</span></tt>
             </div>
             <div id="l162"
-               class="code sev- "><tt><i>162</i>         <span class="n">image_path</span> <span class="o">=</span> <span class="n">image_path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>162</i> &nbsp;</tt>
             </div>
             <div id="l163"
-               class="code sev- "><tt><i>163</i>     <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">image_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>163</i>     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;notebook_images&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span></tt>
             </div>
             <div id="l164"
-               class="code sev- "><tt><i>164</i> &nbsp;</tt>
+               class="code sev- "><tt><i>164</i>         <span class="c1"># Use as prefix e.g. URL</span></tt>
             </div>
             <div id="l165"
-               class="code sev- "><tt><i>165</i>     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;notebook_images&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>165</i>         <span class="n">prefix</span> <span class="o">=</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;notebook_images&#39;</span><span class="p">]</span></tt>
             </div>
             <div id="l166"
-               class="code sev- "><tt><i>166</i>         <span class="c1"># Use as prefix e.g. URL</span></tt>
-            </div>
-            <div id="l167"
-               class="code sev- "><tt><i>167</i>         <span class="n">prefix</span> <span class="o">=</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;notebook_images&#39;</span><span class="p">]</span></tt>
-            </div>
-            <div id="l168"
                class="code sev-1  le">
                <ul class="violations">
                
@@ -536,288 +530,288 @@
                      </span>
                      Undefined name 'mkdocs_conf'</li>
                
-               </ul><tt><i>168</i>         <span class="n">rel_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">full_path</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">])</span></tt>
+               </ul><tt><i>166</i>         <span class="n">rel_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">full_path</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">])</span></tt>
+            </div>
+            <div id="l167"
+               class="code sev- "><tt><i>167</i>         <span class="k">return</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">rel_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l168"
+               class="code sev- "><tt><i>168</i>     <span class="k">else</span><span class="p">:</span></tt>
             </div>
             <div id="l169"
-               class="code sev- "><tt><i>169</i>         <span class="k">return</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">rel_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>169</i>         <span class="c1"># True, but not string. Embed as data URI.</span></tt>
             </div>
             <div id="l170"
-               class="code sev- "><tt><i>170</i>     <span class="k">else</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>170</i>         <span class="k">try</span><span class="p">:</span></tt>
             </div>
             <div id="l171"
-               class="code sev- "><tt><i>171</i>         <span class="c1"># True, but not string. Embed as data URI.</span></tt>
+               class="code sev- "><tt><i>171</i>             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">image_file</span><span class="p">:</span></tt>
             </div>
             <div id="l172"
-               class="code sev- "><tt><i>172</i>         <span class="k">try</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>172</i>                 <span class="n">data</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">image_file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></tt>
             </div>
             <div id="l173"
-               class="code sev- "><tt><i>173</i>             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">image_file</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>173</i>         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span></tt>
             </div>
             <div id="l174"
-               class="code sev- "><tt><i>174</i>                 <span class="n">data</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">image_file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></tt>
+               class="code sev- "><tt><i>174</i>             <span class="k">raise</span> <span class="n">ExtensionError</span><span class="p">(</span></tt>
             </div>
             <div id="l175"
-               class="code sev- "><tt><i>175</i>         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>175</i>                 <span class="s1">&#39;Unable to open </span><span class="si">{}</span><span class="s1"> to generate notebook data URI&#39;</span></tt>
             </div>
             <div id="l176"
-               class="code sev- "><tt><i>176</i>             <span class="k">raise</span> <span class="n">ExtensionError</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>176</i>                 <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">full_path</span><span class="p">))</span></tt>
             </div>
             <div id="l177"
-               class="code sev- "><tt><i>177</i>                 <span class="s1">&#39;Unable to open </span><span class="si">{}</span><span class="s1"> to generate notebook data URI&#39;</span></tt>
+               class="code sev- "><tt><i>177</i>         <span class="n">mime_type</span> <span class="o">=</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">guess_type</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span></tt>
             </div>
             <div id="l178"
-               class="code sev- "><tt><i>178</i>                 <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">full_path</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>178</i>         <span class="k">return</span> <span class="s1">&#39;data:</span><span class="si">{}</span><span class="s1">;base64,</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mime_type</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span></tt>
             </div>
             <div id="l179"
-               class="code sev- "><tt><i>179</i>         <span class="n">mime_type</span> <span class="o">=</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">guess_type</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>179</i> &nbsp;</tt>
             </div>
             <div id="l180"
-               class="code sev- "><tt><i>180</i>         <span class="k">return</span> <span class="s1">&#39;data:</span><span class="si">{}</span><span class="s1">;base64,</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mime_type</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>180</i> &nbsp;</tt>
             </div>
             <div id="l181"
-               class="code sev- "><tt><i>181</i> &nbsp;</tt>
+               class="code sev- "><tt><i>181</i> <span class="k">def</span> <span class="nf">jupyter_notebook</span><span class="p">(</span><span class="n">script</span><span class="p">:</span> <span class="n">GalleryScript</span><span class="p">,</span> <span class="n">script_blocks</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span></tt>
             </div>
             <div id="l182"
-               class="code sev- "><tt><i>182</i> &nbsp;</tt>
+               class="code sev- "><tt><i>182</i>     <span class="sd">&quot;&quot;&quot;Generate a Jupyter notebook file cell-by-cell</span></tt>
             </div>
             <div id="l183"
-               class="code sev- "><tt><i>183</i> <span class="k">def</span> <span class="nf">jupyter_notebook</span><span class="p">(</span><span class="n">script</span><span class="p">:</span> <span class="n">GalleryScript</span><span class="p">,</span> <span class="n">script_blocks</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>183</i> &nbsp;</tt>
             </div>
             <div id="l184"
-               class="code sev- "><tt><i>184</i>     <span class="sd">&quot;&quot;&quot;Generate a Jupyter notebook file cell-by-cell</span></tt>
+               class="code sev- "><tt><i>184</i> <span class="sd">    Parameters</span></tt>
             </div>
             <div id="l185"
-               class="code sev- "><tt><i>185</i> &nbsp;</tt>
+               class="code sev- "><tt><i>185</i> <span class="sd">    ----------</span></tt>
             </div>
             <div id="l186"
-               class="code sev- "><tt><i>186</i> <span class="sd">    Parameters</span></tt>
+               class="code sev- "><tt><i>186</i> <span class="sd">    script : GalleryScript</span></tt>
             </div>
             <div id="l187"
-               class="code sev- "><tt><i>187</i> <span class="sd">    ----------</span></tt>
+               class="code sev- "><tt><i>187</i> <span class="sd">        Script</span></tt>
             </div>
             <div id="l188"
-               class="code sev- "><tt><i>188</i> <span class="sd">    script : GalleryScript</span></tt>
+               class="code sev- "><tt><i>188</i> &nbsp;</tt>
             </div>
             <div id="l189"
-               class="code sev- "><tt><i>189</i> <span class="sd">        Script</span></tt>
+               class="code sev- "><tt><i>189</i> <span class="sd">    script_blocks : list</span></tt>
             </div>
             <div id="l190"
-               class="code sev- "><tt><i>190</i> &nbsp;</tt>
+               class="code sev- "><tt><i>190</i> <span class="sd">        Script execution cells.</span></tt>
             </div>
             <div id="l191"
-               class="code sev- "><tt><i>191</i> <span class="sd">    script_blocks : list</span></tt>
+               class="code sev- "><tt><i>191</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l192"
-               class="code sev- "><tt><i>192</i> <span class="sd">        Script execution cells.</span></tt>
+               class="code sev- "><tt><i>192</i>     <span class="c1"># Grab the possibly custom first and last cells</span></tt>
             </div>
             <div id="l193"
-               class="code sev- "><tt><i>193</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>193</i>     <span class="n">first_cell</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">gallery_conf</span><span class="p">[</span><span class="s2">&quot;first_notebook_cell&quot;</span><span class="p">]</span></tt>
             </div>
             <div id="l194"
-               class="code sev- "><tt><i>194</i>     <span class="c1"># Grab the possibly custom first and last cells</span></tt>
+               class="code sev- "><tt><i>194</i>     <span class="n">last_cell</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">gallery_conf</span><span class="p">[</span><span class="s2">&quot;last_notebook_cell&quot;</span><span class="p">]</span></tt>
             </div>
             <div id="l195"
-               class="code sev- "><tt><i>195</i>     <span class="n">first_cell</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">gallery_conf</span><span class="p">[</span><span class="s2">&quot;first_notebook_cell&quot;</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>195</i> &nbsp;</tt>
             </div>
             <div id="l196"
-               class="code sev- "><tt><i>196</i>     <span class="n">last_cell</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">gallery_conf</span><span class="p">[</span><span class="s2">&quot;last_notebook_cell&quot;</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>196</i>     <span class="c1"># Initialize with a notebook skeleton</span></tt>
             </div>
             <div id="l197"
-               class="code sev- "><tt><i>197</i> &nbsp;</tt>
+               class="code sev- "><tt><i>197</i>     <span class="n">work_notebook</span> <span class="o">=</span> <span class="n">jupyter_notebook_skeleton</span><span class="p">()</span></tt>
             </div>
             <div id="l198"
-               class="code sev- "><tt><i>198</i>     <span class="c1"># Initialize with a notebook skeleton</span></tt>
+               class="code sev- "><tt><i>198</i> &nbsp;</tt>
             </div>
             <div id="l199"
-               class="code sev- "><tt><i>199</i>     <span class="n">work_notebook</span> <span class="o">=</span> <span class="n">jupyter_notebook_skeleton</span><span class="p">()</span></tt>
+               class="code sev- "><tt><i>199</i>     <span class="c1"># Custom first cell</span></tt>
             </div>
             <div id="l200"
-               class="code sev- "><tt><i>200</i> &nbsp;</tt>
+               class="code sev- "><tt><i>200</i>     <span class="k">if</span> <span class="n">first_cell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></tt>
             </div>
             <div id="l201"
-               class="code sev- "><tt><i>201</i>     <span class="c1"># Custom first cell</span></tt>
+               class="code sev- "><tt><i>201</i>         <span class="n">add_code_cell</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">first_cell</span><span class="p">)</span></tt>
             </div>
             <div id="l202"
-               class="code sev- "><tt><i>202</i>     <span class="k">if</span> <span class="n">first_cell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>202</i> &nbsp;</tt>
             </div>
             <div id="l203"
-               class="code sev- "><tt><i>203</i>         <span class="n">add_code_cell</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">first_cell</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>203</i>     <span class="c1"># Fill the notebook per se</span></tt>
             </div>
             <div id="l204"
-               class="code sev- "><tt><i>204</i> &nbsp;</tt>
+               class="code sev- "><tt><i>204</i>     <span class="n">fill_notebook</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">script_blocks</span><span class="p">)</span></tt>
             </div>
             <div id="l205"
-               class="code sev- "><tt><i>205</i>     <span class="c1"># Fill the notebook per se</span></tt>
+               class="code sev- "><tt><i>205</i> &nbsp;</tt>
             </div>
             <div id="l206"
-               class="code sev- "><tt><i>206</i>     <span class="n">fill_notebook</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">script_blocks</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>206</i>     <span class="c1"># Custom last cell</span></tt>
             </div>
             <div id="l207"
-               class="code sev- "><tt><i>207</i> &nbsp;</tt>
+               class="code sev- "><tt><i>207</i>     <span class="k">if</span> <span class="n">last_cell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></tt>
             </div>
             <div id="l208"
-               class="code sev- "><tt><i>208</i>     <span class="c1"># Custom last cell</span></tt>
+               class="code sev- "><tt><i>208</i>         <span class="n">add_code_cell</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">last_cell</span><span class="p">)</span></tt>
             </div>
             <div id="l209"
-               class="code sev- "><tt><i>209</i>     <span class="k">if</span> <span class="n">last_cell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>209</i> &nbsp;</tt>
             </div>
             <div id="l210"
-               class="code sev- "><tt><i>210</i>         <span class="n">add_code_cell</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">last_cell</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>210</i>     <span class="k">return</span> <span class="n">work_notebook</span></tt>
             </div>
             <div id="l211"
                class="code sev- "><tt><i>211</i> &nbsp;</tt>
             </div>
             <div id="l212"
-               class="code sev- "><tt><i>212</i>     <span class="k">return</span> <span class="n">work_notebook</span></tt>
+               class="code sev- "><tt><i>212</i> &nbsp;</tt>
             </div>
             <div id="l213"
-               class="code sev- "><tt><i>213</i> &nbsp;</tt>
+               class="code sev- "><tt><i>213</i> <span class="k">def</span> <span class="nf">add_code_cell</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span></tt>
             </div>
             <div id="l214"
-               class="code sev- "><tt><i>214</i> &nbsp;</tt>
+               class="code sev- "><tt><i>214</i>     <span class="sd">&quot;&quot;&quot;Add a code cell to the notebook</span></tt>
             </div>
             <div id="l215"
-               class="code sev- "><tt><i>215</i> <span class="k">def</span> <span class="nf">add_code_cell</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>215</i> &nbsp;</tt>
             </div>
             <div id="l216"
-               class="code sev- "><tt><i>216</i>     <span class="sd">&quot;&quot;&quot;Add a code cell to the notebook</span></tt>
+               class="code sev- "><tt><i>216</i> <span class="sd">    Parameters</span></tt>
             </div>
             <div id="l217"
-               class="code sev- "><tt><i>217</i> &nbsp;</tt>
+               class="code sev- "><tt><i>217</i> <span class="sd">    ----------</span></tt>
             </div>
             <div id="l218"
-               class="code sev- "><tt><i>218</i> <span class="sd">    Parameters</span></tt>
+               class="code sev- "><tt><i>218</i> <span class="sd">    code : str</span></tt>
             </div>
             <div id="l219"
-               class="code sev- "><tt><i>219</i> <span class="sd">    ----------</span></tt>
+               class="code sev- "><tt><i>219</i> <span class="sd">        Cell content</span></tt>
             </div>
             <div id="l220"
-               class="code sev- "><tt><i>220</i> <span class="sd">    code : str</span></tt>
+               class="code sev- "><tt><i>220</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l221"
-               class="code sev- "><tt><i>221</i> <span class="sd">        Cell content</span></tt>
+               class="code sev- "><tt><i>221</i> &nbsp;</tt>
             </div>
             <div id="l222"
-               class="code sev- "><tt><i>222</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>222</i>     <span class="n">code_cell</span> <span class="o">=</span> <span class="p">{</span></tt>
             </div>
             <div id="l223"
-               class="code sev- "><tt><i>223</i> &nbsp;</tt>
+               class="code sev- "><tt><i>223</i>         <span class="s2">&quot;cell_type&quot;</span><span class="p">:</span> <span class="s2">&quot;code&quot;</span><span class="p">,</span></tt>
             </div>
             <div id="l224"
-               class="code sev- "><tt><i>224</i>     <span class="n">code_cell</span> <span class="o">=</span> <span class="p">{</span></tt>
+               class="code sev- "><tt><i>224</i>         <span class="s2">&quot;execution_count&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span></tt>
             </div>
             <div id="l225"
-               class="code sev- "><tt><i>225</i>         <span class="s2">&quot;cell_type&quot;</span><span class="p">:</span> <span class="s2">&quot;code&quot;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>225</i>         <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;collapsed&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span></tt>
             </div>
             <div id="l226"
-               class="code sev- "><tt><i>226</i>         <span class="s2">&quot;execution_count&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>226</i>         <span class="s2">&quot;outputs&quot;</span><span class="p">:</span> <span class="p">[],</span></tt>
             </div>
             <div id="l227"
-               class="code sev- "><tt><i>227</i>         <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;collapsed&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span></tt>
+               class="code sev- "><tt><i>227</i>         <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">code</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span></tt>
             </div>
             <div id="l228"
-               class="code sev- "><tt><i>228</i>         <span class="s2">&quot;outputs&quot;</span><span class="p">:</span> <span class="p">[],</span></tt>
+               class="code sev- "><tt><i>228</i>     <span class="p">}</span></tt>
             </div>
             <div id="l229"
-               class="code sev- "><tt><i>229</i>         <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">code</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span></tt>
+               class="code sev- "><tt><i>229</i>     <span class="n">work_notebook</span><span class="p">[</span><span class="s2">&quot;cells&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">code_cell</span><span class="p">)</span></tt>
             </div>
             <div id="l230"
-               class="code sev- "><tt><i>230</i>     <span class="p">}</span></tt>
+               class="code sev- "><tt><i>230</i> &nbsp;</tt>
             </div>
             <div id="l231"
-               class="code sev- "><tt><i>231</i>     <span class="n">work_notebook</span><span class="p">[</span><span class="s2">&quot;cells&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">code_cell</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>231</i> &nbsp;</tt>
             </div>
             <div id="l232"
-               class="code sev- "><tt><i>232</i> &nbsp;</tt>
+               class="code sev- "><tt><i>232</i> <span class="k">def</span> <span class="nf">add_markdown_cell</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">markdown</span><span class="p">):</span></tt>
             </div>
             <div id="l233"
-               class="code sev- "><tt><i>233</i> &nbsp;</tt>
+               class="code sev- "><tt><i>233</i>     <span class="sd">&quot;&quot;&quot;Add a markdown cell to the notebook</span></tt>
             </div>
             <div id="l234"
-               class="code sev- "><tt><i>234</i> <span class="k">def</span> <span class="nf">add_markdown_cell</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">markdown</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>234</i> &nbsp;</tt>
             </div>
             <div id="l235"
-               class="code sev- "><tt><i>235</i>     <span class="sd">&quot;&quot;&quot;Add a markdown cell to the notebook</span></tt>
+               class="code sev- "><tt><i>235</i> <span class="sd">    Parameters</span></tt>
             </div>
             <div id="l236"
-               class="code sev- "><tt><i>236</i> &nbsp;</tt>
+               class="code sev- "><tt><i>236</i> <span class="sd">    ----------</span></tt>
             </div>
             <div id="l237"
-               class="code sev- "><tt><i>237</i> <span class="sd">    Parameters</span></tt>
+               class="code sev- "><tt><i>237</i> <span class="sd">    markdown : str</span></tt>
             </div>
             <div id="l238"
-               class="code sev- "><tt><i>238</i> <span class="sd">    ----------</span></tt>
+               class="code sev- "><tt><i>238</i> <span class="sd">        Markdown cell content.</span></tt>
             </div>
             <div id="l239"
-               class="code sev- "><tt><i>239</i> <span class="sd">    markdown : str</span></tt>
+               class="code sev- "><tt><i>239</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l240"
-               class="code sev- "><tt><i>240</i> <span class="sd">        Markdown cell content.</span></tt>
+               class="code sev- "><tt><i>240</i>     <span class="n">markdown_cell</span> <span class="o">=</span> <span class="p">{</span></tt>
             </div>
             <div id="l241"
-               class="code sev- "><tt><i>241</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>241</i>         <span class="s2">&quot;cell_type&quot;</span><span class="p">:</span> <span class="s2">&quot;markdown&quot;</span><span class="p">,</span></tt>
             </div>
             <div id="l242"
-               class="code sev- "><tt><i>242</i>     <span class="n">markdown_cell</span> <span class="o">=</span> <span class="p">{</span></tt>
+               class="code sev- "><tt><i>242</i>         <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{},</span></tt>
             </div>
             <div id="l243"
-               class="code sev- "><tt><i>243</i>         <span class="s2">&quot;cell_type&quot;</span><span class="p">:</span> <span class="s2">&quot;markdown&quot;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>243</i>         <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">markdown</span><span class="p">]</span></tt>
             </div>
             <div id="l244"
-               class="code sev- "><tt><i>244</i>         <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{},</span></tt>
+               class="code sev- "><tt><i>244</i>     <span class="p">}</span></tt>
             </div>
             <div id="l245"
-               class="code sev- "><tt><i>245</i>         <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">markdown</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>245</i>     <span class="n">work_notebook</span><span class="p">[</span><span class="s2">&quot;cells&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">markdown_cell</span><span class="p">)</span></tt>
             </div>
             <div id="l246"
-               class="code sev- "><tt><i>246</i>     <span class="p">}</span></tt>
+               class="code sev- "><tt><i>246</i> &nbsp;</tt>
             </div>
             <div id="l247"
-               class="code sev- "><tt><i>247</i>     <span class="n">work_notebook</span><span class="p">[</span><span class="s2">&quot;cells&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">markdown_cell</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>247</i> &nbsp;</tt>
             </div>
             <div id="l248"
-               class="code sev- "><tt><i>248</i> &nbsp;</tt>
+               class="code sev- "><tt><i>248</i> <span class="k">def</span> <span class="nf">fill_notebook</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">script_blocks</span><span class="p">):</span></tt>
             </div>
             <div id="l249"
-               class="code sev- "><tt><i>249</i> &nbsp;</tt>
+               class="code sev- "><tt><i>249</i>     <span class="sd">&quot;&quot;&quot;Writes the Jupyter notebook cells</span></tt>
             </div>
             <div id="l250"
-               class="code sev- "><tt><i>250</i> <span class="k">def</span> <span class="nf">fill_notebook</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">script_blocks</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>250</i> &nbsp;</tt>
             </div>
             <div id="l251"
-               class="code sev- "><tt><i>251</i>     <span class="sd">&quot;&quot;&quot;Writes the Jupyter notebook cells</span></tt>
+               class="code sev- "><tt><i>251</i> <span class="sd">    If available, uses pypandoc to convert rst to markdown &gt;&gt; not anymore.</span></tt>
             </div>
             <div id="l252"
                class="code sev- "><tt><i>252</i> &nbsp;</tt>
             </div>
             <div id="l253"
-               class="code sev- "><tt><i>253</i> <span class="sd">    If available, uses pypandoc to convert rst to markdown &gt;&gt; not anymore.</span></tt>
+               class="code sev- "><tt><i>253</i> <span class="sd">    Parameters</span></tt>
             </div>
             <div id="l254"
-               class="code sev- "><tt><i>254</i> &nbsp;</tt>
+               class="code sev- "><tt><i>254</i> <span class="sd">    ----------</span></tt>
             </div>
             <div id="l255"
-               class="code sev- "><tt><i>255</i> <span class="sd">    Parameters</span></tt>
+               class="code sev- "><tt><i>255</i> <span class="sd">    script_blocks : list</span></tt>
             </div>
             <div id="l256"
-               class="code sev- "><tt><i>256</i> <span class="sd">    ----------</span></tt>
+               class="code sev- "><tt><i>256</i> <span class="sd">        Each list element should be a tuple of (label, content, lineno).</span></tt>
             </div>
             <div id="l257"
-               class="code sev- "><tt><i>257</i> <span class="sd">    script_blocks : list</span></tt>
+               class="code sev- "><tt><i>257</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l258"
-               class="code sev- "><tt><i>258</i> <span class="sd">        Each list element should be a tuple of (label, content, lineno).</span></tt>
+               class="code sev- "><tt><i>258</i>     <span class="c1"># heading_level_counter = count(start=1)</span></tt>
             </div>
             <div id="l259"
-               class="code sev- "><tt><i>259</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>259</i>     <span class="c1"># heading_levels = defaultdict(lambda: next(heading_level_counter))</span></tt>
             </div>
             <div id="l260"
-               class="code sev- "><tt><i>260</i>     <span class="c1"># heading_level_counter = count(start=1)</span></tt>
-            </div>
-            <div id="l261"
-               class="code sev- "><tt><i>261</i>     <span class="c1"># heading_levels = defaultdict(lambda: next(heading_level_counter))</span></tt>
-            </div>
-            <div id="l262"
                class="code sev-3  le">
                <ul class="violations">
                
@@ -827,132 +821,132 @@
                      </span>
                      Loop control variable 'lineno' not used within the loop body. If this is intended, start the name with an underscore.</li>
                
-               </ul><tt><i>262</i>     <span class="k">for</span> <span class="n">blabel</span><span class="p">,</span> <span class="n">bcontent</span><span class="p">,</span> <span class="n">lineno</span> <span class="ow">in</span> <span class="n">script_blocks</span><span class="p">:</span></tt>
+               </ul><tt><i>260</i>     <span class="k">for</span> <span class="n">blabel</span><span class="p">,</span> <span class="n">bcontent</span><span class="p">,</span> <span class="n">lineno</span> <span class="ow">in</span> <span class="n">script_blocks</span><span class="p">:</span></tt>
+            </div>
+            <div id="l261"
+               class="code sev- "><tt><i>261</i>         <span class="k">if</span> <span class="n">blabel</span> <span class="o">==</span> <span class="s1">&#39;code&#39;</span><span class="p">:</span></tt>
+            </div>
+            <div id="l262"
+               class="code sev- "><tt><i>262</i>             <span class="n">add_code_cell</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">bcontent</span><span class="p">)</span></tt>
             </div>
             <div id="l263"
-               class="code sev- "><tt><i>263</i>         <span class="k">if</span> <span class="n">blabel</span> <span class="o">==</span> <span class="s1">&#39;code&#39;</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>263</i>         <span class="k">else</span><span class="p">:</span></tt>
             </div>
             <div id="l264"
-               class="code sev- "><tt><i>264</i>             <span class="n">add_code_cell</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">bcontent</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>264</i>             <span class="c1"># if gallery_conf[&quot;pypandoc&quot;] is False:</span></tt>
             </div>
             <div id="l265"
-               class="code sev- "><tt><i>265</i>         <span class="k">else</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>265</i>             <span class="c1">#     markdown = rst2md(</span></tt>
             </div>
             <div id="l266"
-               class="code sev- "><tt><i>266</i>             <span class="c1"># if gallery_conf[&quot;pypandoc&quot;] is False:</span></tt>
+               class="code sev- "><tt><i>266</i>             <span class="c1">#         bcontent + &#39;\n&#39;, gallery_conf, target_dir, heading_levels)</span></tt>
             </div>
             <div id="l267"
-               class="code sev- "><tt><i>267</i>             <span class="c1">#     markdown = rst2md(</span></tt>
+               class="code sev- "><tt><i>267</i>             <span class="c1"># else:</span></tt>
             </div>
             <div id="l268"
-               class="code sev- "><tt><i>268</i>             <span class="c1">#         bcontent + &#39;\n&#39;, gallery_conf, target_dir, heading_levels)</span></tt>
+               class="code sev- "><tt><i>268</i>             <span class="c1">#     import pypandoc</span></tt>
             </div>
             <div id="l269"
-               class="code sev- "><tt><i>269</i>             <span class="c1"># else:</span></tt>
+               class="code sev- "><tt><i>269</i>             <span class="c1">#     # pandoc automatically addds \n to the end</span></tt>
             </div>
             <div id="l270"
-               class="code sev- "><tt><i>270</i>             <span class="c1">#     import pypandoc</span></tt>
+               class="code sev- "><tt><i>270</i>             <span class="c1">#     markdown = pypandoc.convert_text(</span></tt>
             </div>
             <div id="l271"
-               class="code sev- "><tt><i>271</i>             <span class="c1">#     # pandoc automatically addds \n to the end</span></tt>
+               class="code sev- "><tt><i>271</i>             <span class="c1">#         bcontent, to=&#39;md&#39;, format=&#39;rst&#39;, **gallery_conf[&quot;pypandoc&quot;]</span></tt>
             </div>
             <div id="l272"
-               class="code sev- "><tt><i>272</i>             <span class="c1">#     markdown = pypandoc.convert_text(</span></tt>
+               class="code sev- "><tt><i>272</i>             <span class="c1">#     )</span></tt>
             </div>
             <div id="l273"
-               class="code sev- "><tt><i>273</i>             <span class="c1">#         bcontent, to=&#39;md&#39;, format=&#39;rst&#39;, **gallery_conf[&quot;pypandoc&quot;]</span></tt>
+               class="code sev- "><tt><i>273</i>             <span class="n">markdown</span> <span class="o">=</span> <span class="n">bcontent</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span></tt>
             </div>
             <div id="l274"
-               class="code sev- "><tt><i>274</i>             <span class="c1">#     )</span></tt>
+               class="code sev- "><tt><i>274</i>             <span class="n">add_markdown_cell</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">markdown</span><span class="p">)</span></tt>
             </div>
             <div id="l275"
-               class="code sev- "><tt><i>275</i>             <span class="n">markdown</span> <span class="o">=</span> <span class="n">bcontent</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span></tt>
+               class="code sev- "><tt><i>275</i> &nbsp;</tt>
             </div>
             <div id="l276"
-               class="code sev- "><tt><i>276</i>             <span class="n">add_markdown_cell</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">markdown</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>276</i> &nbsp;</tt>
             </div>
             <div id="l277"
-               class="code sev- "><tt><i>277</i> &nbsp;</tt>
+               class="code sev- "><tt><i>277</i> <span class="k">def</span> <span class="nf">save_notebook</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">write_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span></tt>
             </div>
             <div id="l278"
-               class="code sev- "><tt><i>278</i> &nbsp;</tt>
+               class="code sev- "><tt><i>278</i>     <span class="sd">&quot;&quot;&quot;Saves the Jupyter work_notebook to write_file&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l279"
-               class="code sev- "><tt><i>279</i> <span class="k">def</span> <span class="nf">save_notebook</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">write_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>279</i>     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">write_file</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out_nb</span><span class="p">:</span></tt>
             </div>
             <div id="l280"
-               class="code sev- "><tt><i>280</i>     <span class="sd">&quot;&quot;&quot;Saves the Jupyter work_notebook to write_file&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>280</i>         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">out_nb</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></tt>
             </div>
             <div id="l281"
-               class="code sev- "><tt><i>281</i>     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">write_file</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out_nb</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>281</i> &nbsp;</tt>
             </div>
             <div id="l282"
-               class="code sev- "><tt><i>282</i>         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">work_notebook</span><span class="p">,</span> <span class="n">out_nb</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>282</i> &nbsp;</tt>
             </div>
             <div id="l283"
-               class="code sev- "><tt><i>283</i> &nbsp;</tt>
+               class="code sev- "><tt><i>283</i> <span class="c1">###############################################################################</span></tt>
             </div>
             <div id="l284"
-               class="code sev- "><tt><i>284</i> &nbsp;</tt>
+               class="code sev- "><tt><i>284</i> <span class="c1"># Notebook shell utility</span></tt>
             </div>
             <div id="l285"
-               class="code sev- "><tt><i>285</i> <span class="c1">###############################################################################</span></tt>
+               class="code sev- "><tt><i>285</i> &nbsp;</tt>
             </div>
             <div id="l286"
-               class="code sev- "><tt><i>286</i> <span class="c1"># Notebook shell utility</span></tt>
+               class="code sev- "><tt><i>286</i> <span class="k">def</span> <span class="nf">python_to_jupyter_cli</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span></tt>
             </div>
             <div id="l287"
-               class="code sev- "><tt><i>287</i> &nbsp;</tt>
+               class="code sev- "><tt><i>287</i>     <span class="sd">&quot;&quot;&quot;Exposes the jupyter notebook renderer to the command line</span></tt>
             </div>
             <div id="l288"
-               class="code sev- "><tt><i>288</i> <span class="k">def</span> <span class="nf">python_to_jupyter_cli</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>288</i> &nbsp;</tt>
             </div>
             <div id="l289"
-               class="code sev- "><tt><i>289</i>     <span class="sd">&quot;&quot;&quot;Exposes the jupyter notebook renderer to the command line</span></tt>
+               class="code sev- "><tt><i>289</i> <span class="sd">    Takes the same arguments as ArgumentParser.parse_args</span></tt>
             </div>
             <div id="l290"
-               class="code sev- "><tt><i>290</i> &nbsp;</tt>
+               class="code sev- "><tt><i>290</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l291"
-               class="code sev- "><tt><i>291</i> <span class="sd">    Takes the same arguments as ArgumentParser.parse_args</span></tt>
+               class="code sev- "><tt><i>291</i>     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">gen_gallery</span>  <span class="c1"># To avoid circular import</span></tt>
             </div>
             <div id="l292"
-               class="code sev- "><tt><i>292</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>292</i>     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span></tt>
             </div>
             <div id="l293"
-               class="code sev- "><tt><i>293</i>     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">gen_gallery</span>  <span class="c1"># To avoid circular import</span></tt>
+               class="code sev- "><tt><i>293</i>         <span class="n">description</span><span class="o">=</span><span class="s1">&#39;mkdocs-gallery Notebook converter&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l294"
-               class="code sev- "><tt><i>294</i>     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>294</i>     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;python_src_file&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span></tt>
             </div>
             <div id="l295"
-               class="code sev- "><tt><i>295</i>         <span class="n">description</span><span class="o">=</span><span class="s1">&#39;mkdocs-gallery Notebook converter&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>295</i>                         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Input Python file script to convert. &#39;</span></tt>
             </div>
             <div id="l296"
-               class="code sev- "><tt><i>296</i>     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;python_src_file&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>296</i>                         <span class="s1">&#39;Supports multiple files and shell wildcards&#39;</span></tt>
             </div>
             <div id="l297"
-               class="code sev- "><tt><i>297</i>                         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Input Python file script to convert. &#39;</span></tt>
+               class="code sev- "><tt><i>297</i>                         <span class="s1">&#39; (e.g. *.py)&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l298"
-               class="code sev- "><tt><i>298</i>                         <span class="s1">&#39;Supports multiple files and shell wildcards&#39;</span></tt>
+               class="code sev- "><tt><i>298</i>     <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">namespace</span><span class="p">)</span></tt>
             </div>
             <div id="l299"
-               class="code sev- "><tt><i>299</i>                         <span class="s1">&#39; (e.g. *.py)&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>299</i> &nbsp;</tt>
             </div>
             <div id="l300"
-               class="code sev- "><tt><i>300</i>     <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">namespace</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>300</i>     <span class="k">for</span> <span class="n">src_file</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">python_src_file</span><span class="p">:</span></tt>
             </div>
             <div id="l301"
-               class="code sev- "><tt><i>301</i> &nbsp;</tt>
+               class="code sev- "><tt><i>301</i>         <span class="n">file_conf</span><span class="p">,</span> <span class="n">blocks</span> <span class="o">=</span> <span class="n">split_code_and_text_blocks</span><span class="p">(</span><span class="n">src_file</span><span class="p">)</span></tt>
             </div>
             <div id="l302"
-               class="code sev- "><tt><i>302</i>     <span class="k">for</span> <span class="n">src_file</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">python_src_file</span><span class="p">:</span></tt>
-            </div>
-            <div id="l303"
-               class="code sev- "><tt><i>303</i>         <span class="n">file_conf</span><span class="p">,</span> <span class="n">blocks</span> <span class="o">=</span> <span class="n">split_code_and_text_blocks</span><span class="p">(</span><span class="n">src_file</span><span class="p">)</span></tt>
-            </div>
-            <div id="l304"
                class="code sev-3  le">
                <ul class="violations">
                
@@ -962,18 +956,18 @@
                      </span>
                      Print found.</li>
                
-               </ul><tt><i>304</i>         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Converting </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_file</span><span class="p">))</span></tt>
+               </ul><tt><i>302</i>         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Converting </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_file</span><span class="p">))</span></tt>
+            </div>
+            <div id="l303"
+               class="code sev- "><tt><i>303</i>         <span class="n">gallery_conf</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">gen_gallery</span><span class="o">.</span><span class="n">DEFAULT_GALLERY_CONF</span><span class="p">)</span></tt>
+            </div>
+            <div id="l304"
+               class="code sev- "><tt><i>304</i>         <span class="n">target_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">src_file</span><span class="p">)</span></tt>
             </div>
             <div id="l305"
-               class="code sev- "><tt><i>305</i>         <span class="n">gallery_conf</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">gen_gallery</span><span class="o">.</span><span class="n">DEFAULT_GALLERY_CONF</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>305</i>         <span class="n">example_nb</span> <span class="o">=</span> <span class="n">jupyter_notebook</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">gallery_conf</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">)</span></tt>
             </div>
             <div id="l306"
-               class="code sev- "><tt><i>306</i>         <span class="n">target_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">src_file</span><span class="p">)</span></tt>
-            </div>
-            <div id="l307"
-               class="code sev- "><tt><i>307</i>         <span class="n">example_nb</span> <span class="o">=</span> <span class="n">jupyter_notebook</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">gallery_conf</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">)</span></tt>
-            </div>
-            <div id="l308"
                class="code sev-1  le">
                <ul class="violations">
                
@@ -983,7 +977,7 @@
                      </span>
                      Undefined name 'get_ipynb_for_py_script'</li>
                
-               </ul><tt><i>308</i>         <span class="n">save_notebook</span><span class="p">(</span><span class="n">example_nb</span><span class="p">,</span> <span class="n">get_ipynb_for_py_script</span><span class="p">(</span><span class="n">src_file</span><span class="p">))</span></tt>
+               </ul><tt><i>306</i>         <span class="n">save_notebook</span><span class="p">(</span><span class="n">example_nb</span><span class="p">,</span> <span class="n">get_ipynb_for_py_script</span><span class="p">(</span><span class="n">src_file</span><span class="p">))</span></tt>
             </div>
             
          </div>
