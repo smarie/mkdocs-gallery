@@ -1,6 +1,6 @@
 {
   "title": "mkdocs-gallery: a mkdocs plugin to generate example galleries from python scripts",
-  "description": "<p>`mkdocs-gallery` brings the great features from `sphinx-gallery` to `mkdocs`, leveraging `mkdocs-material`</p>",
+  "description": "<p>`mkdocs-gallery` brings the great features from `sphinx-gallery` to `mkdocs`, leveraging `mkdocs-material` and `pymdown-extensions`.</p>",
   "language": "eng",
   "license": {
     "id": "bsd-license"
