@@ -204,16 +204,10 @@ markdown_extensions:
         config["nav"] = new_nav
 
     def on_files(self, files, config):
-        """Remove the md files from the gallery"""
+        """Remove the gallery examples *source* md files (in "examples_dirs") from the built website"""
 
         # Get the list of gallery source files, possibly containing the readme.md that we wish to exclude
-        gallery_conf = self.config
-        examples_dirs = gallery_conf['examples_dirs']
-        if not isinstance(examples_dirs, list):
-            examples_dirs = [examples_dirs]
-        # Get them relative to the mkdocs source dir
-        mkdocs_src_dir = config['docs_dir']
-        examples_dirs = [os.path.relpath(e, mkdocs_src_dir) for e in examples_dirs]
+        examples_dirs = self._get_dirs_relative_to(self.config['examples_dirs'], rel_to_dir=config['docs_dir'])
 
         def exclude(i):
             i_path = Path(i.src_path)
@@ -229,8 +223,18 @@ markdown_extensions:
 
         return Files(out)
 
+    def _get_dirs_relative_to(self, dir_or_list_of_dirs: Union[str, List[str]], rel_to_dir: str) -> List[str]:
+        """Return dirs relative to another dir. If dirs is a single element, converts to a list first"""
+
+        # Make sure the list is a list (handle single elements)
+        if not isinstance(dir_or_list_of_dirs, list):
+            dir_or_list_of_dirs = [dir_or_list_of_dirs]
+
+        # Get them relative to the mkdocs source dir
+        return [os.path.relpath(e, rel_to_dir) for e in dir_or_list_of_dirs]
+
     # def on_nav(self, nav, config, files):
-    #     # Nav already modded in on_pre_build
+    #     # Nav is already modded in on_pre_build, do not change it
     #     return nav
 
     # def on_page_content(self, html, page: Page, config: Config, files: Files):
@@ -251,7 +255,7 @@ markdown_extensions:
     #     return html
 
     def on_serve(self, server, config, builder):
-        """"""
+        """Exclude gallery target dirs ("gallery_dirs") from monitored files to avoid neverending build loops."""
 
         # self.observer.schedule(handler, path, recursive=recursive)
         excluded_dirs = self.config["gallery_dirs"]
