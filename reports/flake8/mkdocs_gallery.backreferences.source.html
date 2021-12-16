@@ -83,7 +83,16 @@
                class="code sev- "><tt><i>22</i> <span class="kn">import</span> <span class="nn">inspect</span></tt>
             </div>
             <div id="l23"
-               class="code sev- "><tt><i>23</i> <span class="kn">import</span> <span class="nn">os</span></tt>
+               class="code sev-1  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-1">
+                        F401
+                     </span>
+                     'os' imported but unused</li>
+               
+               </ul><tt><i>23</i> <span class="kn">import</span> <span class="nn">os</span></tt>
             </div>
             <div id="l24"
                class="code sev- "><tt><i>24</i> <span class="kn">import</span> <span class="nn">re</span></tt>
@@ -104,10 +113,10 @@
                class="code sev- "><tt><i>29</i> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">mkdocs_compatibility</span></tt>
             </div>
             <div id="l30"
-               class="code sev- "><tt><i>30</i> <span class="kn">from</span> <span class="nn">.gen_data_model</span> <span class="kn">import</span> <span class="n">GalleryScript</span><span class="p">,</span> <span class="n">GalleryScriptResults</span></tt>
+               class="code sev- "><tt><i>30</i> <span class="kn">from</span> <span class="nn">.gen_data_model</span> <span class="kn">import</span> <span class="n">GalleryScriptResults</span><span class="p">,</span> <span class="n">AllInformation</span></tt>
             </div>
             <div id="l31"
-               class="code sev- "><tt><i>31</i> <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">_replace_by_new_if_needed</span></tt>
+               class="code sev- "><tt><i>31</i> <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">_replace_by_new_if_needed</span><span class="p">,</span> <span class="n">_new_file</span></tt>
             </div>
             <div id="l32"
                class="code sev- "><tt><i>32</i> &nbsp;</tt>
@@ -728,16 +737,7 @@
                class="code sev- "><tt><i>237</i>         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">splitted</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># class-like</span></tt>
             </div>
             <div id="l238"
-               class="code sev-3  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-3">
-                        S101
-                     </span>
-                     Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.</li>
-               
-               </ul><tt><i>238</i>             <span class="k">assert</span> <span class="n">class_like</span></tt>
+               class="code sev- "><tt><i>238</i>             <span class="k">assert</span> <span class="n">class_like</span>  <span class="c1"># noqa</span></tt>
             </div>
             <div id="l239"
                class="code sev- "><tt><i>239</i>             <span class="n">splitted</span> <span class="o">=</span> <span class="p">(</span><span class="n">splitted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">splitted</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></tt>
@@ -746,16 +746,7 @@
                class="code sev- "><tt><i>240</i>         <span class="k">else</span><span class="p">:</span></tt>
             </div>
             <div id="l241"
-               class="code sev-3  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-3">
-                        S101
-                     </span>
-                     Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.</li>
-               
-               </ul><tt><i>241</i>             <span class="k">assert</span> <span class="ow">not</span> <span class="n">class_like</span></tt>
+               class="code sev- "><tt><i>241</i>             <span class="k">assert</span> <span class="ow">not</span> <span class="n">class_like</span>  <span class="c1"># noqa</span></tt>
             </div>
             <div id="l242"
                class="code sev- "><tt><i>242</i> &nbsp;</tt>
@@ -983,7 +974,7 @@
                class="code sev- "><tt><i>316</i> &nbsp;</tt>
             </div>
             <div id="l317"
-               class="code sev- "><tt><i>317</i> <span class="k">def</span> <span class="nf">_write_backreferences</span><span class="p">(</span><span class="n">backrefs</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">seen_backrefs</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">snippet</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="n">GalleryScript</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>317</i> <span class="k">def</span> <span class="nf">_write_backreferences</span><span class="p">(</span><span class="n">backrefs</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">seen_backrefs</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">script_results</span><span class="p">:</span> <span class="n">GalleryScriptResults</span><span class="p">):</span></tt>
             </div>
             <div id="l318"
                class="code sev- "><tt><i>318</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
@@ -1013,52 +1004,52 @@
                class="code sev- "><tt><i>326</i> &nbsp;</tt>
             </div>
             <div id="l327"
-               class="code sev- "><tt><i>327</i> <span class="sd">    snippet : str</span></tt>
+               class="code sev- "><tt><i>327</i> <span class="sd">    script_results : GalleryScriptResults</span></tt>
             </div>
             <div id="l328"
                class="code sev- "><tt><i>328</i> &nbsp;</tt>
             </div>
             <div id="l329"
-               class="code sev- "><tt><i>329</i> <span class="sd">    script : GalleryScript</span></tt>
+               class="code sev- "><tt><i>329</i> <span class="sd">    Returns</span></tt>
             </div>
             <div id="l330"
-               class="code sev- "><tt><i>330</i> &nbsp;</tt>
+               class="code sev- "><tt><i>330</i> <span class="sd">    -------</span></tt>
             </div>
             <div id="l331"
-               class="code sev- "><tt><i>331</i> <span class="sd">    Returns</span></tt>
+               class="code sev- "><tt><i>331</i> &nbsp;</tt>
             </div>
             <div id="l332"
-               class="code sev- "><tt><i>332</i> <span class="sd">    -------</span></tt>
+               class="code sev- "><tt><i>332</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l333"
-               class="code sev- "><tt><i>333</i> &nbsp;</tt>
+               class="code sev- "><tt><i>333</i>     <span class="n">all_info</span> <span class="o">=</span> <span class="n">script_results</span><span class="o">.</span><span class="n">script</span><span class="o">.</span><span class="n">gallery</span><span class="o">.</span><span class="n">all_info</span></tt>
             </div>
             <div id="l334"
-               class="code sev- "><tt><i>334</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>334</i> &nbsp;</tt>
             </div>
             <div id="l335"
                class="code sev- "><tt><i>335</i>     <span class="k">for</span> <span class="n">backref</span> <span class="ow">in</span> <span class="n">backrefs</span><span class="p">:</span></tt>
             </div>
             <div id="l336"
-               class="code sev- "><tt><i>336</i>         <span class="c1"># TODO use _new_file and also create a property</span></tt>
+               class="code sev- "><tt><i>336</i>         <span class="c1"># Get the backref file to use for this module, according to config</span></tt>
             </div>
             <div id="l337"
-               class="code sev- "><tt><i>337</i>         <span class="n">include_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script</span><span class="o">.</span><span class="n">gallery</span><span class="o">.</span><span class="n">all_info</span><span class="o">.</span><span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">],</span></tt>
+               class="code sev- "><tt><i>337</i>         <span class="n">include_path</span> <span class="o">=</span> <span class="n">_new_file</span><span class="p">(</span><span class="n">all_info</span><span class="o">.</span><span class="n">get_backreferences_file</span><span class="p">(</span><span class="n">backref</span><span class="p">))</span></tt>
             </div>
             <div id="l338"
-               class="code sev- "><tt><i>338</i>                                     <span class="n">script</span><span class="o">.</span><span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;backreferences_dir&#39;</span><span class="p">],</span></tt>
+               class="code sev- "><tt><i>338</i> &nbsp;</tt>
             </div>
             <div id="l339"
-               class="code sev- "><tt><i>339</i>                                     <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.examples.new&#39;</span> <span class="o">%</span> <span class="n">backref</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>339</i>         <span class="c1"># Create new or append to existing file</span></tt>
             </div>
             <div id="l340"
                class="code sev- "><tt><i>340</i>         <span class="n">seen</span> <span class="o">=</span> <span class="n">backref</span> <span class="ow">in</span> <span class="n">seen_backrefs</span></tt>
             </div>
             <div id="l341"
-               class="code sev- "><tt><i>341</i>         <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">include_path</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span> <span class="k">if</span> <span class="n">seen</span> <span class="k">else</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>341</i>         <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">include_path</span><span class="p">),</span> <span class="s1">&#39;a&#39;</span> <span class="k">if</span> <span class="n">seen</span> <span class="k">else</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex_file</span><span class="p">:</span></tt>
             </div>
             <div id="l342"
-               class="code sev- "><tt><i>342</i>                          <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex_file</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>342</i>             <span class="c1"># If first ref: write header</span></tt>
             </div>
             <div id="l343"
                class="code sev- "><tt><i>343</i>             <span class="k">if</span> <span class="ow">not</span> <span class="n">seen</span><span class="p">:</span></tt>
@@ -1079,133 +1070,79 @@
                class="code sev- "><tt><i>348</i>                 <span class="n">ex_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;^&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">heading</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l349"
-               class="code sev-1  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-1">
-                        F821
-                     </span>
-                     Undefined name 'target_dir'</li>
-               
-                  <li>
-                     <span class="count sev-1">
-                        F821
-                     </span>
-                     Undefined name 'mkdocs_conf'</li>
-               
-               </ul><tt><i>349</i>             <span class="n">ex_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_thumbnail_div</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">],</span></tt>
+               class="code sev- "><tt><i>349</i> &nbsp;</tt>
             </div>
             <div id="l350"
-               class="code sev-1  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-1">
-                        F821
-                     </span>
-                     Undefined name 'subsection_path'</li>
-               
-               </ul><tt><i>350</i>                                          <span class="n">subsection_path</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>350</i>             <span class="c1"># Write the thumbnail</span></tt>
             </div>
             <div id="l351"
-               class="code sev-1  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-1">
-                        F821
-                     </span>
-                     Undefined name 'fname'</li>
-               
-                  <li>
-                     <span class="count sev-1">
-                        F821
-                     </span>
-                     Undefined name 'title'</li>
-               
-               </ul><tt><i>351</i>                                          <span class="n">fname</span><span class="p">,</span> <span class="n">snippet</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>351</i>             <span class="n">ex_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_thumbnail_div</span><span class="p">(</span><span class="n">script_results</span><span class="p">,</span> <span class="n">is_backref</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></tt>
             </div>
             <div id="l352"
-               class="code sev- "><tt><i>352</i>                                          <span class="n">is_backref</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>352</i>             <span class="n">seen_backrefs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">backref</span><span class="p">)</span></tt>
             </div>
             <div id="l353"
-               class="code sev- "><tt><i>353</i>             <span class="n">seen_backrefs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">backref</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>353</i> &nbsp;</tt>
             </div>
             <div id="l354"
                class="code sev- "><tt><i>354</i> &nbsp;</tt>
             </div>
             <div id="l355"
-               class="code sev- "><tt><i>355</i> &nbsp;</tt>
+               class="code sev- "><tt><i>355</i> <span class="k">def</span> <span class="nf">_finalize_backreferences</span><span class="p">(</span><span class="n">seen_backrefs</span><span class="p">,</span> <span class="n">all_info</span><span class="p">:</span> <span class="n">AllInformation</span><span class="p">):</span></tt>
             </div>
             <div id="l356"
-               class="code sev- "><tt><i>356</i> <span class="k">def</span> <span class="nf">_finalize_backreferences</span><span class="p">(</span><span class="n">seen_backrefs</span><span class="p">,</span> <span class="n">gallery_conf</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>356</i>     <span class="sd">&quot;&quot;&quot;Replace backref files only if necessary.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l357"
-               class="code sev- "><tt><i>357</i>     <span class="sd">&quot;&quot;&quot;Replace backref files only if necessary.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>357</i>     <span class="n">logger</span> <span class="o">=</span> <span class="n">mkdocs_compatibility</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;mkdocs-gallery&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l358"
-               class="code sev- "><tt><i>358</i>     <span class="n">logger</span> <span class="o">=</span> <span class="n">mkdocs_compatibility</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;mkdocs-gallery&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>358</i>     <span class="k">if</span> <span class="n">all_info</span><span class="o">.</span><span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;backreferences_dir&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span></tt>
             </div>
             <div id="l359"
-               class="code sev- "><tt><i>359</i>     <span class="k">if</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;backreferences_dir&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>359</i>         <span class="k">return</span></tt>
             </div>
             <div id="l360"
-               class="code sev- "><tt><i>360</i>         <span class="k">return</span></tt>
+               class="code sev- "><tt><i>360</i> &nbsp;</tt>
             </div>
             <div id="l361"
-               class="code sev- "><tt><i>361</i> &nbsp;</tt>
+               class="code sev- "><tt><i>361</i>     <span class="k">for</span> <span class="n">backref</span> <span class="ow">in</span> <span class="n">seen_backrefs</span><span class="p">:</span></tt>
             </div>
             <div id="l362"
-               class="code sev- "><tt><i>362</i>     <span class="k">for</span> <span class="n">backref</span> <span class="ow">in</span> <span class="n">seen_backrefs</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>362</i>         <span class="c1"># Get the backref file to use for this module, according to config</span></tt>
             </div>
             <div id="l363"
-               class="code sev- "><tt><i>363</i>         <span class="c1"># TODO use _new_file ?</span></tt>
+               class="code sev- "><tt><i>363</i>         <span class="n">path</span> <span class="o">=</span> <span class="n">_new_file</span><span class="p">(</span><span class="n">all_info</span><span class="o">.</span><span class="n">get_backreferences_file</span><span class="p">(</span><span class="n">backref</span><span class="p">))</span></tt>
             </div>
             <div id="l364"
-               class="code sev-1  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-1">
-                        F821
-                     </span>
-                     Undefined name 'mkdocs_conf'</li>
-               
-               </ul><tt><i>364</i>         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">],</span></tt>
+               class="code sev- "><tt><i>364</i>         <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span></tt>
             </div>
             <div id="l365"
-               class="code sev- "><tt><i>365</i>                             <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;backreferences_dir&#39;</span><span class="p">],</span></tt>
+               class="code sev- "><tt><i>365</i>             <span class="c1"># Simply drop the .new suffix</span></tt>
             </div>
             <div id="l366"
-               class="code sev- "><tt><i>366</i>                             <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.examples.new&#39;</span> <span class="o">%</span> <span class="n">backref</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>366</i>             <span class="n">_replace_by_new_if_needed</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">md5_mode</span><span class="o">=</span><span class="s1">&#39;t&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l367"
-               class="code sev- "><tt><i>367</i>         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>367</i>         <span class="k">else</span><span class="p">:</span></tt>
             </div>
             <div id="l368"
-               class="code sev- "><tt><i>368</i>             <span class="n">_replace_by_new_if_needed</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">md5_mode</span><span class="o">=</span><span class="s1">&#39;t&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>368</i>             <span class="c1"># No file: warn</span></tt>
             </div>
             <div id="l369"
-               class="code sev- "><tt><i>369</i>         <span class="k">else</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>369</i>             <span class="n">level</span> <span class="o">=</span> <span class="n">all_info</span><span class="o">.</span><span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;log_level&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;backreference_missing&#39;</span><span class="p">,</span> <span class="s1">&#39;warning&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l370"
-               class="code sev- "><tt><i>370</i>             <span class="n">level</span> <span class="o">=</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;log_level&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;backreference_missing&#39;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>370</i>             <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></tt>
             </div>
             <div id="l371"
-               class="code sev- "><tt><i>371</i>                                                   <span class="s1">&#39;warning&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>371</i>             <span class="n">func</span><span class="p">(</span><span class="s1">&#39;Could not find backreferences file: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="p">,))</span></tt>
             </div>
             <div id="l372"
-               class="code sev- "><tt><i>372</i>             <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>372</i>             <span class="n">func</span><span class="p">(</span><span class="s1">&#39;The backreferences are likely to be erroneous &#39;</span></tt>
             </div>
             <div id="l373"
-               class="code sev- "><tt><i>373</i>             <span class="n">func</span><span class="p">(</span><span class="s1">&#39;Could not find backreferences file: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="p">,))</span></tt>
-            </div>
-            <div id="l374"
-               class="code sev- "><tt><i>374</i>             <span class="n">func</span><span class="p">(</span><span class="s1">&#39;The backreferences are likely to be erroneous &#39;</span></tt>
-            </div>
-            <div id="l375"
-               class="code sev- "><tt><i>375</i>                  <span class="s1">&#39;due to file system case insensitivity.&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>373</i>                  <span class="s1">&#39;due to file system case insensitivity.&#39;</span><span class="p">)</span></tt>
             </div>
             
          </div>

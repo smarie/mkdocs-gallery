@@ -306,9 +306,36 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-mkdocs-serve-mode" class="md-nav__link">
-    5. Mkdocs "serve" mode
+  <a href="#5-feature-highlights" class="md-nav__link">
+    5. Feature Highlights
   </a>
+  
+    <nav class="md-nav" aria-label="5. Feature Highlights">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-mkdocs-serve-mode" class="md-nav__link">
+    a. Mkdocs "serve" mode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-editing-examples" class="md-nav__link">
+    b. Editing Examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-binder" class="md-nav__link">
+    c. Binder
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -764,9 +791,36 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-mkdocs-serve-mode" class="md-nav__link">
-    5. Mkdocs "serve" mode
+  <a href="#5-feature-highlights" class="md-nav__link">
+    5. Feature Highlights
   </a>
+  
+    <nav class="md-nav" aria-label="5. Feature Highlights">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-mkdocs-serve-mode" class="md-nav__link">
+    a. Mkdocs "serve" mode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-editing-examples" class="md-nav__link">
+    b. Editing Examples
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-binder" class="md-nav__link">
+    c. Binder
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -912,12 +966,21 @@ docs/                # base mkdocs source directory
     └── &lt;.py files&gt;
 </code></pre></div>
 <h3 id="4-examples">4. Examples<a class="headerlink" href="#4-examples" title="Permanent link">&para;</a></h3>
-<p>The entire original <a href="https://sphinx-gallery.github.io/stable/auto_examples/index.html">gallery of examples from sphinx-gallery</a> is being ported <a href="http://127.0.0.1:8000/generated/gallery/">here</a> (work in progress). You may wish to check it out in order to see how each technical aspect translates in the mkdocs world.</p>
+<p>The entire original <a href="https://sphinx-gallery.github.io/stable/auto_examples/index.html">gallery of examples from sphinx-gallery</a> is being ported <a href="./generated/gallery/">here</a> (work in progress). You may wish to check it out in order to see how each technical aspect translates in the mkdocs world.</p>
 <p>You can look at the configuration used to generate it here: <a href="https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml">mkdocs.yml</a>.</p>
-<h3 id="5-mkdocs-serve-mode">5. Mkdocs "serve" mode<a class="headerlink" href="#5-mkdocs-serve-mode" title="Permanent link">&para;</a></h3>
-<p><code>mkdocs-gallery</code> supports the mkdocs dev-server <code>mkdocs serve</code> so that you can edit your documentation with live feedback ! </p>
+<h3 id="5-feature-highlights">5. Feature Highlights<a class="headerlink" href="#5-feature-highlights" title="Permanent link">&para;</a></h3>
+<h4 id="a-mkdocs-serve-mode">a. Mkdocs "serve" mode<a class="headerlink" href="#a-mkdocs-serve-mode" title="Permanent link">&para;</a></h4>
+<p><code>mkdocs-gallery</code> supports the mkdocs dev-server <code>mkdocs serve</code> so that you can edit your gallery examples with live auto-rebuild (similar to sphinx-autobuild).</p>
 <p>As soon as you modify an example file, it will rebuild the documentation and notify your browser. The examples that did not change will be automatically skipped (based on md5, identical to sphinx-gallery).</p>
 <p>See <a href="https://www.mkdocs.org/getting-started/">mkdocs documentation</a> for details.</p>
+<h4 id="b-editing-examples">b. Editing Examples<a class="headerlink" href="#b-editing-examples" title="Permanent link">&para;</a></h4>
+<p>All mkdocs-gallery generated pages have a working "edit page" pencil icon at the top, including gallery summary (readme) pages. This link will take you directly to the source file for easy pull requests on gallery examples !</p>
+<h4 id="c-binder">c. Binder<a class="headerlink" href="#c-binder" title="Permanent link">&para;</a></h4>
+<p>Binder configuration is slightly easier than the one in sphinx-gallery (as of version 1.0.1), as 2 pieces of config are now optional:</p>
+<ul>
+<li><code>branch</code> (defaults to <code>"gh-pages"</code>)</li>
+<li><code>binderhub_url</code> (defaults to <code>"https://mybinder.org"</code>)</li>
+</ul>
 <h3 id="6-make-your-examples-shine">6. Make your examples shine !<a class="headerlink" href="#6-make-your-examples-shine" title="Permanent link">&para;</a></h3>
 <p>The following <code>mkdocs</code> plugins and extensions are automatically activated - you may therefore use them in your markdown blocks without changing your <code>mkdocs.yml</code> configuration:</p>
 <ul>

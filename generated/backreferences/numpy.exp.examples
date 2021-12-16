@@ -1,0 +1,18 @@
+
+
+Examples using ``numpy.exp``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<div class="mkd-glr-thumbcontainer" tooltip="This example demonstrates how to import a local module and how images are stacked when two plot...">
+    <!--div class="figure align-default" id="id1"-->
+        <img alt="Plotting the exponential function" src="images/thumb/mkd_glr_plot_1_exp_thumb.png" />
+        <p class="caption">
+            <span class="caption-text">
+                <a class="reference internal" href="plot_1_exp">
+                    <span class="std std-ref">Plotting the exponential function</span>
+                </a>
+            </span>
+            <!--a class="headerlink" href="#id1" title="Permalink to this image"></a-->
+        </p>
+    <!--/div-->
+</div>

@@ -812,16 +812,7 @@
                class="code sev- "><tt><i>259</i>     <span class="c1"># heading_levels = defaultdict(lambda: next(heading_level_counter))</span></tt>
             </div>
             <div id="l260"
-               class="code sev-3  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-3">
-                        B007
-                     </span>
-                     Loop control variable 'lineno' not used within the loop body. If this is intended, start the name with an underscore.</li>
-               
-               </ul><tt><i>260</i>     <span class="k">for</span> <span class="n">blabel</span><span class="p">,</span> <span class="n">bcontent</span><span class="p">,</span> <span class="n">lineno</span> <span class="ow">in</span> <span class="n">script_blocks</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>260</i>     <span class="k">for</span> <span class="n">blabel</span><span class="p">,</span> <span class="n">bcontent</span><span class="p">,</span> <span class="n">_lineno</span> <span class="ow">in</span> <span class="n">script_blocks</span><span class="p">:</span></tt>
             </div>
             <div id="l261"
                class="code sev- "><tt><i>261</i>         <span class="k">if</span> <span class="n">blabel</span> <span class="o">==</span> <span class="s1">&#39;code&#39;</span><span class="p">:</span></tt>
@@ -947,16 +938,7 @@
                class="code sev- "><tt><i>301</i>         <span class="n">file_conf</span><span class="p">,</span> <span class="n">blocks</span> <span class="o">=</span> <span class="n">split_code_and_text_blocks</span><span class="p">(</span><span class="n">src_file</span><span class="p">)</span></tt>
             </div>
             <div id="l302"
-               class="code sev-3  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-3">
-                        T001
-                     </span>
-                     Print found.</li>
-               
-               </ul><tt><i>302</i>         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Converting </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_file</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>302</i>         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Converting </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_file</span><span class="p">))</span>  <span class="c1"># noqa  # this is a cli</span></tt>
             </div>
             <div id="l303"
                class="code sev- "><tt><i>303</i>         <span class="n">gallery_conf</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">gen_gallery</span><span class="o">.</span><span class="n">DEFAULT_GALLERY_CONF</span><span class="p">)</span></tt>

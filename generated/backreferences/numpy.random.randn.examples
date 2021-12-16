@@ -1,0 +1,18 @@
+
+
+Examples using ``numpy.random.randn``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<div class="mkd-glr-thumbcontainer" tooltip="This example demonstrates a code block that raises an error and how any code blocks that follow...">
+    <!--div class="figure align-default" id="id1"-->
+        <img alt="Example that fails to execute" src="no_output/images/thumb/mkd_glr_plot_raise_thumb.png" />
+        <p class="caption">
+            <span class="caption-text">
+                <a class="reference internal" href="no_output/plot_raise">
+                    <span class="std std-ref">Example that fails to execute</span>
+                </a>
+            </span>
+            <!--a class="headerlink" href="#id1" title="Permalink to this image"></a-->
+        </p>
+    <!--/div-->
+</div>

@@ -41,757 +41,730 @@
                class="code sev- "><tt><i>8</i> <span class="sd">&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l9"
-               class="code sev- "><tt><i>9</i> &nbsp;</tt>
+               class="code sev- "><tt><i>9</i> <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span></tt>
             </div>
             <div id="l10"
-               class="code sev- "><tt><i>10</i> <span class="kn">import</span> <span class="nn">os</span></tt>
+               class="code sev- "><tt><i>10</i> &nbsp;</tt>
             </div>
             <div id="l11"
-               class="code sev- "><tt><i>11</i> <span class="kn">import</span> <span class="nn">shutil</span></tt>
+               class="code sev- "><tt><i>11</i> <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span></tt>
             </div>
             <div id="l12"
-               class="code sev- "><tt><i>12</i> <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote</span></tt>
+               class="code sev- "><tt><i>12</i> &nbsp;</tt>
             </div>
             <div id="l13"
-               class="code sev- "><tt><i>13</i> &nbsp;</tt>
+               class="code sev- "><tt><i>13</i> <span class="kn">import</span> <span class="nn">os</span></tt>
             </div>
             <div id="l14"
-               class="code sev- "><tt><i>14</i> <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span></tt>
+               class="code sev- "><tt><i>14</i> <span class="kn">import</span> <span class="nn">shutil</span></tt>
             </div>
             <div id="l15"
-               class="code sev- "><tt><i>15</i> &nbsp;</tt>
+               class="code sev- "><tt><i>15</i> <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote</span></tt>
             </div>
             <div id="l16"
-               class="code sev- "><tt><i>16</i> <span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">ConfigError</span></tt>
+               class="code sev- "><tt><i>16</i> &nbsp;</tt>
             </div>
             <div id="l17"
-               class="code sev- "><tt><i>17</i> <span class="kn">from</span> <span class="nn">.gen_data_model</span> <span class="kn">import</span> <span class="n">GalleryScript</span></tt>
+               class="code sev- "><tt><i>17</i> <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span></tt>
             </div>
             <div id="l18"
-               class="code sev- "><tt><i>18</i> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">mkdocs_compatibility</span><span class="p">,</span> <span class="n">glr_path_static</span></tt>
+               class="code sev- "><tt><i>18</i> &nbsp;</tt>
             </div>
             <div id="l19"
-               class="code sev- "><tt><i>19</i> &nbsp;</tt>
+               class="code sev- "><tt><i>19</i> <span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">ConfigError</span></tt>
             </div>
             <div id="l20"
-               class="code sev- "><tt><i>20</i> <span class="n">logger</span> <span class="o">=</span> <span class="n">mkdocs_compatibility</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;mkdocs-gallery&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>20</i> <span class="kn">from</span> <span class="nn">.gen_data_model</span> <span class="kn">import</span> <span class="n">GalleryScript</span></tt>
             </div>
             <div id="l21"
-               class="code sev- "><tt><i>21</i> &nbsp;</tt>
+               class="code sev- "><tt><i>21</i> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">mkdocs_compatibility</span><span class="p">,</span> <span class="n">glr_path_static</span></tt>
             </div>
             <div id="l22"
                class="code sev- "><tt><i>22</i> &nbsp;</tt>
             </div>
             <div id="l23"
-               class="code sev- "><tt><i>23</i> <span class="k">def</span> <span class="nf">gen_binder_url</span><span class="p">(</span><span class="n">script</span><span class="p">:</span> <span class="n">GalleryScript</span><span class="p">,</span> <span class="n">binder_conf</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>23</i> <span class="n">logger</span> <span class="o">=</span> <span class="n">mkdocs_compatibility</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;mkdocs-gallery&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l24"
-               class="code sev- "><tt><i>24</i>     <span class="sd">&quot;&quot;&quot;Generate a Binder URL according to the configuration in conf.py.</span></tt>
+               class="code sev- "><tt><i>24</i> &nbsp;</tt>
             </div>
             <div id="l25"
                class="code sev- "><tt><i>25</i> &nbsp;</tt>
             </div>
             <div id="l26"
-               class="code sev- "><tt><i>26</i> <span class="sd">    Parameters</span></tt>
+               class="code sev- "><tt><i>26</i> <span class="k">def</span> <span class="nf">gen_binder_url</span><span class="p">(</span><span class="n">script</span><span class="p">:</span> <span class="n">GalleryScript</span><span class="p">,</span> <span class="n">binder_conf</span><span class="p">):</span></tt>
             </div>
             <div id="l27"
-               class="code sev- "><tt><i>27</i> <span class="sd">    ----------</span></tt>
+               class="code sev- "><tt><i>27</i>     <span class="sd">&quot;&quot;&quot;Generate a Binder URL according to the configuration in conf.py.</span></tt>
             </div>
             <div id="l28"
-               class="code sev- "><tt><i>28</i> <span class="sd">    script: GalleryScript</span></tt>
+               class="code sev- "><tt><i>28</i> &nbsp;</tt>
             </div>
             <div id="l29"
-               class="code sev- "><tt><i>29</i> <span class="sd">        The script for which a Binder badge will be generated.</span></tt>
+               class="code sev- "><tt><i>29</i> <span class="sd">    Parameters</span></tt>
             </div>
             <div id="l30"
-               class="code sev- "><tt><i>30</i> <span class="sd">    binder_conf: dict or None</span></tt>
+               class="code sev- "><tt><i>30</i> <span class="sd">    ----------</span></tt>
             </div>
             <div id="l31"
-               class="code sev- "><tt><i>31</i> <span class="sd">        The Binder configuration dictionary. See `gen_binder_md` for details.</span></tt>
+               class="code sev- "><tt><i>31</i> <span class="sd">    script: GalleryScript</span></tt>
             </div>
             <div id="l32"
-               class="code sev- "><tt><i>32</i> &nbsp;</tt>
+               class="code sev- "><tt><i>32</i> <span class="sd">        The script for which a Binder badge will be generated.</span></tt>
             </div>
             <div id="l33"
-               class="code sev- "><tt><i>33</i> <span class="sd">    Returns</span></tt>
+               class="code sev- "><tt><i>33</i> <span class="sd">    binder_conf: dict or None</span></tt>
             </div>
             <div id="l34"
-               class="code sev- "><tt><i>34</i> <span class="sd">    -------</span></tt>
+               class="code sev- "><tt><i>34</i> <span class="sd">        The Binder configuration dictionary. See `gen_binder_md` for details.</span></tt>
             </div>
             <div id="l35"
-               class="code sev- "><tt><i>35</i> <span class="sd">    binder_url : str</span></tt>
+               class="code sev- "><tt><i>35</i> &nbsp;</tt>
             </div>
             <div id="l36"
-               class="code sev- "><tt><i>36</i> <span class="sd">        A URL that can be used to direct the user to the live Binder environment.</span></tt>
+               class="code sev- "><tt><i>36</i> <span class="sd">    Returns</span></tt>
             </div>
             <div id="l37"
-               class="code sev- "><tt><i>37</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>37</i> <span class="sd">    -------</span></tt>
             </div>
             <div id="l38"
-               class="code sev- "><tt><i>38</i>     <span class="c1"># Build the URL</span></tt>
+               class="code sev- "><tt><i>38</i> <span class="sd">    binder_url : str</span></tt>
             </div>
             <div id="l39"
-               class="code sev- "><tt><i>39</i>     <span class="n">fpath_prefix</span> <span class="o">=</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filepath_prefix&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>39</i> <span class="sd">        A URL that can be used to direct the user to the live Binder environment.</span></tt>
             </div>
             <div id="l40"
-               class="code sev- "><tt><i>40</i>     <span class="n">link_base</span> <span class="o">=</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notebooks_dir&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>40</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l41"
-               class="code sev- "><tt><i>41</i> &nbsp;</tt>
+               class="code sev- "><tt><i>41</i>     <span class="c1"># Build the URL</span></tt>
             </div>
             <div id="l42"
-               class="code sev- "><tt><i>42</i>     <span class="c1"># We want to keep the relative path to sub-folders</span></tt>
+               class="code sev- "><tt><i>42</i>     <span class="n">fpath_prefix</span> <span class="o">=</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filepath_prefix&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l43"
-               class="code sev- "><tt><i>43</i>     <span class="n">relative_link</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">dwnld_py_file_rel_site_root</span></tt>
+               class="code sev- "><tt><i>43</i>     <span class="n">link_base</span> <span class="o">=</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notebooks_dir&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l44"
-               class="code sev-1  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-1">
-                        F821
-                     </span>
-                     Undefined name 'get_ipynb_for_py_script'</li>
-               
-               </ul><tt><i>44</i>     <span class="n">path_link</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">link_base</span><span class="p">,</span> <span class="n">get_ipynb_for_py_script</span><span class="p">(</span><span class="n">relative_link</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>44</i> &nbsp;</tt>
             </div>
             <div id="l45"
-               class="code sev- "><tt><i>45</i> &nbsp;</tt>
+               class="code sev- "><tt><i>45</i>     <span class="c1"># We want to keep the relative path to sub-folders</span></tt>
             </div>
             <div id="l46"
-               class="code sev- "><tt><i>46</i>     <span class="c1"># In case our website is hosted in a sub-folder</span></tt>
+               class="code sev- "><tt><i>46</i>     <span class="n">path_link</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">link_base</span><span class="p">,</span> <span class="n">script</span><span class="o">.</span><span class="n">ipynb_file_rel_site_root</span><span class="o">.</span><span class="n">as_posix</span><span class="p">())</span></tt>
             </div>
             <div id="l47"
-               class="code sev- "><tt><i>47</i>     <span class="k">if</span> <span class="n">fpath_prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>47</i> &nbsp;</tt>
             </div>
             <div id="l48"
-               class="code sev- "><tt><i>48</i>         <span class="n">path_link</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fpath_prefix</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">),</span> <span class="n">path_link</span><span class="p">])</span></tt>
+               class="code sev- "><tt><i>48</i>     <span class="c1"># In case our website is hosted in a sub-folder</span></tt>
             </div>
             <div id="l49"
-               class="code sev- "><tt><i>49</i> &nbsp;</tt>
+               class="code sev- "><tt><i>49</i>     <span class="k">if</span> <span class="n">fpath_prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></tt>
             </div>
             <div id="l50"
-               class="code sev- "><tt><i>50</i>     <span class="c1"># Make sure we have the right slashes (in case we&#39;re on Windows)</span></tt>
+               class="code sev- "><tt><i>50</i>         <span class="n">path_link</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fpath_prefix</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">),</span> <span class="n">path_link</span><span class="p">])</span></tt>
             </div>
             <div id="l51"
-               class="code sev- "><tt><i>51</i>     <span class="n">path_link</span> <span class="o">=</span> <span class="n">path_link</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>51</i> &nbsp;</tt>
             </div>
             <div id="l52"
-               class="code sev- "><tt><i>52</i> &nbsp;</tt>
+               class="code sev- "><tt><i>52</i>     <span class="c1"># Make sure we have the right slashes (in case we&#39;re on Windows)</span></tt>
             </div>
             <div id="l53"
-               class="code sev- "><tt><i>53</i>     <span class="c1"># Create the URL</span></tt>
+               class="code sev- "><tt><i>53</i>     <span class="n">path_link</span> <span class="o">=</span> <span class="n">path_link</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l54"
-               class="code sev- "><tt><i>54</i>     <span class="n">binder_url</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;binderhub_url&#39;</span><span class="p">],</span></tt>
+               class="code sev- "><tt><i>54</i> &nbsp;</tt>
             </div>
             <div id="l55"
-               class="code sev- "><tt><i>55</i>                            <span class="s1">&#39;v2&#39;</span><span class="p">,</span> <span class="s1">&#39;gh&#39;</span><span class="p">,</span></tt>
+               class="code sev- "><tt><i>55</i>     <span class="c1"># Create the URL</span></tt>
             </div>
             <div id="l56"
-               class="code sev- "><tt><i>56</i>                            <span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;org&#39;</span><span class="p">],</span></tt>
+               class="code sev- "><tt><i>56</i>     <span class="c1"># See https://mybinder.org/ to check that it is still the right one</span></tt>
             </div>
             <div id="l57"
-               class="code sev- "><tt><i>57</i>                            <span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;repo&#39;</span><span class="p">],</span></tt>
+               class="code sev- "><tt><i>57</i>     <span class="c1"># Note: the branch will typically be gh-pages</span></tt>
             </div>
             <div id="l58"
-               class="code sev- "><tt><i>58</i>                            <span class="n">quote</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;branch&#39;</span><span class="p">])])</span></tt>
+               class="code sev- "><tt><i>58</i>     <span class="n">binder_url</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;binderhub_url&#39;</span><span class="p">],</span></tt>
             </div>
             <div id="l59"
-               class="code sev- "><tt><i>59</i> &nbsp;</tt>
+               class="code sev- "><tt><i>59</i>                            <span class="s1">&#39;v2&#39;</span><span class="p">,</span> <span class="s1">&#39;gh&#39;</span><span class="p">,</span></tt>
             </div>
             <div id="l60"
-               class="code sev- "><tt><i>60</i>     <span class="k">if</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_jupyter_lab&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>60</i>                            <span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;org&#39;</span><span class="p">],</span></tt>
             </div>
             <div id="l61"
-               class="code sev- "><tt><i>61</i>         <span class="n">binder_url</span> <span class="o">+=</span> <span class="s1">&#39;?urlpath=lab/tree/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">quote</span><span class="p">(</span><span class="n">path_link</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>61</i>                            <span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;repo&#39;</span><span class="p">],</span></tt>
             </div>
             <div id="l62"
-               class="code sev- "><tt><i>62</i>     <span class="k">else</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>62</i>                            <span class="n">quote</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;branch&#39;</span><span class="p">])])</span></tt>
             </div>
             <div id="l63"
-               class="code sev- "><tt><i>63</i>         <span class="n">binder_url</span> <span class="o">+=</span> <span class="s1">&#39;?filepath=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">quote</span><span class="p">(</span><span class="n">path_link</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>63</i> &nbsp;</tt>
             </div>
             <div id="l64"
-               class="code sev- "><tt><i>64</i>     <span class="k">return</span> <span class="n">binder_url</span></tt>
+               class="code sev- "><tt><i>64</i>     <span class="k">if</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_jupyter_lab&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span></tt>
             </div>
             <div id="l65"
-               class="code sev- "><tt><i>65</i> &nbsp;</tt>
+               class="code sev- "><tt><i>65</i>         <span class="n">binder_url</span> <span class="o">+=</span> <span class="s1">&#39;?urlpath=lab/tree/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">quote</span><span class="p">(</span><span class="n">path_link</span><span class="p">))</span></tt>
             </div>
             <div id="l66"
-               class="code sev- "><tt><i>66</i> &nbsp;</tt>
+               class="code sev- "><tt><i>66</i>     <span class="k">else</span><span class="p">:</span></tt>
             </div>
             <div id="l67"
-               class="code sev- "><tt><i>67</i> <span class="k">def</span> <span class="nf">gen_binder_md</span><span class="p">(</span><span class="n">script</span><span class="p">:</span> <span class="n">GalleryScript</span><span class="p">,</span> <span class="n">binder_conf</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>67</i>         <span class="n">binder_url</span> <span class="o">+=</span> <span class="s1">&#39;?filepath=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">quote</span><span class="p">(</span><span class="n">path_link</span><span class="p">))</span></tt>
             </div>
             <div id="l68"
-               class="code sev- "><tt><i>68</i>     <span class="sd">&quot;&quot;&quot;Generate the MD + link for the Binder badge.</span></tt>
+               class="code sev- "><tt><i>68</i>     <span class="k">return</span> <span class="n">binder_url</span></tt>
             </div>
             <div id="l69"
                class="code sev- "><tt><i>69</i> &nbsp;</tt>
             </div>
             <div id="l70"
-               class="code sev- "><tt><i>70</i> <span class="sd">    Parameters</span></tt>
+               class="code sev- "><tt><i>70</i> &nbsp;</tt>
             </div>
             <div id="l71"
-               class="code sev- "><tt><i>71</i> <span class="sd">    ----------</span></tt>
+               class="code sev- "><tt><i>71</i> <span class="k">def</span> <span class="nf">gen_binder_md</span><span class="p">(</span><span class="n">script</span><span class="p">:</span> <span class="n">GalleryScript</span><span class="p">,</span> <span class="n">binder_conf</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span></tt>
             </div>
             <div id="l72"
-               class="code sev- "><tt><i>72</i> <span class="sd">    script: GalleryScript</span></tt>
+               class="code sev- "><tt><i>72</i>     <span class="sd">&quot;&quot;&quot;Generate the MD + link for the Binder badge.</span></tt>
             </div>
             <div id="l73"
-               class="code sev- "><tt><i>73</i> <span class="sd">        The script for which a Binder badge will be generated.</span></tt>
+               class="code sev- "><tt><i>73</i> &nbsp;</tt>
             </div>
             <div id="l74"
-               class="code sev- "><tt><i>74</i> &nbsp;</tt>
+               class="code sev- "><tt><i>74</i> <span class="sd">    Parameters</span></tt>
             </div>
             <div id="l75"
-               class="code sev- "><tt><i>75</i> <span class="sd">    binder_conf: dict or None</span></tt>
+               class="code sev- "><tt><i>75</i> <span class="sd">    ----------</span></tt>
             </div>
             <div id="l76"
-               class="code sev- "><tt><i>76</i> <span class="sd">        If a dictionary it must have the following keys:</span></tt>
+               class="code sev- "><tt><i>76</i> <span class="sd">    script: GalleryScript</span></tt>
             </div>
             <div id="l77"
-               class="code sev- "><tt><i>77</i> &nbsp;</tt>
+               class="code sev- "><tt><i>77</i> <span class="sd">        The script for which a Binder badge will be generated.</span></tt>
             </div>
             <div id="l78"
-               class="code sev- "><tt><i>78</i> <span class="sd">        &#39;binderhub_url&#39;</span></tt>
+               class="code sev- "><tt><i>78</i> &nbsp;</tt>
             </div>
             <div id="l79"
-               class="code sev- "><tt><i>79</i> <span class="sd">            The URL of the BinderHub instance that&#39;s running a Binder service.</span></tt>
+               class="code sev- "><tt><i>79</i> <span class="sd">    binder_conf: dict or None</span></tt>
             </div>
             <div id="l80"
-               class="code sev- "><tt><i>80</i> <span class="sd">        &#39;org&#39;</span></tt>
+               class="code sev- "><tt><i>80</i> <span class="sd">        If a dictionary it must have the following keys:</span></tt>
             </div>
             <div id="l81"
-               class="code sev- "><tt><i>81</i> <span class="sd">            The GitHub organization to which the documentation will be pushed.</span></tt>
+               class="code sev- "><tt><i>81</i> &nbsp;</tt>
             </div>
             <div id="l82"
-               class="code sev- "><tt><i>82</i> <span class="sd">        &#39;repo&#39;</span></tt>
+               class="code sev- "><tt><i>82</i> <span class="sd">        &#39;binderhub_url&#39;</span></tt>
             </div>
             <div id="l83"
-               class="code sev- "><tt><i>83</i> <span class="sd">            The GitHub repository to which the documentation will be pushed.</span></tt>
+               class="code sev- "><tt><i>83</i> <span class="sd">            The URL of the BinderHub instance that&#39;s running a Binder service.</span></tt>
             </div>
             <div id="l84"
-               class="code sev- "><tt><i>84</i> <span class="sd">        &#39;branch&#39;</span></tt>
+               class="code sev- "><tt><i>84</i> <span class="sd">        &#39;org&#39;</span></tt>
             </div>
             <div id="l85"
-               class="code sev- "><tt><i>85</i> <span class="sd">            The Git branch on which the documentation exists (e.g., gh-pages).</span></tt>
+               class="code sev- "><tt><i>85</i> <span class="sd">            The GitHub organization to which the documentation will be pushed.</span></tt>
             </div>
             <div id="l86"
-               class="code sev- "><tt><i>86</i> <span class="sd">        &#39;dependencies&#39;</span></tt>
+               class="code sev- "><tt><i>86</i> <span class="sd">        &#39;repo&#39;</span></tt>
             </div>
             <div id="l87"
-               class="code sev- "><tt><i>87</i> <span class="sd">            A list of paths to dependency files that match the Binderspec.</span></tt>
+               class="code sev- "><tt><i>87</i> <span class="sd">            The GitHub repository to which the documentation will be pushed.</span></tt>
             </div>
             <div id="l88"
-               class="code sev- "><tt><i>88</i> &nbsp;</tt>
+               class="code sev- "><tt><i>88</i> <span class="sd">        &#39;branch&#39;</span></tt>
             </div>
             <div id="l89"
-               class="code sev- "><tt><i>89</i> <span class="sd">    Returns</span></tt>
+               class="code sev- "><tt><i>89</i> <span class="sd">            The Git branch on which the documentation exists (e.g., gh-pages).</span></tt>
             </div>
             <div id="l90"
-               class="code sev- "><tt><i>90</i> <span class="sd">    -------</span></tt>
+               class="code sev- "><tt><i>90</i> <span class="sd">        &#39;dependencies&#39;</span></tt>
             </div>
             <div id="l91"
-               class="code sev- "><tt><i>91</i> <span class="sd">    md : str</span></tt>
+               class="code sev- "><tt><i>91</i> <span class="sd">            A list of paths to dependency files that match the Binderspec.</span></tt>
             </div>
             <div id="l92"
-               class="code sev- "><tt><i>92</i> <span class="sd">        The Markdown for the Binder badge that links to this file.</span></tt>
+               class="code sev- "><tt><i>92</i> &nbsp;</tt>
             </div>
             <div id="l93"
-               class="code sev- "><tt><i>93</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>93</i> <span class="sd">    Returns</span></tt>
             </div>
             <div id="l94"
-               class="code sev- "><tt><i>94</i>     <span class="n">binder_url</span> <span class="o">=</span> <span class="n">gen_binder_url</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="n">binder_conf</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>94</i> <span class="sd">    -------</span></tt>
             </div>
             <div id="l95"
-               class="code sev- "><tt><i>95</i> &nbsp;</tt>
+               class="code sev- "><tt><i>95</i> <span class="sd">    md : str</span></tt>
             </div>
             <div id="l96"
-               class="code sev- "><tt><i>96</i>     <span class="c1"># TODO revisit this comment for mkdocs</span></tt>
+               class="code sev- "><tt><i>96</i> <span class="sd">        The Markdown for the Binder badge that links to this file.</span></tt>
             </div>
             <div id="l97"
-               class="code sev- "><tt><i>97</i>     <span class="c1"># In theory we should be able to use glr_path_static for this, but Sphinx only allows paths to be relative to the</span></tt>
+               class="code sev- "><tt><i>97</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l98"
-               class="code sev- "><tt><i>98</i>     <span class="c1"># build root. On Linux, absolute paths can be used and they work, but this does not seem to be</span></tt>
+               class="code sev- "><tt><i>98</i>     <span class="n">binder_url</span> <span class="o">=</span> <span class="n">gen_binder_url</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="n">binder_conf</span><span class="p">)</span></tt>
             </div>
             <div id="l99"
-               class="code sev- "><tt><i>99</i>     <span class="c1"># documented behavior: https://github.com/sphinx-doc/sphinx/issues/7772</span></tt>
+               class="code sev- "><tt><i>99</i> &nbsp;</tt>
             </div>
             <div id="l100"
-               class="code sev- "><tt><i>100</i>     <span class="c1"># And in any case, it does not work on Windows, so here we copy the SVG to `images` for each gallery and link to it</span></tt>
+               class="code sev- "><tt><i>100</i>     <span class="c1"># TODO revisit this comment for mkdocs</span></tt>
             </div>
             <div id="l101"
-               class="code sev- "><tt><i>101</i>     <span class="c1"># there. This will make a few copies, and there will be an extra in `_static` at the end of the build, but it at</span></tt>
+               class="code sev- "><tt><i>101</i>     <span class="c1"># In theory we should be able to use glr_path_static for this, but Sphinx only allows paths to be relative to the</span></tt>
             </div>
             <div id="l102"
-               class="code sev- "><tt><i>102</i>     <span class="c1"># least works...</span></tt>
+               class="code sev- "><tt><i>102</i>     <span class="c1"># build root. On Linux, absolute paths can be used and they work, but this does not seem to be</span></tt>
             </div>
             <div id="l103"
-               class="code sev- "><tt><i>103</i>     <span class="n">physical_path</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">gallery</span><span class="o">.</span><span class="n">images_dir</span> <span class="o">/</span> <span class="s2">&quot;binder_badge_logo.svg&quot;</span></tt>
+               class="code sev- "><tt><i>103</i>     <span class="c1"># documented behavior: https://github.com/sphinx-doc/sphinx/issues/7772</span></tt>
             </div>
             <div id="l104"
-               class="code sev- "><tt><i>104</i>     <span class="k">if</span> <span class="ow">not</span> <span class="n">physical_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span></tt>
+               class="code sev- "><tt><i>104</i>     <span class="c1"># And in any case, it does not work on Windows, so here we copy the SVG to `images` for each gallery and link to it</span></tt>
             </div>
             <div id="l105"
-               class="code sev- "><tt><i>105</i>         <span class="c1"># Make sure parent dirs exists (this should not be necessary actually)</span></tt>
+               class="code sev- "><tt><i>105</i>     <span class="c1"># there. This will make a few copies, and there will be an extra in `_static` at the end of the build, but it at</span></tt>
             </div>
             <div id="l106"
-               class="code sev- "><tt><i>106</i>         <span class="n">physical_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>106</i>     <span class="c1"># least works...</span></tt>
             </div>
             <div id="l107"
-               class="code sev- "><tt><i>107</i>         <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">glr_path_static</span><span class="p">(),</span> <span class="s1">&#39;binder_badge_logo.svg&#39;</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">physical_path</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>107</i>     <span class="n">physical_path</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">gallery</span><span class="o">.</span><span class="n">images_dir</span> <span class="o">/</span> <span class="s2">&quot;binder_badge_logo.svg&quot;</span></tt>
             </div>
             <div id="l108"
-               class="code sev- "><tt><i>108</i>     <span class="k">else</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>108</i>     <span class="k">if</span> <span class="ow">not</span> <span class="n">physical_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span></tt>
             </div>
             <div id="l109"
-               class="code sev- "><tt><i>109</i>         <span class="k">assert</span> <span class="n">physical_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>  <span class="c1"># noqa</span></tt>
+               class="code sev- "><tt><i>109</i>         <span class="c1"># Make sure parent dirs exists (this should not be necessary actually)</span></tt>
             </div>
             <div id="l110"
-               class="code sev- "><tt><i>110</i> &nbsp;</tt>
+               class="code sev- "><tt><i>110</i>         <span class="n">physical_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></tt>
             </div>
             <div id="l111"
-               class="code sev- "><tt><i>111</i>     <span class="c1"># Create the markdown entry TODO</span></tt>
+               class="code sev- "><tt><i>111</i>         <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">glr_path_static</span><span class="p">(),</span> <span class="s1">&#39;binder_badge_logo.svg&#39;</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">physical_path</span><span class="p">))</span></tt>
             </div>
             <div id="l112"
-               class="code sev- "><tt><i>112</i>     <span class="n">md</span> <span class="o">=</span> <span class="p">(</span></tt>
+               class="code sev- "><tt><i>112</i>     <span class="k">else</span><span class="p">:</span></tt>
             </div>
             <div id="l113"
-               class="code sev- "><tt><i>113</i>         <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></tt>
+               class="code sev- "><tt><i>113</i>         <span class="k">assert</span> <span class="n">physical_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>  <span class="c1"># noqa</span></tt>
             </div>
             <div id="l114"
-               class="code sev- "><tt><i>114</i>         <span class="s2">&quot;  .. container:: binder-badge</span><span class="se">\n\n</span><span class="s2">&quot;</span></tt>
+               class="code sev- "><tt><i>114</i> &nbsp;</tt>
             </div>
             <div id="l115"
-               class="code sev- "><tt><i>115</i>         <span class="s2">&quot;    .. image:: images/binder_badge_logo.svg</span><span class="se">\n</span><span class="s2">&quot;</span></tt>
+               class="code sev- "><tt><i>115</i>     <span class="c1"># Create the markdown image with a link</span></tt>
             </div>
             <div id="l116"
-               class="code sev- "><tt><i>116</i>         <span class="s2">&quot;      :target: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span></tt>
+               class="code sev- "><tt><i>116</i>     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[![Launch binder](./images/binder_badge_logo.svg)](</span><span class="si">{</span><span class="n">binder_url</span><span class="si">}</span><span class="s2">)</span><span class="se">{{</span><span class="s2"> .center</span><span class="se">}}</span><span class="s2">&quot;</span></tt>
             </div>
             <div id="l117"
-               class="code sev- "><tt><i>117</i>         <span class="s2">&quot;      :alt: Launch binder</span><span class="se">\n</span><span class="s2">&quot;</span></tt>
+               class="code sev- "><tt><i>117</i> &nbsp;</tt>
             </div>
             <div id="l118"
-               class="code sev- "><tt><i>118</i>         <span class="s2">&quot;      :width: 150 px</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">binder_url</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>118</i> &nbsp;</tt>
             </div>
             <div id="l119"
-               class="code sev- "><tt><i>119</i>     <span class="k">return</span> <span class="n">md</span></tt>
+               class="code sev- "><tt><i>119</i> <span class="k">def</span> <span class="nf">copy_binder_files</span><span class="p">(</span><span class="n">gallery_conf</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="p">):</span></tt>
             </div>
             <div id="l120"
-               class="code sev- "><tt><i>120</i> &nbsp;</tt>
+               class="code sev- "><tt><i>120</i>     <span class="sd">&quot;&quot;&quot;Copy all Binder requirements and notebooks files.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l121"
-               class="code sev- "><tt><i>121</i> &nbsp;</tt>
+               class="code sev- "><tt><i>121</i>     <span class="c1"># if exception is not None:</span></tt>
             </div>
             <div id="l122"
-               class="code sev- "><tt><i>122</i> <span class="k">def</span> <span class="nf">copy_binder_files</span><span class="p">(</span><span class="n">gallery_conf</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>122</i>     <span class="c1">#     return</span></tt>
             </div>
             <div id="l123"
-               class="code sev- "><tt><i>123</i>     <span class="sd">&quot;&quot;&quot;Copy all Binder requirements and notebooks files.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>123</i>     <span class="c1">#</span></tt>
             </div>
             <div id="l124"
-               class="code sev- "><tt><i>124</i>     <span class="c1"># if exception is not None:</span></tt>
+               class="code sev- "><tt><i>124</i>     <span class="c1"># if app.builder.name not in [&#39;html&#39;, &#39;readthedocs&#39;]:</span></tt>
             </div>
             <div id="l125"
                class="code sev- "><tt><i>125</i>     <span class="c1">#     return</span></tt>
             </div>
             <div id="l126"
-               class="code sev- "><tt><i>126</i>     <span class="c1">#</span></tt>
+               class="code sev- "><tt><i>126</i> &nbsp;</tt>
             </div>
             <div id="l127"
-               class="code sev- "><tt><i>127</i>     <span class="c1"># if app.builder.name not in [&#39;html&#39;, &#39;readthedocs&#39;]:</span></tt>
+               class="code sev- "><tt><i>127</i>     <span class="c1"># gallery_conf = app.config.sphinx_gallery_conf</span></tt>
             </div>
             <div id="l128"
-               class="code sev- "><tt><i>128</i>     <span class="c1">#     return</span></tt>
+               class="code sev- "><tt><i>128</i>     <span class="n">binder_conf</span> <span class="o">=</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;binder&#39;</span><span class="p">]</span></tt>
             </div>
             <div id="l129"
                class="code sev- "><tt><i>129</i> &nbsp;</tt>
             </div>
             <div id="l130"
-               class="code sev- "><tt><i>130</i>     <span class="c1"># gallery_conf = app.config.sphinx_gallery_conf</span></tt>
+               class="code sev- "><tt><i>130</i>     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span></tt>
             </div>
             <div id="l131"
-               class="code sev- "><tt><i>131</i>     <span class="n">binder_conf</span> <span class="o">=</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s1">&#39;binder&#39;</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>131</i>         <span class="k">return</span></tt>
             </div>
             <div id="l132"
                class="code sev- "><tt><i>132</i> &nbsp;</tt>
             </div>
             <div id="l133"
-               class="code sev- "><tt><i>133</i>     <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>133</i>     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;copying binder requirements...&#39;</span><span class="p">)</span>  <span class="c1"># , color=&#39;white&#39;)</span></tt>
             </div>
             <div id="l134"
-               class="code sev- "><tt><i>134</i>         <span class="k">return</span></tt>
+               class="code sev- "><tt><i>134</i>     <span class="n">_copy_binder_reqs</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="p">)</span></tt>
             </div>
             <div id="l135"
-               class="code sev- "><tt><i>135</i> &nbsp;</tt>
+               class="code sev- "><tt><i>135</i>     <span class="n">_copy_binder_notebooks</span><span class="p">(</span><span class="n">gallery_conf</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="p">)</span></tt>
             </div>
             <div id="l136"
-               class="code sev- "><tt><i>136</i>     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;copying binder requirements...&#39;</span><span class="p">)</span>  <span class="c1"># , color=&#39;white&#39;)</span></tt>
+               class="code sev- "><tt><i>136</i> &nbsp;</tt>
             </div>
             <div id="l137"
-               class="code sev-1  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-1">
-                        F821
-                     </span>
-                     Undefined name 'app'</li>
-               
-               </ul><tt><i>137</i>     <span class="n">_copy_binder_reqs</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">binder_conf</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>137</i> &nbsp;</tt>
             </div>
             <div id="l138"
-               class="code sev-1  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-1">
-                        F821
-                     </span>
-                     Undefined name 'app'</li>
-               
-               </ul><tt><i>138</i>     <span class="n">_copy_binder_notebooks</span><span class="p">(</span><span class="n">app</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>138</i> <span class="k">def</span> <span class="nf">_copy_binder_reqs</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="p">):</span></tt>
             </div>
             <div id="l139"
-               class="code sev- "><tt><i>139</i> &nbsp;</tt>
+               class="code sev- "><tt><i>139</i>     <span class="sd">&quot;&quot;&quot;Copy Binder requirements files to a &quot;.binder&quot; folder in the docs.</span></tt>
             </div>
             <div id="l140"
                class="code sev- "><tt><i>140</i> &nbsp;</tt>
             </div>
             <div id="l141"
-               class="code sev- "><tt><i>141</i> <span class="k">def</span> <span class="nf">_copy_binder_reqs</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">binder_conf</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>141</i> <span class="sd">    See https://mybinder.readthedocs.io/en/latest/using/config_files.html#config-files</span></tt>
             </div>
             <div id="l142"
-               class="code sev- "><tt><i>142</i>     <span class="sd">&quot;&quot;&quot;Copy Binder requirements files to a &quot;binder&quot; folder in the docs.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>142</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
             </div>
             <div id="l143"
                class="code sev- "><tt><i>143</i>     <span class="n">path_reqs</span> <span class="o">=</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dependencies&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l144"
-               class="code sev- "><tt><i>144</i>     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">path_reqs</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>144</i> &nbsp;</tt>
             </div>
             <div id="l145"
-               class="code sev- "><tt><i>145</i>         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">srcdir</span><span class="p">,</span> <span class="n">path</span><span class="p">)):</span></tt>
+               class="code sev- "><tt><i>145</i>     <span class="c1"># Check that they exist (redundant since the check is already done by mkdocs.)</span></tt>
             </div>
             <div id="l146"
-               class="code sev- "><tt><i>146</i>             <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Couldn&#39;t find the Binder requirements file: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">, &quot;</span></tt>
+               class="code sev- "><tt><i>146</i>     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">path_reqs</span><span class="p">:</span></tt>
             </div>
             <div id="l147"
-               class="code sev- "><tt><i>147</i>                               <span class="sa">f</span><span class="s2">&quot;did you specify the path correctly?&quot;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>147</i>         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span></tt>
             </div>
             <div id="l148"
-               class="code sev- "><tt><i>148</i> &nbsp;</tt>
+               class="code sev- "><tt><i>148</i>             <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Couldn&#39;t find the Binder requirements file: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">, did you specify it correctly?&quot;</span><span class="p">)</span></tt>
             </div>
             <div id="l149"
-               class="code sev- "><tt><i>149</i>     <span class="n">binder_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="s1">&#39;binder&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>149</i> &nbsp;</tt>
             </div>
             <div id="l150"
-               class="code sev- "><tt><i>150</i>     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">binder_folder</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>150</i>     <span class="c1"># Destination folder: a &quot;.binder&quot; folder</span></tt>
             </div>
             <div id="l151"
-               class="code sev- "><tt><i>151</i>         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">binder_folder</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>151</i>     <span class="n">binder_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;site_dir&#39;</span><span class="p">],</span> <span class="s1">&#39;.binder&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l152"
-               class="code sev- "><tt><i>152</i> &nbsp;</tt>
+               class="code sev- "><tt><i>152</i>     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">binder_folder</span><span class="p">):</span></tt>
             </div>
             <div id="l153"
-               class="code sev- "><tt><i>153</i>     <span class="c1"># Copy over the requirements to the output directory</span></tt>
+               class="code sev- "><tt><i>153</i>         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">binder_folder</span><span class="p">)</span></tt>
             </div>
             <div id="l154"
-               class="code sev- "><tt><i>154</i>     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">path_reqs</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>154</i> &nbsp;</tt>
             </div>
             <div id="l155"
-               class="code sev- "><tt><i>155</i>         <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">srcdir</span><span class="p">,</span> <span class="n">path</span><span class="p">),</span> <span class="n">binder_folder</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>155</i>     <span class="c1"># Copy over the requirement files to the output directory</span></tt>
             </div>
             <div id="l156"
-               class="code sev- "><tt><i>156</i> &nbsp;</tt>
+               class="code sev- "><tt><i>156</i>     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">path_reqs</span><span class="p">:</span></tt>
             </div>
             <div id="l157"
-               class="code sev- "><tt><i>157</i> &nbsp;</tt>
+               class="code sev- "><tt><i>157</i>         <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">binder_folder</span><span class="p">)</span></tt>
             </div>
             <div id="l158"
-               class="code sev- "><tt><i>158</i> <span class="k">def</span> <span class="nf">_remove_ipynb_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">contents</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>158</i> &nbsp;</tt>
             </div>
             <div id="l159"
-               class="code sev- "><tt><i>159</i>     <span class="sd">&quot;&quot;&quot;Given a list of files in `contents`, remove all files named `ipynb` or</span></tt>
+               class="code sev- "><tt><i>159</i> &nbsp;</tt>
             </div>
             <div id="l160"
-               class="code sev- "><tt><i>160</i> <span class="sd">    directories named `images` and return the result.</span></tt>
+               class="code sev- "><tt><i>160</i> <span class="k">def</span> <span class="nf">_remove_ipynb_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">contents</span><span class="p">):</span></tt>
             </div>
             <div id="l161"
-               class="code sev- "><tt><i>161</i> &nbsp;</tt>
+               class="code sev- "><tt><i>161</i>     <span class="sd">&quot;&quot;&quot;Given a list of files in `contents`, remove all files named `ipynb` or</span></tt>
             </div>
             <div id="l162"
-               class="code sev- "><tt><i>162</i> <span class="sd">    Used with the `shutil` &quot;ignore&quot; keyword to filter out non-ipynb files.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>162</i> <span class="sd">    directories named `images` and return the result.</span></tt>
             </div>
             <div id="l163"
-               class="code sev- "><tt><i>163</i>     <span class="n">contents_return</span> <span class="o">=</span> <span class="p">[]</span></tt>
+               class="code sev- "><tt><i>163</i> &nbsp;</tt>
             </div>
             <div id="l164"
-               class="code sev- "><tt><i>164</i>     <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">contents</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>164</i> <span class="sd">    Used with the `shutil` &quot;ignore&quot; keyword to filter out non-ipynb files.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l165"
-               class="code sev- "><tt><i>165</i>         <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.ipynb&#39;</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>165</i>     <span class="n">contents_return</span> <span class="o">=</span> <span class="p">[]</span></tt>
             </div>
             <div id="l166"
-               class="code sev- "><tt><i>166</i>             <span class="c1"># Don&#39;t include ipynb files</span></tt>
+               class="code sev- "><tt><i>166</i>     <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">contents</span><span class="p">:</span></tt>
             </div>
             <div id="l167"
-               class="code sev- "><tt><i>167</i>             <span class="k">pass</span></tt>
+               class="code sev- "><tt><i>167</i>         <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.ipynb&#39;</span><span class="p">):</span></tt>
             </div>
             <div id="l168"
-               class="code sev- "><tt><i>168</i>         <span class="k">elif</span> <span class="p">(</span><span class="n">entry</span> <span class="o">!=</span> <span class="s2">&quot;images&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">entry</span><span class="p">)):</span></tt>
+               class="code sev- "><tt><i>168</i>             <span class="c1"># Don&#39;t include ipynb files</span></tt>
             </div>
             <div id="l169"
-               class="code sev- "><tt><i>169</i>             <span class="c1"># Don&#39;t include folders not called &quot;images&quot;</span></tt>
+               class="code sev- "><tt><i>169</i>             <span class="k">pass</span></tt>
             </div>
             <div id="l170"
-               class="code sev- "><tt><i>170</i>             <span class="k">pass</span></tt>
+               class="code sev- "><tt><i>170</i>         <span class="k">elif</span> <span class="p">(</span><span class="n">entry</span> <span class="o">!=</span> <span class="s2">&quot;images&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">entry</span><span class="p">)):</span></tt>
             </div>
             <div id="l171"
-               class="code sev- "><tt><i>171</i>         <span class="k">else</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>171</i>             <span class="c1"># Don&#39;t include folders not called &quot;images&quot;</span></tt>
             </div>
             <div id="l172"
-               class="code sev- "><tt><i>172</i>             <span class="c1"># Keep everything else</span></tt>
+               class="code sev- "><tt><i>172</i>             <span class="k">pass</span></tt>
             </div>
             <div id="l173"
-               class="code sev- "><tt><i>173</i>             <span class="n">contents_return</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>173</i>         <span class="k">else</span><span class="p">:</span></tt>
             </div>
             <div id="l174"
-               class="code sev- "><tt><i>174</i>     <span class="k">return</span> <span class="n">contents_return</span></tt>
+               class="code sev- "><tt><i>174</i>             <span class="c1"># Keep everything else</span></tt>
             </div>
             <div id="l175"
-               class="code sev- "><tt><i>175</i> &nbsp;</tt>
+               class="code sev- "><tt><i>175</i>             <span class="n">contents_return</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span></tt>
             </div>
             <div id="l176"
-               class="code sev- "><tt><i>176</i> &nbsp;</tt>
+               class="code sev- "><tt><i>176</i>     <span class="k">return</span> <span class="n">contents_return</span></tt>
             </div>
             <div id="l177"
-               class="code sev- "><tt><i>177</i> <span class="k">def</span> <span class="nf">_copy_binder_notebooks</span><span class="p">(</span><span class="n">app</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>177</i> &nbsp;</tt>
             </div>
             <div id="l178"
-               class="code sev- "><tt><i>178</i>     <span class="sd">&quot;&quot;&quot;Copy Jupyter notebooks to the binder notebooks directory.</span></tt>
+               class="code sev- "><tt><i>178</i> &nbsp;</tt>
             </div>
             <div id="l179"
-               class="code sev- "><tt><i>179</i> &nbsp;</tt>
+               class="code sev- "><tt><i>179</i> <span class="k">def</span> <span class="nf">_copy_binder_notebooks</span><span class="p">(</span><span class="n">gallery_conf</span><span class="p">,</span> <span class="n">mkdocs_conf</span><span class="p">):</span></tt>
             </div>
             <div id="l180"
-               class="code sev- "><tt><i>180</i> <span class="sd">    Copy each output gallery directory structure but only including the</span></tt>
+               class="code sev- "><tt><i>180</i>     <span class="sd">&quot;&quot;&quot;Copy Jupyter notebooks to the binder notebooks directory.</span></tt>
             </div>
             <div id="l181"
-               class="code sev- "><tt><i>181</i> <span class="sd">    Jupyter notebook files.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>181</i> &nbsp;</tt>
             </div>
             <div id="l182"
-               class="code sev- "><tt><i>182</i> &nbsp;</tt>
+               class="code sev- "><tt><i>182</i> <span class="sd">    Copy each output gallery directory structure but only including the</span></tt>
             </div>
             <div id="l183"
-               class="code sev- "><tt><i>183</i>     <span class="n">gallery_conf</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">sphinx_gallery_conf</span></tt>
+               class="code sev- "><tt><i>183</i> <span class="sd">    Jupyter notebook files.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l184"
-               class="code sev- "><tt><i>184</i>     <span class="n">gallery_dirs</span> <span class="o">=</span> <span class="n">gallery_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;gallery_dirs&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>184</i> &nbsp;</tt>
             </div>
             <div id="l185"
-               class="code sev- "><tt><i>185</i>     <span class="n">binder_conf</span> <span class="o">=</span> <span class="n">gallery_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;binder&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>185</i>     <span class="n">gallery_dirs</span> <span class="o">=</span> <span class="n">gallery_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;gallery_dirs&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l186"
-               class="code sev- "><tt><i>186</i>     <span class="n">notebooks_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notebooks_dir&#39;</span><span class="p">))</span></tt>
+               class="code sev- "><tt><i>186</i>     <span class="n">binder_conf</span> <span class="o">=</span> <span class="n">gallery_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;binder&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l187"
-               class="code sev- "><tt><i>187</i>     <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">notebooks_dir</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>187</i>     <span class="n">notebooks_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;site_dir&#39;</span><span class="p">],</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notebooks_dir&#39;</span><span class="p">))</span></tt>
             </div>
             <div id="l188"
-               class="code sev- "><tt><i>188</i>     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">notebooks_dir</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>188</i>     <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">notebooks_dir</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></tt>
             </div>
             <div id="l189"
-               class="code sev- "><tt><i>189</i> &nbsp;</tt>
+               class="code sev- "><tt><i>189</i>     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">notebooks_dir</span><span class="p">)</span></tt>
             </div>
             <div id="l190"
-               class="code sev- "><tt><i>190</i>     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gallery_dirs</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span></tt>
+               class="code sev- "><tt><i>190</i> &nbsp;</tt>
             </div>
             <div id="l191"
-               class="code sev- "><tt><i>191</i>         <span class="n">gallery_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">gallery_dirs</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>191</i>     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gallery_dirs</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span></tt>
             </div>
             <div id="l192"
-               class="code sev- "><tt><i>192</i> &nbsp;</tt>
+               class="code sev- "><tt><i>192</i>         <span class="n">gallery_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">gallery_dirs</span><span class="p">]</span></tt>
             </div>
             <div id="l193"
-               class="code sev- "><tt><i>193</i>     <span class="n">iterator</span> <span class="o">=</span> <span class="n">mkdocs_compatibility</span><span class="o">.</span><span class="n">status_iterator</span><span class="p">(</span></tt>
+               class="code sev- "><tt><i>193</i> &nbsp;</tt>
             </div>
             <div id="l194"
-               class="code sev- "><tt><i>194</i>         <span class="n">gallery_dirs</span><span class="p">,</span> <span class="s1">&#39;copying binder notebooks...&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">gallery_dirs</span><span class="p">))</span></tt>
+               class="code sev-1  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-1">
+                        F541
+                     </span>
+                     F-string is missing placeholders</li>
+               
+               </ul><tt><i>194</i>     <span class="k">for</span> <span class="n">gallery_dir</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">gallery_dirs</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;copying binder notebooks... &quot;</span><span class="p">):</span></tt>
             </div>
             <div id="l195"
-               class="code sev- "><tt><i>195</i> &nbsp;</tt>
+               class="code sev- "><tt><i>195</i>         <span class="n">gallery_dir_rel_docs_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">gallery_dir</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">mkdocs_conf</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">])</span></tt>
             </div>
             <div id="l196"
-               class="code sev- "><tt><i>196</i>     <span class="k">for</span> <span class="n">i_folder</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>196</i>         <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">gallery_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">notebooks_dir</span><span class="p">,</span> <span class="n">gallery_dir_rel_docs_dir</span><span class="p">),</span> <span class="n">ignore</span><span class="o">=</span><span class="n">_remove_ipynb_files</span><span class="p">)</span></tt>
             </div>
             <div id="l197"
-               class="code sev- "><tt><i>197</i>         <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">srcdir</span><span class="p">,</span> <span class="n">i_folder</span><span class="p">),</span></tt>
+               class="code sev- "><tt><i>197</i> &nbsp;</tt>
             </div>
             <div id="l198"
-               class="code sev- "><tt><i>198</i>                         <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">notebooks_dir</span><span class="p">,</span> <span class="n">i_folder</span><span class="p">),</span></tt>
+               class="code sev- "><tt><i>198</i> &nbsp;</tt>
             </div>
             <div id="l199"
-               class="code sev- "><tt><i>199</i>                         <span class="n">ignore</span><span class="o">=</span><span class="n">_remove_ipynb_files</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>199</i> <span class="k">def</span> <span class="nf">check_binder_conf</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">):</span></tt>
             </div>
             <div id="l200"
-               class="code sev- "><tt><i>200</i> &nbsp;</tt>
+               class="code sev- "><tt><i>200</i>     <span class="sd">&quot;&quot;&quot;Check to make sure that the Binder configuration is correct.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l201"
                class="code sev- "><tt><i>201</i> &nbsp;</tt>
             </div>
             <div id="l202"
-               class="code sev- "><tt><i>202</i> <span class="k">def</span> <span class="nf">check_binder_conf</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>202</i>     <span class="c1"># Grab the configuration and return None if it&#39;s not configured</span></tt>
             </div>
             <div id="l203"
-               class="code sev- "><tt><i>203</i>     <span class="sd">&quot;&quot;&quot;Check to make sure that the Binder configuration is correct.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>203</i>     <span class="n">binder_conf</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">binder_conf</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">binder_conf</span></tt>
             </div>
             <div id="l204"
-               class="code sev- "><tt><i>204</i> &nbsp;</tt>
+               class="code sev- "><tt><i>204</i>     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span></tt>
             </div>
             <div id="l205"
-               class="code sev- "><tt><i>205</i>     <span class="c1"># Grab the configuration and return None if it&#39;s not configured</span></tt>
+               class="code sev- "><tt><i>205</i>         <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s1">&#39;`binder_conf` must be a dictionary or None.&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l206"
-               class="code sev- "><tt><i>206</i>     <span class="n">binder_conf</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">binder_conf</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">binder_conf</span></tt>
+               class="code sev- "><tt><i>206</i>     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span></tt>
             </div>
             <div id="l207"
-               class="code sev- "><tt><i>207</i>     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>207</i>         <span class="k">return</span> <span class="n">binder_conf</span></tt>
             </div>
             <div id="l208"
-               class="code sev- "><tt><i>208</i>         <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s1">&#39;`binder_conf` must be a dictionary or None.&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>208</i> &nbsp;</tt>
             </div>
             <div id="l209"
-               class="code sev- "><tt><i>209</i>     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>209</i>     <span class="c1"># Ensure all fields are populated</span></tt>
             </div>
             <div id="l210"
-               class="code sev- "><tt><i>210</i>         <span class="k">return</span> <span class="n">binder_conf</span></tt>
+               class="code sev- "><tt><i>210</i>     <span class="n">req_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;binderhub_url&#39;</span><span class="p">,</span> <span class="s1">&#39;org&#39;</span><span class="p">,</span> <span class="s1">&#39;repo&#39;</span><span class="p">,</span> <span class="s1">&#39;branch&#39;</span><span class="p">,</span> <span class="s1">&#39;dependencies&#39;</span><span class="p">]</span></tt>
             </div>
             <div id="l211"
-               class="code sev- "><tt><i>211</i> &nbsp;</tt>
+               class="code sev- "><tt><i>211</i>     <span class="n">optional_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;filepath_prefix&#39;</span><span class="p">,</span> <span class="s1">&#39;notebooks_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;use_jupyter_lab&#39;</span><span class="p">]</span></tt>
             </div>
             <div id="l212"
-               class="code sev- "><tt><i>212</i>     <span class="c1"># Ensure all fields are populated</span></tt>
+               class="code sev- "><tt><i>212</i>     <span class="n">missing_values</span> <span class="o">=</span> <span class="p">[]</span></tt>
             </div>
             <div id="l213"
-               class="code sev- "><tt><i>213</i>     <span class="n">req_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;binderhub_url&#39;</span><span class="p">,</span> <span class="s1">&#39;org&#39;</span><span class="p">,</span> <span class="s1">&#39;repo&#39;</span><span class="p">,</span> <span class="s1">&#39;branch&#39;</span><span class="p">,</span> <span class="s1">&#39;dependencies&#39;</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>213</i>     <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">req_values</span><span class="p">:</span></tt>
             </div>
             <div id="l214"
-               class="code sev- "><tt><i>214</i>     <span class="n">optional_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;filepath_prefix&#39;</span><span class="p">,</span> <span class="s1">&#39;notebooks_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;use_jupyter_lab&#39;</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>214</i>         <span class="k">if</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span></tt>
             </div>
             <div id="l215"
-               class="code sev- "><tt><i>215</i>     <span class="n">missing_values</span> <span class="o">=</span> <span class="p">[]</span></tt>
+               class="code sev- "><tt><i>215</i>             <span class="n">missing_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></tt>
             </div>
             <div id="l216"
-               class="code sev- "><tt><i>216</i>     <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">req_values</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>216</i> &nbsp;</tt>
             </div>
             <div id="l217"
-               class="code sev- "><tt><i>217</i>         <span class="k">if</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>217</i>     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span></tt>
             </div>
             <div id="l218"
-               class="code sev- "><tt><i>218</i>             <span class="n">missing_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>218</i>         <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;binder_conf is missing values for: </span><span class="si">{</span><span class="n">missing_values</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></tt>
             </div>
             <div id="l219"
                class="code sev- "><tt><i>219</i> &nbsp;</tt>
             </div>
             <div id="l220"
-               class="code sev- "><tt><i>220</i>     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>220</i>     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span></tt>
             </div>
             <div id="l221"
-               class="code sev- "><tt><i>221</i>         <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;binder_conf is missing values for: </span><span class="si">{</span><span class="n">missing_values</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>221</i>         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">req_values</span> <span class="o">+</span> <span class="n">optional_values</span><span class="p">):</span></tt>
             </div>
             <div id="l222"
-               class="code sev- "><tt><i>222</i> &nbsp;</tt>
+               class="code sev- "><tt><i>222</i>             <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown Binder config key: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></tt>
             </div>
             <div id="l223"
-               class="code sev- "><tt><i>223</i>     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span></tt>
+               class="code sev- "><tt><i>223</i> &nbsp;</tt>
             </div>
             <div id="l224"
-               class="code sev- "><tt><i>224</i>         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">req_values</span> <span class="o">+</span> <span class="n">optional_values</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>224</i>     <span class="c1"># Ensure we have http in the URL</span></tt>
             </div>
             <div id="l225"
-               class="code sev- "><tt><i>225</i>             <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown Binder config key: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>225</i>     <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;binderhub_url&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;http://&#39;</span><span class="p">,</span> <span class="s1">&#39;https://&#39;</span><span class="p">]):</span></tt>
             </div>
             <div id="l226"
-               class="code sev- "><tt><i>226</i> &nbsp;</tt>
+               class="code sev- "><tt><i>226</i>         <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;did not supply a valid url, gave binderhub_url: </span><span class="si">{</span><span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;binderhub_url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></tt>
             </div>
             <div id="l227"
-               class="code sev- "><tt><i>227</i>     <span class="c1"># Ensure we have http in the URL</span></tt>
+               class="code sev- "><tt><i>227</i> &nbsp;</tt>
             </div>
             <div id="l228"
-               class="code sev- "><tt><i>228</i>     <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;binderhub_url&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;http://&#39;</span><span class="p">,</span> <span class="s1">&#39;https://&#39;</span><span class="p">]):</span></tt>
+               class="code sev- "><tt><i>228</i>     <span class="c1"># Ensure we have at least one dependency file</span></tt>
             </div>
             <div id="l229"
-               class="code sev- "><tt><i>229</i>         <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;did not supply a valid url, gave binderhub_url: </span><span class="si">{</span><span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;binderhub_url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>229</i>     <span class="c1"># Need at least one of these three files</span></tt>
             </div>
             <div id="l230"
-               class="code sev- "><tt><i>230</i> &nbsp;</tt>
+               class="code sev- "><tt><i>230</i>     <span class="n">required_reqs_files</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;requirements.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;environment.yml&#39;</span><span class="p">,</span> <span class="s1">&#39;Dockerfile&#39;</span><span class="p">]</span></tt>
             </div>
             <div id="l231"
-               class="code sev- "><tt><i>231</i>     <span class="c1"># Ensure we have at least one dependency file</span></tt>
+               class="code sev- "><tt><i>231</i> &nbsp;</tt>
             </div>
             <div id="l232"
-               class="code sev- "><tt><i>232</i>     <span class="c1"># Need at least one of these three files</span></tt>
+               class="code sev- "><tt><i>232</i>     <span class="n">path_reqs</span> <span class="o">=</span> <span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;dependencies&#39;</span><span class="p">]</span></tt>
             </div>
             <div id="l233"
-               class="code sev- "><tt><i>233</i>     <span class="n">required_reqs_files</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;requirements.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;environment.yml&#39;</span><span class="p">,</span> <span class="s1">&#39;Dockerfile&#39;</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>233</i>     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path_reqs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span></tt>
             </div>
             <div id="l234"
-               class="code sev- "><tt><i>234</i> &nbsp;</tt>
+               class="code sev- "><tt><i>234</i>         <span class="n">path_reqs</span> <span class="o">=</span> <span class="p">[</span><span class="n">path_reqs</span><span class="p">]</span></tt>
             </div>
             <div id="l235"
-               class="code sev- "><tt><i>235</i>     <span class="n">path_reqs</span> <span class="o">=</span> <span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;dependencies&#39;</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>235</i>         <span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;dependencies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path_reqs</span></tt>
             </div>
             <div id="l236"
-               class="code sev- "><tt><i>236</i>     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path_reqs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>236</i>     <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path_reqs</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span></tt>
             </div>
             <div id="l237"
-               class="code sev- "><tt><i>237</i>         <span class="n">path_reqs</span> <span class="o">=</span> <span class="p">[</span><span class="n">path_reqs</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>237</i>         <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`dependencies` value should be a list of strings. Got type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">path_reqs</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></tt>
             </div>
             <div id="l238"
-               class="code sev- "><tt><i>238</i>         <span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;dependencies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path_reqs</span></tt>
+               class="code sev- "><tt><i>238</i> &nbsp;</tt>
             </div>
             <div id="l239"
-               class="code sev- "><tt><i>239</i>     <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path_reqs</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span></tt>
+               class="code sev- "><tt><i>239</i>     <span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;notebooks_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notebooks_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;notebooks&#39;</span><span class="p">)</span></tt>
             </div>
             <div id="l240"
-               class="code sev- "><tt><i>240</i>         <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`dependencies` value should be a list of strings. Got type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">path_reqs</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>240</i> &nbsp;</tt>
             </div>
             <div id="l241"
-               class="code sev- "><tt><i>241</i> &nbsp;</tt>
+               class="code sev- "><tt><i>241</i>     <span class="n">path_reqs_filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">path_reqs</span><span class="p">]</span></tt>
             </div>
             <div id="l242"
-               class="code sev- "><tt><i>242</i>     <span class="n">binder_conf</span><span class="p">[</span><span class="s1">&#39;notebooks_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">binder_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notebooks_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;notebooks&#39;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>242</i>     <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">ii</span> <span class="ow">in</span> <span class="n">path_reqs_filenames</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">required_reqs_files</span><span class="p">):</span></tt>
             </div>
             <div id="l243"
-               class="code sev- "><tt><i>243</i> &nbsp;</tt>
+               class="code sev- "><tt><i>243</i>         <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Did not find one of `requirements.txt` or `environment.yml` in the </span><span class="se">\&quot;</span><span class="s2">dependencies</span><span class="se">\&quot;</span><span class="s2"> section&quot;</span></tt>
             </div>
             <div id="l244"
-               class="code sev- "><tt><i>244</i>     <span class="n">path_reqs_filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">path_reqs</span><span class="p">]</span></tt>
+               class="code sev- "><tt><i>244</i>                           <span class="s2">&quot; of the binder configuration for mkdocs-gallery. A path to at least one of these files must&quot;</span></tt>
             </div>
             <div id="l245"
-               class="code sev- "><tt><i>245</i>     <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">ii</span> <span class="ow">in</span> <span class="n">path_reqs_filenames</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">required_reqs_files</span><span class="p">):</span></tt>
+               class="code sev- "><tt><i>245</i>                           <span class="s2">&quot; exist in your Binder dependencies.&quot;</span><span class="p">)</span></tt>
             </div>
             <div id="l246"
-               class="code sev- "><tt><i>246</i>         <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Did not find one of `requirements.txt` or `environment.yml` in the </span><span class="se">\&quot;</span><span class="s2">dependencies</span><span class="se">\&quot;</span><span class="s2"> section&quot;</span></tt>
+               class="code sev- "><tt><i>246</i> &nbsp;</tt>
             </div>
             <div id="l247"
-               class="code sev- "><tt><i>247</i>                           <span class="s2">&quot; of the binder configuration for mkdocs-gallery. A path to at least one of these files must&quot;</span></tt>
-            </div>
-            <div id="l248"
-               class="code sev- "><tt><i>248</i>                           <span class="s2">&quot; exist in your Binder dependencies.&quot;</span><span class="p">)</span></tt>
-            </div>
-            <div id="l249"
-               class="code sev- "><tt><i>249</i> &nbsp;</tt>
-            </div>
-            <div id="l250"
-               class="code sev- "><tt><i>250</i>     <span class="k">return</span> <span class="n">binder_conf</span></tt>
+               class="code sev- "><tt><i>247</i>     <span class="k">return</span> <span class="n">binder_conf</span></tt>
             </div>
             
          </div>
