@@ -162,14 +162,14 @@ def extract_file_config(content):
 
 
 def split_code_and_text_blocks(
-    source_file: Path,
+    source_file: Union[str, Path],
     return_node=False
 ) -> Union[Tuple[Dict, List], Tuple[Dict, List, ast.AST]]:
     """Return list with source file separated into code and text blocks.
 
     Parameters
     ----------
-    source_file : Path
+    source_file : Union[str, Path]
         Path to the source file.
     return_node : bool
         If True, return the ast node.
@@ -186,6 +186,7 @@ def split_code_and_text_blocks(
     node : ast Node
         The parsed node.
     """
+    source_file = Path(source_file)
     docstring, rest_of_content, lineno, node = _get_docstring_and_rest(source_file)
     blocks = [('text', docstring, 1)]
 

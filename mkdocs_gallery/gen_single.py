@@ -1139,11 +1139,10 @@ def generate_md_from_blocks(script_blocks, output_blocks, file_conf, gallery_con
                 example_md += code_md
                 example_md += code_output
             else:
-                # TODO what is this ?
                 example_md += code_output
                 if 'mkd-glr-script-out' in code_output:
                     # Add some vertical space after output
-                    example_md += "\n\n|\n\n"
+                    example_md += "\n\n<br />\n\n"  # "|\n\n"
                 example_md += code_md
         else:
             block_separator = '\n\n' if not bcontent.endswith('\n') else '\n'
