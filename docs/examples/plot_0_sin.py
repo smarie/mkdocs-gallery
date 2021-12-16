@@ -5,8 +5,8 @@ Introductory example - Plotting sin
 
 This is a general example demonstrating a Matplotlib plot output, embedded
 Markdown, the use of math notation and cross-linking to other examples. It would be
-useful to compare the [source Python file](./plot_0_sin.py) with the
-output below.
+useful to compare the [:fontawesome-solid-download: source Python file](./plot_0_sin.py)
+with the output below.
 
 Source files for gallery examples should start with a triple-quoted header
 docstring. Anything before the docstring is ignored by Mkdocs-Gallery and will
@@ -76,7 +76,7 @@ print('This example shows a sin plot!')
 # for the current file is located at `docs/generated/gallery/plot_1_sin.md`.
 # This is because the configuration for this gallery in `mkdocs.yml` states
 # that the `examples/` gallery should be generated in the `generated/gallery`
-# folder.
+# folder (see [Configuration](../../index.md#a-basics)).
 #
 # Below, the example we want to cross-reference is the 'SyntaxError' example,
 # located in the `no_output` subgallery of the `examples` gallery.

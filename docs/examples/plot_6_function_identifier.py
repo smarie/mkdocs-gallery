@@ -3,6 +3,9 @@
 Identifying function names in a script
 ======================================
 
+!!! warning "Work in progress"
+    This feature has not been fully ported to mkdocs, see [#10](https://github.com/smarie/mkdocs-gallery/issues/10)
+
 This demonstrates how Mkdocs-Gallery identifies function names to figure out
 which functions are called in the script and to which module do they belong.
 """
@@ -12,8 +15,8 @@ which functions are called in the script and to which module do they belong.
 
 import os  # noqa, analysis:ignore
 import matplotlib.pyplot as plt
-from sphinx_gallery.backreferences import identify_names
-from sphinx_gallery.py_source_parser import split_code_and_text_blocks
+from mkdocs_gallery.backreferences import identify_names
+from mkdocs_gallery.py_source_parser import split_code_and_text_blocks
 
 filename = os.__file__.replace('.pyc', '.py')
 _, script_blocks = split_code_and_text_blocks(filename)
@@ -25,14 +28,14 @@ fontsize = 12.5
 # %%
 # Mkdocs-Gallery examines both the executed code itself, as well as the
 # documentation blocks (such as this one, or the top-level one),
-# to find backreferences. This means that by writing :obj:`numpy.sin`
-# and :obj:`numpy.exp` here, a backreference will be created even though
+# to find backreferences. This means that by writing `numpy.sin`
+# and `numpy.exp` here, a backreference will be created even though
 # they are not explicitly used in the code. This is useful in particular when
 # functions return classes -- if you add them to the documented blocks of
 # examples that use them, they will be shown in the backreferences.
 #
 # Also note that global variables of the script have intersphinx references
-# added to them automatically (e.g., ``fig`` and ``fig.text`` below).
+# added to them automatically (e.g., `fig` and `fig.text` below).
 
 fig = plt.figure(figsize=(7.5, 8))
 
