@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-r"""
+"""
 Seaborn example
 ===============
 
 This example demonstrates a Seaborn plot. Figures produced Matplotlib **and**
 by any package that is based on Matplotlib (e.g., Seaborn), will be
-captured by default. See :ref:`image_scrapers` for details.
+captured by default.
+See [image_scrapers](https://sphinx-gallery.github.io/stable/configuration.html#image-scrapers) for details.
 """
 # Author: Michael Waskom & Lucy Liu
 # License: BSD 3 clause
@@ -14,8 +15,8 @@ from __future__ import division, absolute_import, print_function
 
 
 import numpy as np
-import seaborn as sns
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Enforce the use of default set style
 
