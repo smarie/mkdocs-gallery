@@ -30,3 +30,45 @@ Examples using ``numpy.ufunc``
         </p>
     <!--/div-->
 </div>
+
+<div class="mkd-glr-thumbcontainer" tooltip="This example demonstrates a Seaborn plot. Figures produced Matplotlib **and** by any package th...">
+    <!--div class="figure align-default" id="id1"-->
+        <img alt="Seaborn example" src="images/thumb/mkd_glr_plot_2_seaborn_thumb.png" />
+        <p class="caption">
+            <span class="caption-text">
+                <a class="reference internal" href="plot_2_seaborn">
+                    <span class="std std-ref">Seaborn example</span>
+                </a>
+            </span>
+            <!--a class="headerlink" href="#id1" title="Permalink to this image"></a-->
+        </p>
+    <!--/div-->
+</div>
+
+<div class="mkd-glr-thumbcontainer" tooltip="This example demonstrates how to choose the figure that is displayed as the thumbnail, if the e...">
+    <!--div class="figure align-default" id="id1"-->
+        <img alt="Choosing the thumbnail figure" src="images/thumb/mkd_glr_plot_4_choose_thumbnail_thumb.png" />
+        <p class="caption">
+            <span class="caption-text">
+                <a class="reference internal" href="plot_4_choose_thumbnail">
+                    <span class="std std-ref">Choosing the thumbnail figure</span>
+                </a>
+            </span>
+            <!--a class="headerlink" href="#id1" title="Permalink to this image"></a-->
+        </p>
+    <!--/div-->
+</div>
+
+<div class="mkd-glr-thumbcontainer" tooltip="This example demonstrates how to provide a figure that is displayed as the thumbnail. This is d...">
+    <!--div class="figure align-default" id="id1"-->
+        <img alt="Providing a figure for the thumbnail image" src="images/thumb/mkd_glr_plot_4b_provide_thumbnail_thumb.png" />
+        <p class="caption">
+            <span class="caption-text">
+                <a class="reference internal" href="plot_4b_provide_thumbnail">
+                    <span class="std std-ref">Providing a figure for the thumbnail image</span>
+                </a>
+            </span>
+            <!--a class="headerlink" href="#id1" title="Permalink to this image"></a-->
+        </p>
+    <!--/div-->
+</div>

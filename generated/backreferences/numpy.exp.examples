@@ -16,3 +16,17 @@ Examples using ``numpy.exp``
         </p>
     <!--/div-->
 </div>
+
+<div class="mkd-glr-thumbcontainer" tooltip="This example demonstrates how to choose the figure that is displayed as the thumbnail, if the e...">
+    <!--div class="figure align-default" id="id1"-->
+        <img alt="Choosing the thumbnail figure" src="images/thumb/mkd_glr_plot_4_choose_thumbnail_thumb.png" />
+        <p class="caption">
+            <span class="caption-text">
+                <a class="reference internal" href="plot_4_choose_thumbnail">
+                    <span class="std std-ref">Choosing the thumbnail figure</span>
+                </a>
+            </span>
+            <!--a class="headerlink" href="#id1" title="Permalink to this image"></a-->
+        </p>
+    <!--/div-->
+</div>

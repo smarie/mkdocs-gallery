@@ -1,0 +1,18 @@
+
+
+Examples using ``numpy.zeros``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<div class="mkd-glr-thumbcontainer" tooltip="This example demonstrates how the [`capture_repr`](https://sphinx-gallery.github.io/stable/conf...">
+    <!--div class="figure align-default" id="id1"-->
+        <img alt="Capturing output representations" src="images/thumb/mkd_glr_plot_3_capture_repr_thumb.png" />
+        <p class="caption">
+            <span class="caption-text">
+                <a class="reference internal" href="plot_3_capture_repr">
+                    <span class="std std-ref">Capturing output representations</span>
+                </a>
+            </span>
+            <!--a class="headerlink" href="#id1" title="Permalink to this image"></a-->
+        </p>
+    <!--/div-->
+</div>
