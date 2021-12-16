@@ -6,6 +6,9 @@
 """
 Binder utility functions
 """
+from pathlib import Path
+
+from tqdm import tqdm
 
 import os
 import shutil
@@ -40,8 +43,7 @@ def gen_binder_url(script: GalleryScript, binder_conf):
     link_base = binder_conf.get('notebooks_dir')
 
     # We want to keep the relative path to sub-folders
-    relative_link = script.dwnld_py_file_rel_site_root
-    path_link = os.path.join(link_base, get_ipynb_for_py_script(relative_link))
+    path_link = os.path.join(link_base, script.ipynb_file_rel_site_root.as_posix())
 
     # In case our website is hosted in a sub-folder
     if fpath_prefix is not None:
@@ -51,6 +53,8 @@ def gen_binder_url(script: GalleryScript, binder_conf):
     path_link = path_link.replace(os.path.sep, '/')
 
     # Create the URL
+    # See https://mybinder.org/ to check that it is still the right one
+    # Note: the branch will typically be gh-pages
     binder_url = '/'.join([binder_conf['binderhub_url'],
                            'v2', 'gh',
                            binder_conf['org'],
@@ -103,20 +107,13 @@ def gen_binder_md(script: GalleryScript, binder_conf: Dict):
     physical_path = script.gallery.images_dir / "binder_badge_logo.svg"
     if not physical_path.exists():
         # Make sure parent dirs exists (this should not be necessary actually)
-        physical_path.mkdir(parents=True, exist_ok=True)
+        physical_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(os.path.join(glr_path_static(), 'binder_badge_logo.svg'), str(physical_path))
     else:
         assert physical_path.is_file()  # noqa
 
-    # Create the markdown entry TODO
-    md = (
-        "\n"
-        "  .. container:: binder-badge\n\n"
-        "    .. image:: images/binder_badge_logo.svg\n"
-        "      :target: {}\n"
-        "      :alt: Launch binder\n"
-        "      :width: 150 px\n").format(binder_url)
-    return md
+    # Create the markdown image with a link
+    return f"[![Launch binder](./images/binder_badge_logo.svg)]({binder_url}){{ .center}}"
 
 
 def copy_binder_files(gallery_conf, mkdocs_conf):
@@ -134,25 +131,30 @@ def copy_binder_files(gallery_conf, mkdocs_conf):
         return
 
     logger.info('copying binder requirements...')  # , color='white')
-    _copy_binder_reqs(app, binder_conf)
-    _copy_binder_notebooks(app)
+    _copy_binder_reqs(binder_conf, mkdocs_conf)
+    _copy_binder_notebooks(gallery_conf, mkdocs_conf)
 
 
-def _copy_binder_reqs(app, binder_conf):
-    """Copy Binder requirements files to a "binder" folder in the docs."""
+def _copy_binder_reqs(binder_conf, mkdocs_conf):
+    """Copy Binder requirements files to a ".binder" folder in the docs.
+
+    See https://mybinder.readthedocs.io/en/latest/using/config_files.html#config-files
+    """
     path_reqs = binder_conf.get('dependencies')
-    for path in path_reqs:
-        if not os.path.exists(os.path.join(app.srcdir, path)):
-            raise ConfigError(f"Couldn't find the Binder requirements file: {path}, "
-                              f"did you specify the path correctly?")
 
-    binder_folder = os.path.join(app.outdir, 'binder')
+    # Check that they exist (redundant since the check is already done by mkdocs.)
+    for path in path_reqs:
+        if not os.path.exists(path):
+            raise ConfigError(f"Couldn't find the Binder requirements file: {path}, did you specify it correctly?")
+
+    # Destination folder: a ".binder" folder
+    binder_folder = os.path.join(mkdocs_conf['site_dir'], '.binder')
     if not os.path.isdir(binder_folder):
         os.makedirs(binder_folder)
 
-    # Copy over the requirements to the output directory
+    # Copy over the requirement files to the output directory
     for path in path_reqs:
-        shutil.copy(os.path.join(app.srcdir, path), binder_folder)
+        shutil.copy(path, binder_folder)
 
 
 def _remove_ipynb_files(path, contents):
@@ -174,29 +176,24 @@ def _remove_ipynb_files(path, contents):
     return contents_return
 
 
-def _copy_binder_notebooks(app):
+def _copy_binder_notebooks(gallery_conf, mkdocs_conf):
     """Copy Jupyter notebooks to the binder notebooks directory.
 
     Copy each output gallery directory structure but only including the
     Jupyter notebook files."""
 
-    gallery_conf = app.config.sphinx_gallery_conf
     gallery_dirs = gallery_conf.get('gallery_dirs')
     binder_conf = gallery_conf.get('binder')
-    notebooks_dir = os.path.join(app.outdir, binder_conf.get('notebooks_dir'))
+    notebooks_dir = os.path.join(mkdocs_conf['site_dir'], binder_conf.get('notebooks_dir'))
     shutil.rmtree(notebooks_dir, ignore_errors=True)
     os.makedirs(notebooks_dir)
 
     if not isinstance(gallery_dirs, (list, tuple)):
         gallery_dirs = [gallery_dirs]
 
-    iterator = mkdocs_compatibility.status_iterator(
-        gallery_dirs, 'copying binder notebooks...', length=len(gallery_dirs))
-
-    for i_folder in iterator:
-        shutil.copytree(os.path.join(app.srcdir, i_folder),
-                        os.path.join(notebooks_dir, i_folder),
-                        ignore=_remove_ipynb_files)
+    for gallery_dir in tqdm(gallery_dirs, desc=f"copying binder notebooks... "):
+        gallery_dir_rel_docs_dir = Path(gallery_dir).relative_to(mkdocs_conf['docs_dir'])
+        shutil.copytree(gallery_dir, os.path.join(notebooks_dir, gallery_dir_rel_docs_dir), ignore=_remove_ipynb_files)
 
 
 def check_binder_conf(binder_conf):

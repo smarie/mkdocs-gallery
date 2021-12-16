@@ -1200,6 +1200,7 @@ def get_example_md_wrapper(script: GalleryScript, time_elapsed: float, memory_us
     # - Rely on mkdocs-material for the icon
     icon = ":fontawesome-solid-download:"
     # - Generate the download buttons
+    # TODO why aren't they centered actually ? does .center work ?
     md_after += f"""
 <div id="download_links"></div>
 

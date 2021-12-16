@@ -129,20 +129,28 @@ examples/            # base 'Gallery of Examples' directory
 
 The entire original [gallery of examples from sphinx-gallery](https://sphinx-gallery.github.io/stable/auto_examples/index.html) is being ported [here](./generated/gallery/) (work in progress). You may wish to check it out in order to see how each technical aspect translates in the mkdocs world.
 
-!!! success "Editing examples"
-    All mkdocs-gallery generated pages have a working "edit page" pencil icon at the top, including gallery summary pages. This link will take you directly to the source file !
-
 You can look at the configuration used to generate it here: [mkdocs.yml](https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml).
 
+### 5. Feature Highlights
 
-### 5. Mkdocs "serve" mode
+#### a. Mkdocs "serve" mode
 
-`mkdocs-gallery` supports the mkdocs dev-server `mkdocs serve` so that you can edit your documentation with live feedback ! 
+`mkdocs-gallery` supports the mkdocs dev-server `mkdocs serve` so that you can edit your gallery examples with live auto-rebuild (similar to sphinx-autobuild).
 
 As soon as you modify an example file, it will rebuild the documentation and notify your browser. The examples that did not change will be automatically skipped (based on md5, identical to sphinx-gallery).
 
 See [mkdocs documentation](https://www.mkdocs.org/getting-started/) for details.
 
+#### b. Editing Examples
+
+All mkdocs-gallery generated pages have a working "edit page" pencil icon at the top, including gallery summary (readme) pages. This link will take you directly to the source file for easy pull requests on gallery examples !
+
+#### c. Binder
+
+Binder configuration is slightly easier than the one in sphinx-gallery (as of version 1.0.1), as 2 pieces of config are now optional:
+
+ - `branch` (defaults to `"gh-pages"`)
+ - `binderhub_url` (defaults to `"https://mybinder.org"`)
 
 ### 6. Make your examples shine !
 

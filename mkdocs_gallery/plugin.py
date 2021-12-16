@@ -6,6 +6,8 @@
 """
 The mkdocs plugin entry point
 """
+import re
+
 from pathlib import Path
 
 from mkdocs.config.base import ValidationError, Config
@@ -108,13 +110,13 @@ class GalleryPlugin(BasePlugin):
             # Required keys
             ('org', co.Type(str, required=True)),
             ('repo', co.Type(str, required=True)),
-            ('branch', co.Type(str, required=True)),
-            ('binderhub_url', co.URL(required=True)),
             ('dependencies', ConfigList(co.File(exists=True), required=True)),
             # Optional keys
-            ('filepath_prefix', co.Type(str)),
-            ('notebooks_dir', co.Type(str)),
-            ('use_jupyter_lab', co.Type(bool)),
+            ('branch', co.Type(str, required=True, default="gh-pages")),
+            ('binderhub_url', co.URL(required=True, default="https://mybinder.org")),
+            ('filepath_prefix', co.Type(str)),  # default is None
+            ('notebooks_dir', co.Type(str)),  # default is "notebooks"
+            ('use_jupyter_lab', co.Type(bool)),  # default is False
         )),
         ('image_scrapers', ConfigList(co.Type(str))),
         ('compress_images', ConfigList(co.Type(str))),
@@ -184,8 +186,14 @@ markdown_extensions:
         # config['theme'].static_templates.add('search.html')
         # config['extra_javascript'].append('search/main.js')
 
-        # Use the sphinx-gallery config validator (almost)
-        # TODO move to an object-oriented version of the config ?
+        # Handle our custom class
+        if self.config['binder']:
+            self.config['binder'] = dict(self.config['binder'])
+
+        # Remember the conf script location for later (for excluding files in `on_files` below)
+        self.conf_script = self.config["conf_script"]
+
+        # Use almost the original sphinx-gallery config validator
         self.config = parse_config(self.config, mkdocs_conf=config)
 
         # TODO do we need to register those CSS files and how ? (they are already registered ads
@@ -225,11 +233,42 @@ markdown_extensions:
         # Get the list of gallery source files, possibly containing the readme.md that we wish to exclude
         examples_dirs = self._get_dirs_relative_to(self.config['examples_dirs'], rel_to_dir=config['docs_dir'])
 
+        # Add the binder config files if needed
+        binder_cfg = self.config['binder']
+        if binder_cfg:
+            binder_files = [Path(path).relative_to(config['docs_dir']).as_posix() for path in binder_cfg['dependencies']]
+        else:
+            binder_files = []
+
+        # Add the gallery config script if needed
+        if self.conf_script:
+            conf_script = Path(self.conf_script).relative_to(config['docs_dir'])
+            conf_script_parent = conf_script.parent.as_posix()
+            if conf_script_parent == ".":
+                conf_script_parent = ""
+            else:
+                conf_script_parent += r"\/"
+            conf_script_match = re.compile(fr"^{conf_script_parent}__\w*cache\w*__\/{conf_script.stem}[\w\-\.]*$")
+            conf_script = conf_script.as_posix()
+
         def exclude(i):
-            i_path = Path(i.src_path)
-            for d in examples_dirs:
-                if i_path.match(f"^{d}/**/*") or i_path.match(f"^{d}/*"):
+            # Get a posix version of the relative path so as to be sure to match ok
+            posix_src_path = Path(i.src_path).as_posix()
+
+            # Is it the conf script or a derived work of the conf script ?
+            if self.conf_script:
+                if posix_src_path == conf_script or conf_script_match.match(posix_src_path):
                     return True
+
+            # Is it located in a gallery source directory ?
+            for d in examples_dirs:
+                if posix_src_path.startswith(d):
+                    return True
+
+            # Is it a binder dependency file ?
+            if posix_src_path in binder_files:
+                return True
+
             return False
 
         out = []
@@ -247,7 +286,7 @@ markdown_extensions:
             dir_or_list_of_dirs = [dir_or_list_of_dirs]
 
         # Get them relative to the mkdocs source dir
-        return [os.path.relpath(e, rel_to_dir) for e in dir_or_list_of_dirs]
+        return [Path(e).relative_to(rel_to_dir).as_posix() for e in dir_or_list_of_dirs]
 
     # def on_nav(self, nav, config, files):
     #     # Nav is already modded in on_pre_build, do not change it

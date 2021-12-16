@@ -230,6 +230,11 @@ class GalleryScript:
         return self.gallery.generated_dir / f"{self.script_stem}.ipynb"
 
     @property
+    def ipynb_file_rel_site_root(self) -> Path:
+        """Return the jupyter notebook file to generate corresponding to the source `script_file`."""
+        return self.gallery.generated_dir_rel_site_root / f"{self.script_stem}.ipynb"
+
+    @property
     def md5_file(self):
         """The path of the persisted md5 file written at the end of processing."""
         file = self.dwnld_py_file

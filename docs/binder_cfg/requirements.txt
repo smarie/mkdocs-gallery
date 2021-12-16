@@ -1,0 +1,8 @@
+# Requirements for binder to run the example notebooks included in mkdocs-gallery's web page.
+# (These aren't required to use mkdocs-gallery, just to run the examples included)
+numpy
+matplotlib
+pillow
+seaborn
+joblib
+mkdocs-gallery
