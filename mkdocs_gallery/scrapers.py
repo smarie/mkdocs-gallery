@@ -55,8 +55,8 @@ def _import_matplotlib():
             "currently using the {} backend. mkdocs-gallery will "
             "terminate the build now, because changing backends is "
             "not well supported by matplotlib. We advise you to move "
-            "sphinx_gallery imports before any matplotlib-dependent "
-            "import. Moving sphinx_gallery imports at the top of "
+            "mkdocs_gallery imports before any matplotlib-dependent "
+            "import. Moving mkdocs_gallery imports at the top of "
             "your conf.py file should fix this issue"
             .format(matplotlib_backend))
 

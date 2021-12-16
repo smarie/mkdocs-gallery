@@ -5,13 +5,13 @@ Providing a figure for the thumbnail image
 
 This example demonstrates how to provide a figure that is displayed as the
 thumbnail. This is done by specifying the keyword-value pair
-``sphinx_gallery_thumbnail_path = 'fig path'`` as a comment somewhere below the
+`mkdocs_gallery_thumbnail_path = 'fig path'` as a comment somewhere below the
 docstring in the example file. In this example, we specify that we wish the
-figure ``demo.png`` in the folder ``_static`` to be used for the thumbnail.
+figure `demo.png` in the folder `_static` to be used for the thumbnail.
 """
 import numpy as np
 import matplotlib.pyplot as plt
-# sphinx_gallery_thumbnail_path = '_static/demo.png'
+# mkdocs_gallery_thumbnail_path = '_static/demo.png'
 
 # %%
 
