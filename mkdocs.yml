@@ -53,8 +53,8 @@ plugins:
 #      junit: os.path.join('sphinx-gallery', 'junit-results.xml'),
 #      # capture raw HTML or, if not present, __repr__ of last expression in each code block
 #      capture_repr: ['_repr_html_', '__repr__']
-#      matplotlib_animations: True
-#      image_srcset: ['2x']
+      matplotlib_animations: True
+      image_srcset: ['2x']
 
 
 markdown_extensions:

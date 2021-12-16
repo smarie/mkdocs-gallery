@@ -81,13 +81,11 @@ def _matplotlib_fig_titles(fig):
     return fig_titles
 
 
-_ANIMATION_RST = '''
-.. container:: mkd-glr-animation
-
-    .. raw:: html
-
-        {0}
-'''
+_ANIMATION_RST = """
+<div class="mkd-glr-animation">
+{html}
+</div>
+"""
 
 
 def matplotlib_scraper(block, script: GalleryScript, **kwargs):
@@ -223,8 +221,13 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
 
     md = ''
     if len(image_mds) == 1:
-        image_path, fig_titles, srcsetpaths = image_mds[0]
-        md = figure_md_or_html([image_path], script, fig_titles, srcsetpaths=srcsetpaths)
+        if isinstance(image_mds[0], str):
+            # an animation, see _anim_md
+            md = image_mds[0]
+        else:
+            # an image
+            image_path, fig_titles, srcsetpaths = image_mds[0]
+            md = figure_md_or_html([image_path], script, fig_titles, srcsetpaths=srcsetpaths)
     elif len(image_mds) > 1:
         # Old
         # Replace the 'single' CSS class by the 'multi' one
@@ -265,7 +268,7 @@ def _anim_md(anim, image_path, gallery_conf):
     if html is None:  # plt.rcParams['animation.html'] == 'none'
         html = anim.to_jshtml()
     html = indent(html, '     ')
-    return _ANIMATION_RST.format(html)
+    return _ANIMATION_RST.format(html=html)
 
 
 def mayavi_scraper(block, script: GalleryScript):

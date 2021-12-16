@@ -183,12 +183,12 @@ ul.sphx-glr-horizontal img {
   height: auto;
 }
 
-div.sphx-glr-animation {
+div.mkd-glr-animation {
   margin: auto;
   display: block;
   max-width: 100%;
 }
-div.sphx-glr-animation .animation{
+div.mkd-glr-animation .animation{
   display: block;
 }
 
