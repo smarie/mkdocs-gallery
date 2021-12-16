@@ -6,14 +6,14 @@
 """
 The mkdocs plugin entry point
 """
-from mkdocs.structure.pages import Page
-
 from pathlib import Path
 
 from mkdocs.config.base import ValidationError, Config
 from mkdocs.config import config_options as co
+from mkdocs.exceptions import ConfigurationError
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.files import Files
+from mkdocs.structure.pages import Page
 
 from typing import Dict, Any, List, Union
 
@@ -60,6 +60,14 @@ class MySubConfig(co.SubConfig):
             return None
         else:
             return super(MySubConfig, self).validate(value)
+
+    def run_validation(self, value):
+        """Fix SubConfig: errors and warnings were not caught"""
+        failed, self.warnings = Config.validate(self)
+        if len(failed) > 0:
+            # get the first failing one
+            key, err = failed[0]
+            raise ConfigurationError(f"Sub-option {key!r} configuration error: {err}")
 
 
 class GalleryPlugin(BasePlugin):
