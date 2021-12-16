@@ -1,6 +1,9 @@
 import os
 import sys
 
+import plotly.io as pio
+pio.renderers.default = 'sphinx_gallery'
+
 from mkdocs_gallery.gen_gallery import DefaultResetArgv
 
 min_reported_time = 0
