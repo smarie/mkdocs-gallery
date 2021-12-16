@@ -16,3 +16,17 @@ Examples using ``numpy.RandomState``
         </p>
     <!--/div-->
 </div>
+
+<div class="mkd-glr-thumbcontainer" tooltip="Show a Matplotlib animation, which should end up nicely embedded below.">
+    <!--div class="figure align-default" id="id1"-->
+        <img alt="Matplotlib animation support" src="images/thumb/mkd_glr_plot_8_animations_thumb.gif" />
+        <p class="caption">
+            <span class="caption-text">
+                <a class="reference internal" href="plot_8_animations">
+                    <span class="std std-ref">Matplotlib animation support</span>
+                </a>
+            </span>
+            <!--a class="headerlink" href="#id1" title="Permalink to this image"></a-->
+        </p>
+    <!--/div-->
+</div>

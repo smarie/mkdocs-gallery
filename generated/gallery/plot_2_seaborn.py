@@ -6,7 +6,7 @@ Seaborn example
 This example demonstrates a Seaborn plot. Figures produced Matplotlib **and**
 by any package that is based on Matplotlib (e.g., Seaborn), will be
 captured by default.
-See [image_scrapers](https://sphinx-gallery.github.io/stable/configuration.html#image-scrapers) for details.
+See [Image scrapers](https://sphinx-gallery.github.io/stable/configuration.html#image-scrapers) for details.
 """
 # Author: Michael Waskom & Lucy Liu
 # License: BSD 3 clause

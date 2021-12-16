@@ -297,6 +297,14 @@
         
           
         
+          
+        
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_2_2">
@@ -465,6 +473,62 @@
     <li class="md-nav__item">
       <a href="../plot_5_unicode_everywhere/" class="md-nav__link">
         Using Unicode everywhere 🤗
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_6_function_identifier/" class="md-nav__link">
+        Identifying function names in a script
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_7_sys_argv/" class="md-nav__link">
+        Using `sys.argv` in examples
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_8_animations/" class="md-nav__link">
+        Matplotlib animation support
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_9_plotly/" class="md-nav__link">
+        Example with the plotly graphing library
       </a>
     </li>
   
@@ -734,9 +798,9 @@
 to download the full example code or to run this example in your browser via Binder</p>
 </div>
 <h1 id="capturing-output-representations">Capturing output representations<a class="headerlink" href="#capturing-output-representations" title="Permanent link">&para;</a></h1>
-<p>This example demonstrates how the
-<a href="https://sphinx-gallery.github.io/stable/configuration.html#capture-repr"><code>capture_repr</code></a>
-configuration option works. The default <code>capture_repr</code> setting is
+<p>This example demonstrates how the <code>capture_repr</code> configuration option
+(<a href="https://sphinx-gallery.github.io/stable/configuration.html#capture-repr">Controlling what output is captured</a>)
+ works. The default <code>capture_repr</code> setting is
 <code>('_repr_html_', '__repr__')</code> and was used to build this
 Mkdocs-Gallery documentation. The output that is captured with this setting
 is demonstrated in this example. Differences in outputs that would be captured
@@ -884,9 +948,9 @@ list is captured as well as the figure:</p>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 </code></pre></div>
-<p><img alt="lot 3 capture repr" class="mkd-glr-single-img" src="../images/mkd_glr_plot_3_capture_repr_001.png" srcset="/generated/gallery/images/mkd_glr_plot_3_capture_repr_001.png" /></p>
+<p><img alt="lot 3 capture repr" class="mkd-glr-single-img" src="../images/mkd_glr_plot_3_capture_repr_001.png" srcset="/generated/gallery/images/mkd_glr_plot_3_capture_repr_001.png, /generated/gallery/images/mkd_glr_plot_3_capture_repr_001_2_0x.png 2.0x" /></p>
 <p class="mkd-glr-script-out">Out:</p>
-<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code><span class="o">[</span>&lt;matplotlib.lines.Line2D object at 0x7fd4d2a1d790&gt;<span class="o">]</span>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code><span class="o">[</span>&lt;matplotlib.lines.Line2D object at 0x7fdf4c59f250&gt;<span class="o">]</span>
 </code></pre></div>
 <!-- GENERATED FROM PYTHON SOURCE LINES 92-94 -->
 
@@ -896,7 +960,7 @@ expression to a temporary variable:</p>
 
 <div class="highlight"><pre><span></span><code><span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 </code></pre></div>
-<p><img alt="lot 3 capture repr" class="mkd-glr-single-img" src="../images/mkd_glr_plot_3_capture_repr_002.png" srcset="/generated/gallery/images/mkd_glr_plot_3_capture_repr_002.png" /></p>
+<p><img alt="lot 3 capture repr" class="mkd-glr-single-img" src="../images/mkd_glr_plot_3_capture_repr_002.png" srcset="/generated/gallery/images/mkd_glr_plot_3_capture_repr_002.png, /generated/gallery/images/mkd_glr_plot_3_capture_repr_002_2_0x.png 2.0x" /></p>
 <!-- GENERATED FROM PYTHON SOURCE LINES 98-100 -->
 
 <p>Alternatively, you can add <code>plt.show()</code>, which does not return anything,
@@ -906,7 +970,7 @@ to the end of the code block:</p>
 <div class="highlight"><pre><span></span><code><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
-<p><img alt="lot 3 capture repr" class="mkd-glr-single-img" src="../images/mkd_glr_plot_3_capture_repr_003.png" srcset="/generated/gallery/images/mkd_glr_plot_3_capture_repr_003.png" /></p>
+<p><img alt="lot 3 capture repr" class="mkd-glr-single-img" src="../images/mkd_glr_plot_3_capture_repr_003.png" srcset="/generated/gallery/images/mkd_glr_plot_3_capture_repr_003.png, /generated/gallery/images/mkd_glr_plot_3_capture_repr_003_2_0x.png 2.0x" /></p>
 <!-- GENERATED FROM PYTHON SOURCE LINES 105-132 -->
 
 <h2 id="the-capture_repr-configuration">The <code>capture_repr</code> configuration<a class="headerlink" href="#the-capture_repr-configuration" title="Permanent link">&para;</a></h2>
@@ -931,7 +995,7 @@ output. You would need to add <code>print()</code> to the last expression to cap
 a 'representation' of it.</p>
 <p>The empty tuple setting imitates the behaviour of Sphinx-Gallery prior to
 v0.5.0, when this configuration was introduced.</p>
-<p><strong>Total running time of the script:</strong> ( 0 minutes  0.403 seconds)</p>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  0.494 seconds)</p>
 <div id="download_links"></div>
 
 <p><a class="center" href="https://mybinder.org/v2/gh/smarie/mkdocs-gallery/gh-pages?urlpath=lab/tree/notebooks/generated/gallery/plot_3_capture_repr.ipynb"><img alt="Launch binder" src="../images/binder_badge_logo.svg" /></a></p>

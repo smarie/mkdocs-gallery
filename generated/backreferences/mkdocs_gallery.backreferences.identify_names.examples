@@ -1,0 +1,18 @@
+
+
+Examples using ``mkdocs_gallery.backreferences.identify_names``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<div class="mkd-glr-thumbcontainer" tooltip="!!! warning &quot;Work in progress&quot;     This feature has not been fully ported to mkdocs, see [#10](...">
+    <!--div class="figure align-default" id="id1"-->
+        <img alt="Identifying function names in a script" src="images/thumb/mkd_glr_plot_6_function_identifier_thumb.png" />
+        <p class="caption">
+            <span class="caption-text">
+                <a class="reference internal" href="plot_6_function_identifier">
+                    <span class="std std-ref">Identifying function names in a script</span>
+                </a>
+            </span>
+            <!--a class="headerlink" href="#id1" title="Permalink to this image"></a-->
+        </p>
+    <!--/div-->
+</div>

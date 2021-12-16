@@ -3,9 +3,9 @@
 Capturing output representations
 ================================
 
-This example demonstrates how the
-[`capture_repr`](https://sphinx-gallery.github.io/stable/configuration.html#capture-repr)
-configuration option works. The default `capture_repr` setting is
+This example demonstrates how the `capture_repr` configuration option
+([Controlling what output is captured](https://sphinx-gallery.github.io/stable/configuration.html#capture-repr))
+ works. The default `capture_repr` setting is
 `('_repr_html_', '__repr__')` and was used to build this
 Mkdocs-Gallery documentation. The output that is captured with this setting
 is demonstrated in this example. Differences in outputs that would be captured

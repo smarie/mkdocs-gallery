@@ -3,7 +3,7 @@
 Examples using ``numpy.zeros``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-<div class="mkd-glr-thumbcontainer" tooltip="This example demonstrates how the [`capture_repr`](https://sphinx-gallery.github.io/stable/conf...">
+<div class="mkd-glr-thumbcontainer" tooltip="This example demonstrates how the capture_repr configuration option ([Controlling what output i...">
     <!--div class="figure align-default" id="id1"-->
         <img alt="Capturing output representations" src="images/thumb/mkd_glr_plot_3_capture_repr_thumb.png" />
         <p class="caption">
