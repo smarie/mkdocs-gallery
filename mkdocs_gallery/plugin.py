@@ -69,6 +69,8 @@ class MySubConfig(co.SubConfig):
             key, err = failed[0]
             raise ConfigurationError(f"Sub-option {key!r} configuration error: {err}")
 
+        return self
+
 
 class GalleryPlugin(BasePlugin):
     #     # Mandatory to display plotly graph within the site
