@@ -114,13 +114,19 @@ def tests(session: PowerSession, coverage, pkg_specs):
     else:
         # coverage + junit html reports + badge generation
         session.install_reqs(phase="coverage",
-                             phase_reqs=["coverage", "pytest-html", "genbadge[tests,coverage]"],
+                             phase_reqs=["coverage", "pytest-html", "genbadge[tests,coverage]", "mkdocs"]
+                                        + MKDOCS_GALLERY_EXAMPLES_REQS,
                              versions_dct=pkg_specs)
 
         # --coverage + junit html reports
         session.run2("coverage run --source {pkg_name} "
                      "-m pytest --cache-clear --junitxml={test_xml} --html={test_html} -v tests/"
                      "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+
+        # -- use the doc generation for coverage
+        session.run2("coverage run --append --source {pkg_name} -m mkdocs build"
+                     "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+
         session.run2("coverage report")
         session.run2("coverage xml -o {covxml}".format(covxml=Folders.coverage_xml))
         session.run2("coverage html -d {dst}".format(dst=Folders.coverage_reports))
