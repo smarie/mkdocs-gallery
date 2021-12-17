@@ -6,7 +6,11 @@ repo_url: https://github.com/smarie/mkdocs-gallery
 # default branch is main instead of master now on github
 edit_uri : ./edit/main/docs
 
-theme: material  # readthedocs  mkdocs  material
+theme:
+  name: material  # readthedocs  mkdocs  material
+  palette:
+    primary: light blue
+
 nav:
   - Home: index.md
   - Gallery of examples: generated/gallery       # The first gallery of examples
