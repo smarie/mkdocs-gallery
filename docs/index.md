@@ -4,11 +4,12 @@
 
 [![Python versions](https://img.shields.io/pypi/pyversions/mkdocs-gallery.svg)](https://pypi.python.org/pypi/mkdocs-gallery/) [![Build Status](https://github.com/smarie/mkdocs-gallery/actions/workflows/base.yml/badge.svg)](https://github.com/smarie/mkdocs-gallery/actions/workflows/base.yml) [![Tests Status](./reports/junit/junit-badge.svg?dummy=8484744)](./reports/junit/report.html) [![Coverage Status](./reports/coverage/coverage-badge.svg?dummy=8484744)](./reports/coverage/index.html) [![codecov](https://codecov.io/gh/smarie/python-odsclient/branch/main/graph/badge.svg)](https://codecov.io/gh/smarie/python-odsclient) [![Flake8 Status](./reports/flake8/flake8-badge.svg?dummy=8484744)](./reports/flake8/index.html)
 
-[![Documentation](https://img.shields.io/badge/doc-latest-blue.svg)](https://smarie.github.io/mkdocs-gallery/) [![PyPI](https://img.shields.io/pypi/v/mkdocs-gallery.svg)](https://pypi.python.org/pypi/mkdocs-gallery/) [![Downloads](https://pepy.tech/badge/mkdocs-gallery)](https://pepy.tech/project/mkdocs-gallery) [![Downloads per week](https://pepy.tech/badge/mkdocs-gallery/week)](https://pepy.tech/project/mkdocs-gallery) [![GitHub stars](https://img.shields.io/github/stars/smarie/mkdocs-gallery.svg)](https://github.com/smarie/mkdocs-gallery/stargazers)
+[![Documentation](https://img.shields.io/badge/doc-latest-blue.svg)](https://smarie.github.io/mkdocs-gallery/) [![PyPI](https://img.shields.io/pypi/v/mkdocs-gallery.svg)](https://pypi.python.org/pypi/mkdocs-gallery/) [![Downloads](https://pepy.tech/badge/mkdocs-gallery)](https://pepy.tech/project/mkdocs-gallery) [![Downloads per week](https://pepy.tech/badge/mkdocs-gallery/week)](https://pepy.tech/project/mkdocs-gallery) [![GitHub stars](https://img.shields.io/github/stars/smarie/mkdocs-gallery.svg)](https://github.com/smarie/mkdocs-gallery/stargazers) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5786851.svg)](https://doi.org/10.5281/zenodo.5786851)
 
 Do you love [Sphinx-Gallery](https://sphinx-gallery.github.io/) but prefer [mkdocs](https://www.mkdocs.org/) over [Sphinx](sphinx-doc.org/) for your documentation ? `mkdocs-gallery` was written for you ;) 
 
 It relies on [mkdocs-material](https://squidfunk.github.io/mkdocs-material) to get the most of mkdocs, so that your galleries look nice !
+
 
 ## Installing
 
@@ -171,6 +172,12 @@ The following `mkdocs` plugins and extensions are automatically activated - you 
     - [`pymdownx.snippets`](https://facelessuser.github.io/pymdown-extensions/extensions/snippets/)
     - [`pymdownx.emoji`](https://facelessuser.github.io/pymdown-extensions/extensions/emoji/) configured with the catalog from mkdocs-material (see above)
 
+
+## Citing
+
+If `mkdocs-gallery` helps you with your research work, don't hesitate to spread the word ! For this simply use this Zenodo link [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5786851.svg)](https://doi.org/10.5281/zenodo.5786851) to get the proper citation entry (at the bottom right of the page, many formats available including BibTeX).
+
+Note: do not hesitate to cite sphinx-gallery too ! [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3741780.svg)](https://doi.org/10.5281/zenodo.3741780)
 
 ## See Also
 
