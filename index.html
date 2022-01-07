@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.f7951f6f.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.e6a45f82.min.css">
@@ -442,7 +442,6 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
-            
           
             
               
@@ -819,7 +818,6 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
-            
           
             
               
@@ -1044,7 +1042,7 @@
 
 <h1 id="mkdocs-gallery">mkdocs-gallery<a class="headerlink" href="#mkdocs-gallery" title="Permanent link">&para;</a></h1>
 <p><em><a href="https://sphinx-gallery.github.io/">Sphinx-Gallery</a> features for <a href="https://www.mkdocs.org/">mkdocs</a> (no <a href="sphinx-doc.org/">Sphinx</a> dependency !).</em></p>
-<p><a href="https://pypi.python.org/pypi/mkdocs-gallery/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/mkdocs-gallery.svg" /></a> <a href="https://github.com/smarie/mkdocs-gallery/actions/workflows/base.yml"><img alt="Build Status" src="https://github.com/smarie/mkdocs-gallery/actions/workflows/base.yml/badge.svg" /></a> <a href="reports/junit/report.html"><img alt="Tests Status" src="reports/junit/junit-badge.svg?dummy=8484744" /></a> <a href="reports/coverage/"><img alt="Coverage Status" src="reports/coverage/coverage-badge.svg?dummy=8484744" /></a> <a href="https://codecov.io/gh/smarie/python-odsclient"><img alt="codecov" src="https://codecov.io/gh/smarie/python-odsclient/branch/main/graph/badge.svg" /></a> <a href="reports/flake8/"><img alt="Flake8 Status" src="reports/flake8/flake8-badge.svg?dummy=8484744" /></a></p>
+<p><a href="https://pypi.python.org/pypi/mkdocs-gallery/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/mkdocs-gallery.svg" /></a> <a href="https://github.com/smarie/mkdocs-gallery/actions/workflows/base.yml"><img alt="Build Status" src="https://github.com/smarie/mkdocs-gallery/actions/workflows/base.yml/badge.svg" /></a> <a href="reports/junit/report.html"><img alt="Tests Status" src="reports/junit/junit-badge.svg?dummy=8484744" /></a> <a href="reports/coverage/"><img alt="Coverage Status" src="reports/coverage/coverage-badge.svg?dummy=8484744" /></a> <a href="https://codecov.io/gh/smarie/mkdocs-gallery"><img alt="codecov" src="https://codecov.io/gh/smarie/mkdocs-gallery/branch/main/graph/badge.svg" /></a> <a href="reports/flake8/"><img alt="Flake8 Status" src="reports/flake8/flake8-badge.svg?dummy=8484744" /></a></p>
 <p><a href="https://smarie.github.io/mkdocs-gallery/"><img alt="Documentation" src="https://img.shields.io/badge/doc-latest-blue.svg" /></a> <a href="https://pypi.python.org/pypi/mkdocs-gallery/"><img alt="PyPI" src="https://img.shields.io/pypi/v/mkdocs-gallery.svg" /></a> <a href="https://pepy.tech/project/mkdocs-gallery"><img alt="Downloads" src="https://pepy.tech/badge/mkdocs-gallery" /></a> <a href="https://pepy.tech/project/mkdocs-gallery"><img alt="Downloads per week" src="https://pepy.tech/badge/mkdocs-gallery/week" /></a> <a href="https://github.com/smarie/mkdocs-gallery/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/smarie/mkdocs-gallery.svg" /></a> <a href="https://doi.org/10.5281/zenodo.5786851"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.5786851.svg" /></a></p>
 <p>Do you love <a href="https://sphinx-gallery.github.io/">Sphinx-Gallery</a> but prefer <a href="https://www.mkdocs.org/">mkdocs</a> over <a href="sphinx-doc.org/">Sphinx</a> for your documentation ? <code>mkdocs-gallery</code> was written for you ;) </p>
 <p>It relies on <a href="https://squidfunk.github.io/mkdocs-material">mkdocs-material</a> to get the most of mkdocs, so that your galleries look nice !</p>
@@ -1068,15 +1066,15 @@ docs/                # base mkdocs source directory
 <h3 id="2-configure-mkdocs">2. Configure mkdocs<a class="headerlink" href="#2-configure-mkdocs" title="Permanent link">&para;</a></h3>
 <h4 id="a-basics">a. Basics<a class="headerlink" href="#a-basics" title="Permanent link">&para;</a></h4>
 <p>Simply add the following configuration to you <code>mkdocs.yml</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">theme</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">material</span>    <span class="c1"># This theme is mandatory for now, see below</span>
+<div class="highlight"><pre><span></span><code><span class="nt">theme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">material</span><span class="w">    </span><span class="c1"># This theme is mandatory for now, see below</span><span class="w"></span>
 
-<span class="nt">plugins</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">gallery</span><span class="p">:</span>
-      <span class="nt">examples_dirs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docs/examples</span>          <span class="c1"># path to your example scripts</span>
-      <span class="nt">gallery_dirs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docs/generated/gallery</span>  <span class="c1"># where to save generated gallery</span>
-      <span class="c1"># ... (other options)</span>
+<span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">gallery</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">examples_dirs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/examples</span><span class="w">          </span><span class="c1"># path to your example scripts</span><span class="w"></span>
+<span class="w">      </span><span class="nt">gallery_dirs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/generated/gallery</span><span class="w">  </span><span class="c1"># where to save generated gallery</span><span class="w"></span>
+<span class="w">      </span><span class="c1"># ... (other options)</span><span class="w"></span>
 
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">search</span>  <span class="c1"># make sure the search plugin is still enabled</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">search</span><span class="w">  </span><span class="c1"># make sure the search plugin is still enabled</span><span class="w"></span>
 </code></pre></div>
 <p>Most <a href="https://sphinx-gallery.github.io/stable/configuration.html">sphinx-gallery configuration options</a> are supported and can be configured in here after <code>examples_dirs</code> and <code>gallery_dirs</code>. All paths should be relative to the <code>mkdocs.yml</code> file. You can look at the configuration used to generate this site as an example: <a href="https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml">mkdocs.yml</a>.</p>
 <div class="admonition caution">
@@ -1088,23 +1086,23 @@ docs/                # base mkdocs source directory
 <p>The <code>search</code> plugin is not related with mkdocs-gallery. It is activated by default in mkdocs but if you edit the <code>plugins</code> configuration you have to add it explicitly again.</p>
 </div>
 <p>Once you've done this, the corresponding gallery will be created the next time you call <code>mkdocs build</code> or <code>mkdocs serve</code>. However the gallery will not yet appear in the table of contents (mkdocs <code>nav</code>). For this you should add the generated gallery to the nav in <code>mkdocs.yml</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">nav</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">Home</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">index.md</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">generated/gallery</span>  <span class="c1"># This node will automatically be named and have sub-nodes.</span>
+<div class="highlight"><pre><span></span><code><span class="nt">nav</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Home</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">index.md</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generated/gallery</span><span class="w">  </span><span class="c1"># This node will automatically be named and have sub-nodes.</span><span class="w"></span>
 </code></pre></div>
 <p>When the root folder or the root <code>index.md</code> of a gallery is added to the nav, it will be automatically populated with sub-nodes for all examples and subgalleries. If you prefer to select examples or subgalleries to include one by one, you may refer to any of them directly in the nav. In that case, no nav automation will be performed - just the usual explicit mkdocs nav.</p>
 <p>You may wish to change the gallery's names for display and still benefit from this automation:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">nav</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">Home</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">index.md</span>
-  <span class="p p-Indicator">-</span> <span class="nt">My Gallery</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">generated/gallery</span>  <span class="c1"># This node will automatically be named and have sub-nodes.</span>
+<div class="highlight"><pre><span></span><code><span class="nt">nav</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Home</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">index.md</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">My Gallery</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generated/gallery</span><span class="w">  </span><span class="c1"># This node will automatically be named and have sub-nodes.</span><span class="w"></span>
 </code></pre></div>
 <p>See <a href="https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml">this site's config</a> for an example. See also <a href="https://www.mkdocs.org/user-guide/configuration/">mkdocs configuration</a> for general information about the <code>mkdocs.yml</code> file.</p>
 <h4 id="b-advanced">b. Advanced<a class="headerlink" href="#b-advanced" title="Permanent link">&para;</a></h4>
 <p>You may wish to use the special <code>conf_script</code> option to create the base configuration using a python script, like what was done in Sphinx-gallery:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">gallery</span><span class="p">:</span>
-      <span class="nt">conf_script</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docs/gallery_conf.py</span>
-      <span class="c1"># ... other options can still be added here</span>
+<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">gallery</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">conf_script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/gallery_conf.py</span><span class="w"></span>
+<span class="w">      </span><span class="c1"># ... other options can still be added here</span><span class="w"></span>
 </code></pre></div>
 <p>The python script should be executable without error, and at the end of execution should contain a <code>conf</code> variable defined at the module level. For example this is a valid script:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">mkdocs_gallery.gen_gallery</span> <span class="kn">import</span> <span class="n">DefaultResetArgv</span>
@@ -1232,10 +1230,10 @@ docs/                # base mkdocs source directory
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.indexes"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="assets/javascripts/bundle.649a939e.min.js"></script>
+      <script src="assets/javascripts/bundle.289a2a4b.min.js"></script>
       
         <script src="javascripts/mathjax.js"></script>
       
