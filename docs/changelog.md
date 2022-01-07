@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.7.0 - Code output max height + updated one example
+
+ - Code output now have a correct height limit. Fixed [#7](https://github.com/smarie/mkdocs-gallery/issues/7)
+ - Fixed the "Notebook Style Example" tutorial. Fixed [#17](https://github.com/smarie/mkdocs-gallery/issues/17)
+
 ### 0.6.0 - All examples + Edit page link + Binder badges !
 
  - Completed the gallery of examples. Fixed [#1](https://github.com/smarie/mkdocs-gallery/issues/1)
