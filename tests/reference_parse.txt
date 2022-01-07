@@ -60,12 +60,12 @@
   "``#`` and the line of ``#``'s.\n",
   47),
 ('text',
-  '.. warning::\n'
+  '!!! warning\n'
   '    The next kind of comments are not supported (notice the line of '
   "``#``'s\n"
   '    and the ``# %%`` start at the margin instead of being indented like\n'
   "    above) and become too hard to escape so just don't use code like "
-  'this::\n'
+  'this:\n'
   '\n'
   '        def dummy2():\n'
   '            """Function docstring"""\n'
@@ -88,22 +88,30 @@
   'New lines can be included in your text block and the parser\n'
   'is capable of retaining this important whitespace to work with Sphinx.\n'
   'Everything after a block splitter and starting with ``#`` then one space,\n'
-  'is interpreted by Sphinx-Gallery to be a rST text block. Keep your text\n'
+  'is interpreted by Sphinx-Gallery to be a MD text block. Keep your text\n'
   'block together using ``#`` and a space at the beginning of each line.\n'
   '\n'
-  'rST header within text block\n'
-  '^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n',
+  '## MD header within a text block\n'
+  '\n'
+  'Note that Markdown supports\n'
+  '[an alternate syntax for headings](https://www.markdownguide.org/basic-syntax/),\n'
+  'that is far easier to read in the context of gallery examples:\n'
+  '\n'
+  'MD header within a text block, alternate syntax\n'
+  '-----------------------------------------------\n'
+  '\n',
   73),
-('code', "\nprint('one')\n\n", 81),
+('code', "\nprint('one')\n\n", 88),
 ('code',
   '\n# another way to separate code blocks shown above\nB = 1\n\n',
-  86),
+  93),
 ('text',
   'Last text block.\n'
   '\n'
   "That's all folks !\n"
   '\n'
-  '.. literalinclude:: plot_parse.py\n'
-  '\n'
+  '```python title="plot_parse.py"\n'
+  '--8<-- "docs/tutorials/plot_parse.py"\n'
+  '```\n'
   '\n',
-  91)]
+  98)]
