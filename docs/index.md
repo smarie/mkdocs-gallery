@@ -169,7 +169,8 @@ The following `mkdocs` plugins and extensions are automatically activated - you 
     - [`pymdownx.highlight`](https://facelessuser.github.io/pymdown-extensions/extensions/highlight/)
     - [`pymdownx.inlinehilite`](https://facelessuser.github.io/pymdown-extensions/extensions/inlinehilite/)
     - [`pymdownx.superfences`](https://facelessuser.github.io/pymdown-extensions/extensions/superfences/)
-    - [`pymdownx.snippets`](https://facelessuser.github.io/pymdown-extensions/extensions/snippets/)
+    - [`pymdownx.snippets`](https://facelessuser.github.io/pymdown-extensions/extensions/snippets/) (Warning: the base path is
+      a bit counter-intuitive: it is relative to `cwd`, not to the markdown file ; see the last line of this [tutorial](./generated/tutorials/plot_parse.md))
     - [`pymdownx.emoji`](https://facelessuser.github.io/pymdown-extensions/extensions/emoji/) configured with the catalog from mkdocs-material (see above)
 
 
