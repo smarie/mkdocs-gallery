@@ -72,6 +72,7 @@ thumbnail with its default link Background color */
   z-index: 99;
 }
 
+/* The wrapper for output sections. Not sure all these are needed, except the color... now that we use code blocks */
 .mkd-glr-script-out {
   color: #888;
   margin: 0;
@@ -107,11 +108,14 @@ blockquote.mkd-glr-script-out {
   padding: 7px;
 }
 
+/* Traceback code blocks in case of exception */
 .mkd-glr-script-err-disp code {
   background-color: #ffe4e4;
 }
 
+/* Script output in case no exception */
 .mkd-glr-script-out-disp code {
+  max-height: 30em;
   background-color: #fafae2;
 }
 

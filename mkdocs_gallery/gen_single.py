@@ -178,9 +178,9 @@ def codestr2md(codestr, lang: str = 'python', lineno=None, is_exc: bool = False)
     if lineno is not None:
         # Sphinx only starts numbering from the first non-empty line. TODO do we need this too ?
         #     blank_lines = codestr.count('\n', 0, -len(codestr.lstrip()))
-        return f'```{{.{lang}{style} linenums="{lineno}"}}\n{codestr}```\n'
+        return f'```{{.{lang} {style} linenums="{lineno}"}}\n{codestr}```\n'
     else:
-        return f"```{{.{lang}{style}}}\n{codestr}```\n"
+        return f"```{{.{lang} {style}}}\n{codestr}```\n"
 
 
 def _regroup(x):
