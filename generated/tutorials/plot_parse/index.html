@@ -690,6 +690,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#md-header-within-a-text-block" class="md-nav__link">
+    MD header within a text block
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#md-header-within-a-text-block-alternate-syntax" class="md-nav__link">
+    MD header within a text block, alternate syntax
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -749,6 +763,20 @@
         <li class="md-nav__item">
   <a href="#_1" class="md-nav__link">
     
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#md-header-within-a-text-block" class="md-nav__link">
+    MD header within a text block
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#md-header-within-a-text-block-alternate-syntax" class="md-nav__link">
+    MD header within a text block, alternate syntax
   </a>
   
 </li>
@@ -833,20 +861,22 @@ output.</p>
 <code>#</code> and the line of <code>#</code>'s.</p>
 <!-- GENERATED FROM PYTHON SOURCE LINES 54-69 -->
 
-<p>.. warning::
-    The next kind of comments are not supported (notice the line of <code>#</code>'s
-    and the <code># %%</code> start at the margin instead of being indented like
-    above) and become too hard to escape so just don't use code like this::</p>
-<div class="highlight"><pre><span></span><code>    def dummy2():
-        &quot;&quot;&quot;Function docstring&quot;&quot;&quot;
-    ####################################
-    # This comment
-    # %%
-    # and this comment inside python indentation
-    # breaks the block structure and is not
-    # supported
-        dummy2
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The next kind of comments are not supported (notice the line of <code>#</code>'s
+and the <code># %%</code> start at the margin instead of being indented like
+above) and become too hard to escape so just don't use code like this:</p>
+<div class="highlight"><pre><span></span><code>def dummy2():
+    &quot;&quot;&quot;Function docstring&quot;&quot;&quot;
+####################################
+# This comment
+# %%
+# and this comment inside python indentation
+# breaks the block structure and is not
+# supported
+    dummy2
 </code></pre></div>
+</div>
 <!-- GENERATED FROM PYTHON SOURCE LINES 69-72 -->
 
 <div class="highlight"><pre><span></span><code><span class="sd">&quot;&quot;&quot;Free strings are not supported. They will be rendered as a code block&quot;&quot;&quot;</span>
@@ -854,32 +884,140 @@ output.</p>
 <p class="mkd-glr-script-out">Out:</p>
 <div class="mkd-glr-script-out-disp highlight"><pre><span></span><code><span class="s1">&#39;Free strings are not supported. They will be rendered as a code block&#39;</span>
 </code></pre></div>
-<!-- GENERATED FROM PYTHON SOURCE LINES 73-81 -->
+<!-- GENERATED FROM PYTHON SOURCE LINES 73-88 -->
 
 <p>New lines can be included in your text block and the parser
 is capable of retaining this important whitespace to work with Sphinx.
 Everything after a block splitter and starting with <code>#</code> then one space,
-is interpreted by Sphinx-Gallery to be a rST text block. Keep your text
+is interpreted by Sphinx-Gallery to be a MD text block. Keep your text
 block together using <code>#</code> and a space at the beginning of each line.</p>
-<p>rST header within text block
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^</p>
-<!-- GENERATED FROM PYTHON SOURCE LINES 81-84 -->
+<h2 id="md-header-within-a-text-block">MD header within a text block<a class="headerlink" href="#md-header-within-a-text-block" title="Permanent link">&para;</a></h2>
+<p>Note that Markdown supports
+<a href="https://www.markdownguide.org/basic-syntax/">an alternate syntax for headings</a>,
+that is far easier to read in the context of gallery examples:</p>
+<h2 id="md-header-within-a-text-block-alternate-syntax">MD header within a text block, alternate syntax<a class="headerlink" href="#md-header-within-a-text-block-alternate-syntax" title="Permanent link">&para;</a></h2>
+<!-- GENERATED FROM PYTHON SOURCE LINES 88-91 -->
 
 <div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">)</span>
 </code></pre></div>
 <p class="mkd-glr-script-out">Out:</p>
 <div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>one
 </code></pre></div>
-<!-- GENERATED FROM PYTHON SOURCE LINES 86-90 -->
+<!-- GENERATED FROM PYTHON SOURCE LINES 93-97 -->
 
 <div class="highlight"><pre><span></span><code><span class="c1"># another way to separate code blocks shown above</span>
 <span class="n">B</span> <span class="o">=</span> <span class="mi">1</span>
 </code></pre></div>
-<!-- GENERATED FROM PYTHON SOURCE LINES 91-98 -->
+<!-- GENERATED FROM PYTHON SOURCE LINES 98-106 -->
 
 <p>Last text block.</p>
 <p>That's all folks !</p>
-<p>.. literalinclude:: plot_parse.py</p>
+<div class="highlight"><span class="filename">plot_parse.py</span><pre><span></span><code><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Alternating text and code</span>
+<span class="sd">=========================</span>
+
+<span class="sd">Mkdocs-Gallery is capable of transforming Python files into MD files</span>
+<span class="sd">with a notebook structure. For this to be used you need to respect some syntax</span>
+<span class="sd">rules. This example demonstrates how to alternate text and code blocks and some</span>
+<span class="sd">edge cases. It was designed to be compared with the</span>
+<span class="sd">[source Python script](./plot_parse.py).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># %%</span>
+<span class="c1"># This is the first text block and directly follows the header docstring above.</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># %%</span>
+
+<span class="c1"># You can separate code blocks using either a single line of ``#``&#39;s</span>
+<span class="c1"># (&gt;=20 columns), ``#%%``, or ``# %%``. For consistency, it is recommend that</span>
+<span class="c1"># you use only one of the above three &#39;block splitter&#39; options in your project.</span>
+<span class="n">A</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># %%</span>
+<span class="c1"># Block splitters allow you alternate between code and text blocks **and**</span>
+<span class="c1"># separate sequential blocks of code (above) and text (below).</span>
+
+<span class="c1">##############################################################################</span>
+<span class="c1"># A line of ``#``&#39;s also works for separating blocks. The above line of ``#``&#39;s</span>
+<span class="c1"># separates the text block above from this text block. Notice however, that</span>
+<span class="c1"># separated text blocks only shows as a new lines between text, in the rendered</span>
+<span class="c1"># output.</span>
+
+<span class="k">def</span> <span class="nf">dummy</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;This should not be part of a &#39;text&#39; block&#39;&quot;&quot;&quot;</span>
+
+    <span class="c1"># %%</span>
+    <span class="c1"># This comment inside a code block will remain in the code block</span>
+    <span class="k">pass</span>
+
+<span class="c1"># this line should not be part of a &#39;text&#39; block</span>
+
+<span class="c1"># %%</span>
+<span class="c1">#</span>
+<span class="c1"># ####################################################################</span>
+<span class="c1">#</span>
+<span class="c1"># The above syntax makes a line cut in Sphinx. Note the space between the first</span>
+<span class="c1"># ``#`` and the line of ``#``&#39;s.</span>
+
+<span class="c1"># %%</span>
+<span class="c1"># !!! warning</span>
+<span class="c1">#     The next kind of comments are not supported (notice the line of ``#``&#39;s</span>
+<span class="c1">#     and the ``# %%`` start at the margin instead of being indented like</span>
+<span class="c1">#     above) and become too hard to escape so just don&#39;t use code like this:</span>
+<span class="c1">#</span>
+<span class="c1">#         def dummy2():</span>
+<span class="c1">#             &quot;&quot;&quot;Function docstring&quot;&quot;&quot;</span>
+<span class="c1">#         ####################################</span>
+<span class="c1">#         # This comment</span>
+<span class="c1">#         # %%</span>
+<span class="c1">#         # and this comment inside python indentation</span>
+<span class="c1">#         # breaks the block structure and is not</span>
+<span class="c1">#         # supported</span>
+<span class="c1">#             dummy2</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;Free strings are not supported. They will be rendered as a code block&quot;&quot;&quot;</span>
+
+<span class="c1"># %%</span>
+<span class="c1"># New lines can be included in your text block and the parser</span>
+<span class="c1"># is capable of retaining this important whitespace to work with Sphinx.</span>
+<span class="c1"># Everything after a block splitter and starting with ``#`` then one space,</span>
+<span class="c1"># is interpreted by Sphinx-Gallery to be a MD text block. Keep your text</span>
+<span class="c1"># block together using ``#`` and a space at the beginning of each line.</span>
+<span class="c1">#</span>
+<span class="c1"># ## MD header within a text block</span>
+<span class="c1">#</span>
+<span class="c1"># Note that Markdown supports</span>
+<span class="c1"># [an alternate syntax for headings](https://www.markdownguide.org/basic-syntax/),</span>
+<span class="c1"># that is far easier to read in the context of gallery examples:</span>
+<span class="c1">#</span>
+<span class="c1"># MD header within a text block, alternate syntax</span>
+<span class="c1"># -----------------------------------------------</span>
+<span class="c1">#</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">)</span>
+
+<span class="c1"># %%</span>
+<span class="c1">#</span>
+
+<span class="c1"># another way to separate code blocks shown above</span>
+<span class="n">B</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># %%</span>
+<span class="c1"># Last text block.</span>
+<span class="c1">#</span>
+<span class="c1"># That&#39;s all folks !</span>
+<span class="c1">#</span>
+<span class="c1"># ```python title=&quot;plot_parse.py&quot;</span>
+<span class="c1"># --8&lt;-- &quot;docs/tutorials/plot_parse.py&quot;</span>
+<span class="c1"># ```</span>
+<span class="c1">#</span>
+</code></pre></div>
 <p><strong>Total running time of the script:</strong> ( 0 minutes  0.002 seconds)</p>
 <div id="download_links"></div>
 

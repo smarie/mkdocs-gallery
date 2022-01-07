@@ -51,10 +51,10 @@ def dummy():
 # ``#`` and the line of ``#``'s.
 
 # %%
-# .. warning::
+# !!! warning
 #     The next kind of comments are not supported (notice the line of ``#``'s
 #     and the ``# %%`` start at the margin instead of being indented like
-#     above) and become too hard to escape so just don't use code like this::
+#     above) and become too hard to escape so just don't use code like this:
 #
 #         def dummy2():
 #             """Function docstring"""
@@ -73,11 +73,18 @@ def dummy():
 # New lines can be included in your text block and the parser
 # is capable of retaining this important whitespace to work with Sphinx.
 # Everything after a block splitter and starting with ``#`` then one space,
-# is interpreted by Sphinx-Gallery to be a rST text block. Keep your text
+# is interpreted by Sphinx-Gallery to be a MD text block. Keep your text
 # block together using ``#`` and a space at the beginning of each line.
 #
-# rST header within text block
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# ## MD header within a text block
+#
+# Note that Markdown supports
+# [an alternate syntax for headings](https://www.markdownguide.org/basic-syntax/),
+# that is far easier to read in the context of gallery examples:
+#
+# MD header within a text block, alternate syntax
+# -----------------------------------------------
+#
 
 print('one')
 
@@ -92,6 +99,7 @@ B = 1
 #
 # That's all folks !
 #
-# .. literalinclude:: plot_parse.py
-#
+# ```python title="plot_parse.py"
+# --8<-- "docs/tutorials/plot_parse.py"
+# ```
 #
