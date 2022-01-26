@@ -90,7 +90,7 @@ This project uses `setuptools_scm` to synchronise the version number. Therefore 
 
 ### Merging pull requests with edits - memo
 
-Ax explained in github ('get commandline instructions'):
+As explained in github ('get commandline instructions'):
 
 ```bash
 git checkout -b <git_name>-<feature_branch> main
