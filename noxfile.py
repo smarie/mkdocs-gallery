@@ -99,19 +99,17 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # Fail if the assumed python version is not the actual one
     session.run2("python ci_tools/check_python_version.py %s" % session.python)
 
-    # install self so that it is recognized by pytest
-    session.run2("pip install -e . --no-deps")
-    # session.install("-e", ".", "--no-deps")
-
-    # check that it can be imported even from a different folder
-    # Important: do not surround the command into double quotes as in the shell !
-    session.run('python', '-c', 'import os; os.chdir(\'./docs/\'); import %s' % pkg_name)
-
     # finally run all tests
     if not coverage:
+        # install self so that it is recognized by pytest
+        session.run2("pip install . --no-deps")
+
         # simple: pytest only
         session.run2("python -m pytest --cache-clear -v tests/")
     else:
+        # install self in "develop" mode so that coverage can be measured
+        session.run2("pip install -e . --no-deps")
+
         # coverage + junit html reports + badge generation
         session.install_reqs(phase="coverage",
                              phase_reqs=["coverage", "pytest-html", "genbadge[tests,coverage]", "mkdocs"]
@@ -119,12 +117,12 @@ def tests(session: PowerSession, coverage, pkg_specs):
                              versions_dct=pkg_specs)
 
         # --coverage + junit html reports
-        session.run2("coverage run --source {pkg_name} "
+        session.run2("coverage run --source src/{pkg_name} "
                      "-m pytest --cache-clear --junitxml={test_xml} --html={test_html} -v tests/"
                      "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         # -- use the doc generation for coverage
-        session.run2("coverage run --append --source {pkg_name} -m mkdocs build"
+        session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build"
                      "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         session.run2("coverage report")
@@ -146,11 +144,13 @@ def flake8(session: PowerSession):
 
     session.install("-r", str(Folders.ci_tools / "flake8-requirements.txt"))
     session.install("genbadge[flake8]")
-    session.run2("pip install -e .[flake8]")
+    session.run2("pip install .")
 
     rm_folder(Folders.flake8_reports)
     Folders.flake8_reports.mkdir(parents=True, exist_ok=True)
     rm_file(Folders.flake8_intermediate_file)
+
+    session.cd("src")
 
     # Options are set in `setup.cfg` file
     session.run("flake8", pkg_name, "--exit-zero", "--format=html", "--htmldir", str(Folders.flake8_reports),
@@ -177,7 +177,7 @@ def docs(session: PowerSession):
     session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS)
 
     # Install the plugin
-    session.run2("pip install -e .")
+    session.run2("pip install .")
 
     if session.posargs:
         # use posargs instead of "serve"
@@ -196,7 +196,7 @@ def publish(session: PowerSession):
     )
 
     # Install the plugin
-    session.run2("pip install -e .")
+    session.run2("pip install .")
 
     # possibly rebuild the docs in a static way (mkdocs serve does not build locally)
     session.run2("mkdocs build")

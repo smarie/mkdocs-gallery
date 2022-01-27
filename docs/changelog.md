@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.7.1 - Packaging is now correct
+
+ - Fixed packaging issue: static resources were not included in wheel. Adopted `src/` layout. Fixed [#19](https://github.com/smarie/mkdocs-gallery/issues/19).
+
 ### 0.7.0 - Code output max height + updated one example
 
  - Code output now have a correct height limit. Fixed [#7](https://github.com/smarie/mkdocs-gallery/issues/7)
