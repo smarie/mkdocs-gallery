@@ -529,8 +529,15 @@ HLIST_SG_TEMPLATE = """
 
 def _reset_matplotlib(gallery_conf, file: Path):
     """Reset matplotlib."""
-    _, plt = _import_matplotlib()
-    plt.rcdefaults()
+    try:
+        import matplotlib
+    except ImportError:
+        # Matplotlib is not present: do not care
+        pass
+    else:
+        # Proceed with resetting it
+        _, plt = _import_matplotlib()
+        plt.rcdefaults()
 
 
 def _reset_seaborn(gallery_conf, file: Path):
