@@ -128,7 +128,7 @@ def parse_config(mkdocs_gallery_conf, mkdocs_conf, check_keys=True):
         # User has overridden it. Use it
         gallery_conf[opt_name] = opt_value
 
-    if isinstance(gallery_conf["doc_module"], list):
+    if isinstance(gallery_conf.get("doc_module", None), list):
         gallery_conf["doc_module"] = tuple(gallery_conf["doc_module"])
 
     gallery_conf = _complete_gallery_conf(gallery_conf, mkdocs_conf=mkdocs_conf, check_keys=check_keys)
