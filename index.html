@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
     
     
       
@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.6e60f8b8.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.2b4465f4.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.e6a45f82.min.css">
@@ -38,11 +38,11 @@
       
     
     
-      <link rel="stylesheet" href="sg_gallery-binder.css">
-    
       <link rel="stylesheet" href="sg_gallery-rendered-html.css">
     
       <link rel="stylesheet" href="sg_gallery.css">
+    
+      <link rel="stylesheet" href="sg_gallery-binder.css">
     
       <link rel="stylesheet" href="sg_gallery-dataframe.css">
     
@@ -1076,7 +1076,8 @@ docs/                # base mkdocs source directory
 
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">search</span><span class="w">  </span><span class="c1"># make sure the search plugin is still enabled</span><span class="w"></span>
 </code></pre></div>
-<p>Most <a href="https://sphinx-gallery.github.io/stable/configuration.html">sphinx-gallery configuration options</a> are supported and can be configured in here after <code>examples_dirs</code> and <code>gallery_dirs</code>. All paths should be relative to the <code>mkdocs.yml</code> file. You can look at the configuration used to generate this site as an example: <a href="https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml">mkdocs.yml</a>.</p>
+<p>Most <a href="https://sphinx-gallery.github.io/stable/configuration.html">sphinx-gallery configuration options</a> are supported and can be configured in here after <code>examples_dirs</code> and <code>gallery_dirs</code>. All paths should be relative to the <code>mkdocs.yml</code> file (which is supposed to be located at project root). </p>
+<p>You can look at the configuration used to generate this site as an example: <a href="https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml">mkdocs.yml</a>.</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p><code>mkdocs-gallery</code> currently requires that you use the <code>material</code> theme from <code>mkdocs-material</code> to render properly. You may wish to try other themes to see what is missing to support them: actually, only a few things concerning buttons and icons do not seem to currently work properly.</p>
@@ -1117,6 +1118,7 @@ docs/                # base mkdocs source directory
 <ul>
 <li>All comment blocks should be written using <strong>Markdown</strong> instead of rST. </li>
 <li>No sphinx directive is supported: all markdown directives should be supported by <code>mkdocs</code>, by one of its activated <a href="https://www.mkdocs.org/dev-guide/plugins/">plugins</a> or by a base markdown extension (see note below).</li>
+<li>All per-file and per-code block configuration options from sphinx-gallery (<a href="https://sphinx-gallery.github.io/stable/configuration.html?highlight=sphinx_gallery_#list-of-config-options">here, bottom</a>) are supported, but you have to use the <code>mkdocs_gallery_[option]</code> prefix instead of <code>sphinx_gallery_[options]</code>.</li>
 </ul>
 <div class="highlight"><pre><span></span><code>examples/            # base &#39;Gallery of Examples&#39; directory
 ├── README.md
