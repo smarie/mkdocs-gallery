@@ -59,7 +59,9 @@ plugins:
   - search  # make sure the search plugin is still enabled
 ```
 
-Most [sphinx-gallery configuration options](https://sphinx-gallery.github.io/stable/configuration.html) are supported and can be configured in here after `examples_dirs` and `gallery_dirs`. All paths should be relative to the `mkdocs.yml` file. You can look at the configuration used to generate this site as an example: [mkdocs.yml](https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml).
+Most [sphinx-gallery configuration options](https://sphinx-gallery.github.io/stable/configuration.html) are supported and can be configured in here after `examples_dirs` and `gallery_dirs`. All paths should be relative to the `mkdocs.yml` file (which is supposed to be located at project root). 
+
+You can look at the configuration used to generate this site as an example: [mkdocs.yml](https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml).
 
 !!! caution
     `mkdocs-gallery` currently requires that you use the `material` theme from `mkdocs-material` to render properly. You may wish to try other themes to see what is missing to support them: actually, only a few things concerning buttons and icons do not seem to currently work properly.
@@ -116,6 +118,7 @@ Gallery examples are structured [the same way as in sphinx-gallery](https://sphi
 
  - All comment blocks should be written using **Markdown** instead of rST. 
  - No sphinx directive is supported: all markdown directives should be supported by `mkdocs`, by one of its activated [plugins](https://www.mkdocs.org/dev-guide/plugins/) or by a base markdown extension (see note below).
+ - All per-file and per-code block configuration options from sphinx-gallery ([here, bottom](https://sphinx-gallery.github.io/stable/configuration.html?highlight=sphinx_gallery_#list-of-config-options)) are supported, but you have to use the `mkdocs_gallery_[option]` prefix instead of `sphinx_gallery_[options]`.
 
 ```
 examples/            # base 'Gallery of Examples' directory

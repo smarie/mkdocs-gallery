@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.7.2 - Misc. bug fixes and improvements
+
+ - Fixed `KeyError` issue when using a minimalistic configuration. Fixed [#22](https://github.com/smarie/mkdocs-gallery/issues/22).
+ - `matplotlib` is now optional. Fixed [#24](https://github.com/smarie/mkdocs-gallery/issues/24)
+
 ### 0.7.1 - Packaging is now correct
 
  - Fixed packaging issue: static resources were not included in wheel. Adopted `src/` layout. Fixed [#19](https://github.com/smarie/mkdocs-gallery/issues/19).
