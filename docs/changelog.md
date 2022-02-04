@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.7.3 - Bugfix
+
+ - `matplotlib` was still not optional by default because of the associated `image_scraper` that was called even when not used. It is now truly optional. Fixed [#24](https://github.com/smarie/mkdocs-gallery/issues/24)
+
 ### 0.7.2 - Misc. bug fixes and improvements
 
  - Fixed `KeyError` issue when using a minimalistic configuration. Fixed [#22](https://github.com/smarie/mkdocs-gallery/issues/22).
