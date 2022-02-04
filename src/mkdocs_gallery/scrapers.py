@@ -112,9 +112,16 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
         The Markdown that will be rendered to HTML containing
         the images. This is often produced by :func:`figure_md_or_html`.
     """
-    gallery_conf = script.gallery_conf
+    try:
+        matplotlib, plt = _import_matplotlib()
+    except ImportError:
+        # Matplotlib is not installed. Ignore
+        # Note: we should better remove this (and the same in _reset_matplotlib)
+        # and auto-adjust the corresponding config option defaults (image_scrapers, reset_modules) when
+        # matplotlib is not present
+        return ""
 
-    matplotlib, plt = _import_matplotlib()
+    gallery_conf = script.gallery_conf
     from matplotlib.animation import Animation
 
     image_mds = []
