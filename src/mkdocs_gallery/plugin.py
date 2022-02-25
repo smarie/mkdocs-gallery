@@ -225,7 +225,7 @@ markdown_extensions:
         # Store the docs dir relative to project dir
         # (note: same as in AllInformation class but we do not store the whole object)
         project_root_dir = Path(config['config_file_path']).parent
-        self.docs_dir_rel_proj = Path(config['docs_dir']).relative_to(project_root_dir).as_posix()
+        self.docs_dir_rel_proj = Path(config['docs_dir']).relative_to(project_root_dir.resolve()).as_posix()
 
     def on_files(self, files, config):
         """Remove the gallery examples *source* md files (in "examples_dirs") from the built website"""
