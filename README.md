@@ -59,7 +59,7 @@ If you wish to execute tests on a specific environment, use explicit session nam
 
 ## Editing the documentation
 
-This project uses `mkdocs` to generate its documentation page. Therefore building a local copy of the doc page may be done using `mkdocs build -f docs/mkdocs.yml`. However once again things are easier with `nox`. You can easily build and serve locally a version of the documentation site using:
+This project uses `mkdocs` to generate its documentation page. Therefore building a local copy of the doc page may be done using `mkdocs build -f mkdocs.yml`. However once again things are easier with `nox`. You can easily build and serve locally a version of the documentation site using:
 
 ```bash
 >>> nox -s docs
