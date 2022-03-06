@@ -305,16 +305,17 @@ markdown_extensions:
             # Note: page.edit_url is the concatenation of repo_url and edit_uri
             # (see https://www.mkdocs.org/user-guide/configuration/)
 
-            # Remove the dest gallery md file path relative to docs_dir
-            assert page.edit_url.endswith("/" + page_path)
-            edit_url = page.edit_url[:-len(page_path)-1]
+            if page.edit_url is not None:
+                # Remove the dest gallery md file path relative to docs_dir
+                assert page.edit_url.endswith("/" + page_path)
+                edit_url = page.edit_url[:-len(page_path)-1]
 
-            # Remove the docs_dir relative path with respect to project root
-            assert edit_url.endswith("/" + self.docs_dir_rel_proj)
-            edit_url = edit_url[:-len(self.docs_dir_rel_proj) - 1]
+                # Remove the docs_dir relative path with respect to project root
+                assert edit_url.endswith("/" + self.docs_dir_rel_proj)
+                edit_url = edit_url[:-len(self.docs_dir_rel_proj) - 1]
 
-            # Finally add the example source relative to project root
-            page.edit_url = f"{edit_url}/{src.as_posix()}"
+                # Finally add the example source relative to project root
+                page.edit_url = f"{edit_url}/{src.as_posix()}"
 
         return html
 
