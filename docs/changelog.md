@@ -5,8 +5,6 @@
  - Python scripts are now correctly skipped in case of identical md5 hash. Fixes [#29](https://github.com/smarie/mkdocs-gallery/issues/29). PR [#27](https://github.com/smarie/mkdocs-gallery/pull/27) by [mchaaler](https://github.com/mchaaler).
  - Fixed error when `edit_url` is set to empty to [disable the "edit page" feature](https://www.mkdocs.org/user-guide/configuration/#edit_uri). Fixes [#32](https://github.com/smarie/mkdocs-gallery/issues/32). PR [#27](https://github.com/smarie/mkdocs-gallery/pull/27) by [mchaaler](https://github.com/mchaaler).
 
-#29 by mchaaler was closed 37 minutes ago 
-
 ### 0.7.3 - Bugfix
 
  - `matplotlib` was still not optional by default because of the associated `image_scraper` that was called even when not used. It is now truly optional. Fixed [#24](https://github.com/smarie/mkdocs-gallery/issues/24)
