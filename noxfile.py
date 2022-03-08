@@ -118,7 +118,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
 
         # --coverage + junit html reports
         session.run2("coverage run --source src/{pkg_name} "
-                     "-m pytest --cache-clear --junitxml={test_xml} --html={test_html} -v tests/"
+                     "-m pytest --cache-clear --junitxml='{test_xml}' --html='{test_html}' -v tests/"
                      "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         # -- use the doc generation for coverage
@@ -126,16 +126,16 @@ def tests(session: PowerSession, coverage, pkg_specs):
                      "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         session.run2("coverage report")
-        session.run2("coverage xml -o {covxml}".format(covxml=Folders.coverage_xml))
-        session.run2("coverage html -d {dst}".format(dst=Folders.coverage_reports))
+        session.run2("coverage xml -o '{covxml}'".format(covxml=Folders.coverage_xml))
+        session.run2("coverage html -d '{dst}'".format(dst=Folders.coverage_reports))
         # delete this intermediate file, it is not needed anymore
         rm_file(Folders.coverage_intermediate_file)
 
         # --generates the badge for the test results and fail build if less than x% tests pass
         nox_logger.info("Generating badge for tests coverage")
         # Use our own package to generate the badge
-        session.run2("genbadge tests -i %s -o %s -t 100" % (Folders.test_xml, Folders.test_badge))
-        session.run2("genbadge coverage -i %s -o %s" % (Folders.coverage_xml, Folders.coverage_badge))
+        session.run2("genbadge tests -i '%s' -o '%s' -t 100" % (Folders.test_xml, Folders.test_badge))
+        session.run2("genbadge coverage -i '%s' -o '%s'" % (Folders.coverage_xml, Folders.coverage_badge))
 
 
 @power_session(python=PY38, logsdir=Folders.runlogs)
@@ -156,7 +156,7 @@ def flake8(session: PowerSession):
     session.run("flake8", pkg_name, "--exit-zero", "--format=html", "--htmldir", str(Folders.flake8_reports),
                 "--statistics", "--tee", "--output-file", str(Folders.flake8_intermediate_file))
     # generate our badge
-    session.run2("genbadge flake8 -i %s -o %s" % (Folders.flake8_intermediate_file, Folders.flake8_badge))
+    session.run2("genbadge flake8 -i '%s' -o '%s'" % (Folders.flake8_intermediate_file, Folders.flake8_badge))
     rm_file(Folders.flake8_intermediate_file)
 
 
