@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import os
+from shlex import split
 
 from typing import Sequence, Dict, Union, Iterable, Mapping, Any, IO, Tuple, Optional, List
 
@@ -119,7 +120,7 @@ class PowerSession(Session):
         :return:
         """
         if isinstance(command, str):
-            command = command.split(' ')
+            command = split(command)
 
         self.run(*command, logfile=logfile, **kwargs)
 
