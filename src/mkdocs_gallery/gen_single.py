@@ -974,8 +974,10 @@ def generate_file_md(script: GalleryScript, seen_backrefs=None) -> GalleryScript
                 script.gallery_conf['stale_examples'].append(script.dwnld_py_file.as_posix())
 
         if skip_and_return:
-            # Return with 0 exec time and mem usage, and None thumbnail
-            GalleryScriptResults(script=script, intro=intro, exec_time=0., memory=0., thumb=None)
+            # Return with 0 exec time and mem usage, and the existing thumbnail
+            thumb_source_path = script.get_thumbnail_source(file_conf)
+            thumb_file = create_thumb_from_image(script, thumb_source_path)
+            return GalleryScriptResults(script=script, intro=intro, exec_time=0., memory=0., thumb=thumb_file)
 
     # Reset matplotlib, seaborn, etc. if needed
     if script.is_executable_example():
