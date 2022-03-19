@@ -14,6 +14,7 @@ from __future__ import division, absolute_import, print_function
 
 import hashlib
 import os
+import re
 from pathlib import Path
 from shutil import move, copyfile
 import subprocess
@@ -321,3 +322,28 @@ def _has_pypandoc():
         return None, None
     else:
         return True, version
+
+
+def matches_filepath_pattern(filepath: Path, pattern: str) -> bool:
+    """
+    Check if filepath matches pattern
+
+    Parameters
+    ----------
+    filepath
+        The filepath to check
+
+    pattern
+        The pattern to search
+
+    Returns
+    -------
+    rc
+        A boolean indicating whether the pattern has been found in the filepath
+    """
+
+    assert isinstance(filepath, Path)  # noqa
+
+    result = re.search(pattern, str(filepath))
+
+    return True if result is not None else False
