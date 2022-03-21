@@ -17,7 +17,7 @@ import os
 import stat
 import weakref
 
-from typing import List, Dict, Any, Tuple, Union
+from typing import List, Dict, Any, Tuple, Union, Iterable
 
 from pathlib import Path
 
@@ -89,9 +89,46 @@ class ImagePathIterator:
         return path
 
 
+def gen_repr(hide: Union[str, Iterable] = (), show: Union[str, Iterable] = ()):
+    """
+    Generate a repr for a slotted class with either a list of shown or hidden attr names.
+
+    Parameters
+    ----------
+    hide
+    show
+
+    Returns
+    -------
+    __repr__ : Callable
+        The generated repr implementation
+    """
+    if show and hide:
+        raise ValueError("Either provide show or hide")
+
+    if isinstance(show, str):
+        show = (show, )
+
+    if isinstance(hide, str):
+        hide = (hide, )
+
+    def __repr__(self):
+        show_ = self.__slots__ if not show else show
+
+        attrs = ",".join("%s=%r" % (k, getattr(self, k))
+                         for k in show_
+                         if k not in hide
+                         )
+        return "%s(%s)" % (type(self).__name__, attrs)
+
+    return __repr__
+
+
 class GalleryScriptResults:
     """Result of running a single gallery file"""
     __slots__ = ("script", "intro", "exec_time", "memory", "thumb")
+
+    __repr__ = gen_repr()
 
     def __init__(self, script: "GalleryScript", intro: str, exec_time: float, memory: float, thumb: Path):
         self.script = script
@@ -111,6 +148,8 @@ class ScriptRunVars:
     __slots__ = (
         "image_path_iterator", "example_globals", "memory_used_in_blocks", "memory_delta", "fake_main", "stop_executing"
     )
+
+    __repr__ = gen_repr()
 
     def __init__(self, image_path_iterator: ImagePathIterator):
         # The iterator returning the next image file paths
@@ -136,6 +175,8 @@ class GalleryScript:
     """Represents a gallery script and all related files (notebook, md5, etc.)"""
 
     __slots__ = ("__weakref__", "_gallery", "script_stem", "title", "_py_file_md5", "run_vars")
+
+    __repr__ = gen_repr(hide=("__weakref__", "_gallery"))
 
     def __init__(self, gallery: "GalleryBase", script_src_file: Path):
         self._gallery = weakref.ref(gallery)
@@ -508,6 +549,8 @@ class GallerySubSection(GalleryBase):
     """Represents a subsection in a gallery."""
     __slots__ = ("__weakref__", "_parent", "subpath")
 
+    __repr__ = gen_repr(hide=("__weakref__", "_parent"))
+
     def has_subsections(self) -> bool:
         return False
 
@@ -577,6 +620,8 @@ class Gallery(GalleryBase):
     Subgalleries are attached as a separate member.
     """
     __slots__ = ("__weakref__", "scripts_dir_rel_project", "generated_dir_rel_project", "subsections", "_all_info")
+
+    __repr__ = gen_repr(hide=("__weakref__", "subsections", "_all_info"))
 
     subpath = Path(".")
 
@@ -748,6 +793,8 @@ class Gallery(GalleryBase):
 class AllInformation:
     """Represent all galleries as well as the global configuration."""
     __slots__ = ("__weakref__", "galleries", "gallery_conf", "mkdocs_conf", "project_root_dir")
+
+    __repr__ = gen_repr(show="project_root_dir")
 
     def __init__(
         self,
