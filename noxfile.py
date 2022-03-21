@@ -102,13 +102,13 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # finally run all tests
     if not coverage:
         # install self so that it is recognized by pytest
-        session.run2("pip install . --no-deps")
+        session.install2('.', '--no-deps')
 
         # simple: pytest only
         session.run2("python -m pytest --cache-clear -v tests/")
     else:
         # install self in "develop" mode so that coverage can be measured
-        session.run2("pip install -e . --no-deps")
+        session.install2('-e', '.', '--no-deps')
 
         # coverage + junit html reports + badge generation
         session.install_reqs(phase="coverage",
@@ -144,7 +144,7 @@ def flake8(session: PowerSession):
 
     session.install("-r", str(Folders.ci_tools / "flake8-requirements.txt"))
     session.install("genbadge[flake8]")
-    session.run2("pip install .")
+    session.install2('.')
 
     rm_folder(Folders.flake8_reports)
     Folders.flake8_reports.mkdir(parents=True, exist_ok=True)
@@ -177,7 +177,7 @@ def docs(session: PowerSession):
     session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS)
 
     # Install the plugin
-    session.run2("pip install .")
+    session.install2('.')
 
     if session.posargs:
         # use posargs instead of "serve"
@@ -196,7 +196,7 @@ def publish(session: PowerSession):
     )
 
     # Install the plugin
-    session.run2("pip install .")
+    session.install2('.')
 
     # possibly rebuild the docs in a static way (mkdocs serve does not build locally)
     session.run2("mkdocs build")
