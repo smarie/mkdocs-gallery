@@ -85,6 +85,9 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # install all requirements
     session.install_reqs(setup=True, install=True, tests=True, versions_dct=pkg_specs)
 
+    # Since our tests are currently limited, use our own doc generation as a test
+    session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
+
     # install CI-only dependencies
     # if install_ci_deps:
     #     session.install2("keyrings.alt")
@@ -106,14 +109,18 @@ def tests(session: PowerSession, coverage, pkg_specs):
 
         # simple: pytest only
         session.run2("python -m pytest --cache-clear -v tests/")
+
+        # since our tests are too limited, we use our own mkdocs build as additional test for now.
+        session.run2("python -m mkdocs build")
+        # -- add a second build so that we can go through the caching/md5 side
+        session.run2("python -m mkdocs build")
     else:
         # install self in "develop" mode so that coverage can be measured
         session.install2('-e', '.', '--no-deps')
 
         # coverage + junit html reports + badge generation
         session.install_reqs(phase="coverage",
-                             phase_reqs=["coverage", "pytest-html", "genbadge[tests,coverage]", "mkdocs"]
-                                        + MKDOCS_GALLERY_EXAMPLES_REQS,
+                             phase_reqs=["coverage", "pytest-html", "genbadge[tests,coverage]"],
                              versions_dct=pkg_specs)
 
         # --coverage + junit html reports
@@ -122,6 +129,9 @@ def tests(session: PowerSession, coverage, pkg_specs):
                      "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         # -- use the doc generation for coverage
+        session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build"
+                     "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+        # -- add a second build so that we can go through the caching/md5 side
         session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build"
                      "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
