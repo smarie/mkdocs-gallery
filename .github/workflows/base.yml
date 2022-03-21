@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest ]  # , macos-latest, windows-latest]
+        os: [ ubuntu-latest, windows-latest ]  # , macos-latest, windows-latest]
         # all nox sessions: manually > dynamically from previous job
         # nox_session: ["tests-2.7", "tests-3.7"]
         nox_session: ${{ fromJson(needs.list_nox_test_sessions.outputs.matrix) }}
