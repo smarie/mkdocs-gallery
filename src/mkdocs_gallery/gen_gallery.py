@@ -717,7 +717,7 @@ def write_junit_xml(all_info: AllInformation, all_results: List[GalleryScriptRes
     output = ''
     for result in all_results:
         t = result.exec_time
-        fname = result.script.src_py_file_rel_project.as_posix()
+        fname = result.script.src_py_file_rel_project
         if not any(fname in x for x in (gallery_conf['passing_examples'],
                                         failing_unexpectedly,
                                         failing_as_expected,

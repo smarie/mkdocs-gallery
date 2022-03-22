@@ -518,7 +518,7 @@ def handle_exception(exc_info, script: GalleryScript):
         traceback.format_list(stack) +
         traceback.format_exception_only(etype, exc))
 
-    src_file = script.src_py_file.as_posix()
+    src_file = script.src_py_file
     expected = src_file in _expected_failing_examples(
         gallery_conf=script.gallery_conf, mkdocs_conf=script.gallery.all_info.mkdocs_conf
     )
@@ -767,7 +767,7 @@ def execute_code_block(compiler, block, script: GalleryScript):
 
     cwd = os.getcwd()
     # Redirect output to stdout
-    src_file = script.src_py_file.as_posix()
+    src_file = script.src_py_file
     logging_tee = _check_reset_logging_tee(src_file)
     assert isinstance(logging_tee, _LoggingTee)  # noqa
 
@@ -974,6 +974,12 @@ def generate_file_md(script: GalleryScript, seen_backrefs=None) -> GalleryScript
                 script.gallery_conf['stale_examples'].append(script.dwnld_py_file.as_posix())
 
         if skip_and_return:
+            # If expected to fail, let's assume it did when executed previously
+            if script.src_py_file in script.gallery_conf['expected_failing_examples']:
+                script.gallery_conf['failing_examples'][script.src_py_file] = (
+                    "Due to MD5 check, script has not been actually executed - "
+                    "Assumed it failed as expected during previous execution."
+                )
             # Return with 0 exec time and mem usage, and the existing thumbnail
             thumb_source_path = script.get_thumbnail_source(file_conf)
             thumb_file = create_thumb_from_image(script, thumb_source_path)
