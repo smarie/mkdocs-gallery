@@ -59,7 +59,7 @@ logger = mkdocs_compatibility.getLogger('mkdocs-gallery')
 class _LoggingTee(object):
     """A tee object to redirect streams to the logger."""
 
-    def __init__(self, src_filename):
+    def __init__(self, src_filename: Path):
         self.logger = logger
         self.src_filename = src_filename
         self.logger_buffer = ''
@@ -620,7 +620,7 @@ def _ast_module():
     return ast_Module
 
 
-def _check_reset_logging_tee(src_file):
+def _check_reset_logging_tee(src_file: Path):
     # Helper to deal with our tests not necessarily calling parse_and_execute
     # but rather execute_code_block directly
     if isinstance(sys.stdout, _LoggingTee):
@@ -773,7 +773,7 @@ def execute_code_block(compiler, block, script: GalleryScript):
 
     # First cd in the original example dir, so that any file
     # created by the example get created in this directory
-    os.chdir(os.path.dirname(src_file))
+    os.chdir(src_file.parent)
 
     sys_path = copy.deepcopy(sys.path)
     sys.path.append(os.getcwd())
@@ -908,7 +908,7 @@ def parse_and_execute(script: GalleryScript, script_blocks):
 
     # Execute block by block
     output_blocks = list()
-    with _LoggingTee(script.src_py_file.as_posix()) as logging_tee:
+    with _LoggingTee(script.src_py_file) as logging_tee:
         for block in script_blocks:
             logging_tee.set_std_and_reset_position()
             output_blocks.append(execute_code_block(compiler, block, script))
