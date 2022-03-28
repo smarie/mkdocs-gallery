@@ -971,15 +971,13 @@ def generate_file_md(script: GalleryScript, seen_backrefs=None) -> GalleryScript
                 skip_and_return = False
             else:
                 # Add the example to the "stale examples" before returning
-                script.gallery_conf['stale_examples'].append(script.dwnld_py_file.as_posix())
+                script.gallery_conf['stale_examples'].append(script.dwnld_py_file)
+                # If expected to fail, let's remove it from the 'expected_failing_examples' list,
+                # assuming it did when previously executed
+                if script.src_py_file in script.gallery_conf['expected_failing_examples']:
+                    script.gallery_conf['expected_failing_examples'].remove(script.src_py_file)
 
         if skip_and_return:
-            # If expected to fail, let's assume it did when executed previously
-            if script.src_py_file in script.gallery_conf['expected_failing_examples']:
-                script.gallery_conf['failing_examples'][script.src_py_file] = (
-                    "Due to MD5 check, script has not been actually executed - "
-                    "Assumed it failed as expected during previous execution."
-                )
             # Return with 0 exec time and mem usage, and the existing thumbnail
             thumb_source_path = script.get_thumbnail_source(file_conf)
             thumb_file = create_thumb_from_image(script, thumb_source_path)
