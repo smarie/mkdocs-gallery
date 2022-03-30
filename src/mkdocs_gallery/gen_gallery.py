@@ -29,7 +29,7 @@ from .errors import ConfigError, ExtensionError
 from . import mkdocs_compatibility
 from .gen_data_model import AllInformation, GalleryScript, GalleryScriptResults, GalleryBase
 from .mkdocs_compatibility import red
-from .utils import _replace_by_new_if_needed, _has_optipng, _new_file
+from .utils import _replace_by_new_if_needed, _has_optipng, _new_file, matches_filepath_pattern
 from .backreferences import _finalize_backreferences
 from .gen_single import MKD_GLR_SIG, _get_memory_base, generate
 from .scrapers import _scraper_dict, _reset_dict, _import_matplotlib
@@ -717,7 +717,7 @@ def write_junit_xml(all_info: AllInformation, all_results: List[GalleryScriptRes
     output = ''
     for result in all_results:
         t = result.exec_time
-        fname = result.script.src_py_file_rel_project.as_posix()
+        fname = result.script.src_py_file_rel_project
         if not any(fname in x for x in (gallery_conf['passing_examples'],
                                         failing_unexpectedly,
                                         failing_as_expected,
@@ -785,9 +785,9 @@ def touch_empty_backreferences(mkdocs_conf, what, name, obj, options, lines):
     #     open(examples_path, 'w').close()
 
 
-def _expected_failing_examples(gallery_conf: Dict, mkdocs_conf: Dict) -> Set[str]:
+def _expected_failing_examples(gallery_conf: Dict, mkdocs_conf: Dict) -> Set[Path]:
     """The set of expected failing examples"""
-    return set((Path(mkdocs_conf['docs_dir']) / path).as_posix()
+    return set((Path(mkdocs_conf['docs_dir']) / path)
                for path in gallery_conf['expected_failing_examples'])
 
 
@@ -803,7 +803,7 @@ def _parse_failures(gallery_conf: Dict, mkdocs_conf: Dict):
     # filter from examples actually run
     passing_unexpectedly = [
         src_file for src_file in passing_unexpectedly
-        if re.search(gallery_conf.get('filename_pattern'), src_file)]
+        if matches_filepath_pattern(src_file, gallery_conf.get('filename_pattern'))]
 
     return failing_as_expected, failing_unexpectedly, passing_unexpectedly
 
@@ -840,7 +840,7 @@ def summarize_failing_examples(gallery_conf: Dict, mkdocs_conf: Dict):
 
     if passing_unexpectedly:
         fail_msgs.append(red("Examples expected to fail, but not failing:\n") +
-                         "\n".join(passing_unexpectedly) +
+                         "\n".join(map(str, passing_unexpectedly)) +
                          "\nPlease remove these examples from 'expected_failing_examples' in your mkdocs.yml file."
                          )
 

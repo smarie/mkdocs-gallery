@@ -22,7 +22,7 @@ from typing import List, Dict, Any, Tuple, Union, Iterable
 from pathlib import Path
 
 from .errors import ExtensionError
-from .utils import _smart_copy_md5, get_md5sum, _replace_by_new_if_needed, _new_file
+from .utils import _smart_copy_md5, get_md5sum, _replace_by_new_if_needed, _new_file, matches_filepath_pattern
 
 
 def _has_readme(folder: Path) -> bool:
@@ -230,7 +230,7 @@ class GalleryScript:
             True if script has to be executed
         """
         filename_pattern = self.gallery_conf.get('filename_pattern')
-        execute = re.search(filename_pattern, str(self.src_py_file)) and self.gallery_conf['plot_gallery']
+        execute = matches_filepath_pattern(self.src_py_file, filename_pattern) and self.gallery_conf['plot_gallery']
         return execute
 
     @property

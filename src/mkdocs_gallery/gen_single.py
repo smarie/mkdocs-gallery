@@ -59,7 +59,7 @@ logger = mkdocs_compatibility.getLogger('mkdocs-gallery')
 class _LoggingTee(object):
     """A tee object to redirect streams to the logger."""
 
-    def __init__(self, src_filename):
+    def __init__(self, src_filename: Path):
         self.logger = logger
         self.src_filename = src_filename
         self.logger_buffer = ''
@@ -518,7 +518,7 @@ def handle_exception(exc_info, script: GalleryScript):
         traceback.format_list(stack) +
         traceback.format_exception_only(etype, exc))
 
-    src_file = script.src_py_file.as_posix()
+    src_file = script.src_py_file
     expected = src_file in _expected_failing_examples(
         gallery_conf=script.gallery_conf, mkdocs_conf=script.gallery.all_info.mkdocs_conf
     )
@@ -620,7 +620,7 @@ def _ast_module():
     return ast_Module
 
 
-def _check_reset_logging_tee(src_file):
+def _check_reset_logging_tee(src_file: Path):
     # Helper to deal with our tests not necessarily calling parse_and_execute
     # but rather execute_code_block directly
     if isinstance(sys.stdout, _LoggingTee):
@@ -767,13 +767,13 @@ def execute_code_block(compiler, block, script: GalleryScript):
 
     cwd = os.getcwd()
     # Redirect output to stdout
-    src_file = script.src_py_file.as_posix()
+    src_file = script.src_py_file
     logging_tee = _check_reset_logging_tee(src_file)
     assert isinstance(logging_tee, _LoggingTee)  # noqa
 
     # First cd in the original example dir, so that any file
     # created by the example get created in this directory
-    os.chdir(os.path.dirname(src_file))
+    os.chdir(src_file.parent)
 
     sys_path = copy.deepcopy(sys.path)
     sys.path.append(os.getcwd())
@@ -908,7 +908,7 @@ def parse_and_execute(script: GalleryScript, script_blocks):
 
     # Execute block by block
     output_blocks = list()
-    with _LoggingTee(script.src_py_file.as_posix()) as logging_tee:
+    with _LoggingTee(script.src_py_file) as logging_tee:
         for block in script_blocks:
             logging_tee.set_std_and_reset_position()
             output_blocks.append(execute_code_block(compiler, block, script))
@@ -971,7 +971,11 @@ def generate_file_md(script: GalleryScript, seen_backrefs=None) -> GalleryScript
                 skip_and_return = False
             else:
                 # Add the example to the "stale examples" before returning
-                script.gallery_conf['stale_examples'].append(script.dwnld_py_file.as_posix())
+                script.gallery_conf['stale_examples'].append(script.dwnld_py_file)
+                # If expected to fail, let's remove it from the 'expected_failing_examples' list,
+                # assuming it did when previously executed
+                if script.src_py_file in script.gallery_conf['expected_failing_examples']:
+                    script.gallery_conf['expected_failing_examples'].remove(script.src_py_file)
 
         if skip_and_return:
             # Return with 0 exec time and mem usage, and the existing thumbnail

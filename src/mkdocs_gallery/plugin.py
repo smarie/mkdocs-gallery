@@ -74,22 +74,34 @@ class MySubConfig(co.SubConfig):
         return self
 
 
+class Dir(co.Dir):
+    """mkdocs.config.config_options.Dir replacement: returns a pathlib object instead of a string"""
+    def run_validation(self, value):
+        return Path(co.Dir.run_validation(self, value))
+
+
+class File(co.File):
+    """mkdocs.config.config_options.File replacement: returns a pathlib object instead of a string"""
+    def run_validation(self, value):
+        return Path(co.File.run_validation(self, value))
+
+
 class GalleryPlugin(BasePlugin):
     #     # Mandatory to display plotly graph within the site
     #     import plotly.io as pio
     #     pio.renderers.default = "sphinx_gallery"
 
     config_scheme = (
-        ('conf_script', co.File(exists=True)),
+        ('conf_script', File(exists=True)),
         ('filename_pattern', co.Type(str)),
         ('ignore_pattern', co.Type(str)),
-        ('examples_dirs', ConfigList(co.Dir(exists=True))),
+        ('examples_dirs', ConfigList(Dir(exists=True))),
         # 'reset_argv': DefaultResetArgv(),
         ('subsection_order', co.Choice(choices=(None, "ExplicitOrder"))),
         ('within_subsection_order', co.Choice(choices=("FileNameSortKey", "NumberOfCodeLinesSortKey"))),
 
-        ('gallery_dirs', ConfigList(co.Dir(exists=False))),
-        ('backreferences_dir', co.Dir(exists=False)),
+        ('gallery_dirs', ConfigList(Dir(exists=False))),
+        ('backreferences_dir', Dir(exists=False)),
         ('doc_module', ConfigList(co.Type(str))),
         # 'reference_url': {},  TODO how to link code to external functions?
         ('capture_repr', ConfigList(co.Type(str))),
@@ -103,14 +115,14 @@ class GalleryPlugin(BasePlugin):
         # 'passing_examples': [],
         # 'stale_examples': [],
         ('run_stale_examples', co.Type(bool)),
-        ('expected_failing_examples', ConfigList(co.File(exists=True))),
+        ('expected_failing_examples', ConfigList(File(exists=True))),
         ('thumbnail_size', ConfigList(co.Type(int), single_elt_allowed=False)),
         ('min_reported_time', co.Type(int)),
         ('binder', MySubConfig(
             # Required keys
             ('org', co.Type(str, required=True)),
             ('repo', co.Type(str, required=True)),
-            ('dependencies', ConfigList(co.File(exists=True), required=True)),
+            ('dependencies', ConfigList(File(exists=True), required=True)),
             # Optional keys
             ('branch', co.Type(str, required=True, default="gh-pages")),
             ('binderhub_url', co.URL(required=True, default="https://mybinder.org")),
@@ -134,7 +146,7 @@ class GalleryPlugin(BasePlugin):
         # 'css': _KNOWN_CSS,
         ('matplotlib_animations', co.Type(bool)),
         ('image_srcset', ConfigList(co.Type(str))),
-        ('default_thumb_file', co.File(exists=True)),
+        ('default_thumb_file', File(exists=True)),
         ('line_numbers', co.Type(bool)),
     )
 
