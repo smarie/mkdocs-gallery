@@ -64,7 +64,10 @@ class MySubConfig(co.SubConfig):
             return super(MySubConfig, self).validate(value)
 
     def run_validation(self, value):
-        """Fix SubConfig: errors and warnings were not caught"""
+        """Fix SubConfig: errors and warnings were not caught
+
+        See https://github.com/mkdocs/mkdocs/pull/2710
+        """
         failed, self.warnings = Config.validate(self)
         if len(failed) > 0:
             # get the first failing one
