@@ -3,6 +3,7 @@
 ### 0.7.4 - Bugfixes
 
  - Python scripts are now correctly skipped in case of identical md5 hash. Fixes [#29](https://github.com/smarie/mkdocs-gallery/issues/29). PR [#27](https://github.com/smarie/mkdocs-gallery/pull/27) by [mchaaler](https://github.com/mchaaler).
+ - Examples expected to fail are now correctly skipped in case of identical md5 hash, too. Fixes [#34](https://github.com/smarie/mkdocs-gallery/isues/34). PR [#39](https://github.com/smarie/mkdocs-gallery/pull/39) by [mchaaler](https://github.com/mchaaler).
  - Fixed error when `edit_url` is set to empty to [disable the "edit page" feature](https://www.mkdocs.org/user-guide/configuration/#edit_uri). Fixes [#32](https://github.com/smarie/mkdocs-gallery/issues/32). PR [#27](https://github.com/smarie/mkdocs-gallery/pull/27) by [mchaaler](https://github.com/mchaaler).
 
 ### 0.7.3 - Bugfix
