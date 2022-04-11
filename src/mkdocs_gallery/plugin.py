@@ -348,11 +348,13 @@ markdown_extensions:
         def wrap_callback(original_callback):
             def _callback(event):
                 for g in excluded_dirs:
-                    # TODO maybe use fnmatch rather ?
-                    if event.src_path.startswith(g):
+                    try:
+                        Path(event.src_path).relative_to(g)
                         # ignore this event: the file is in the gallery target dir.
                         # log.info(f"Ignoring event: {event}")
                         return
+                    except ValueError:
+                        pass
                 return original_callback(event)
             return _callback
 
