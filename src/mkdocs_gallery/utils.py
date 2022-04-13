@@ -347,3 +347,32 @@ def matches_filepath_pattern(filepath: Path, pattern: str) -> bool:
     result = re.search(pattern, str(filepath))
 
     return True if result is not None else False
+
+
+def is_relative_to(parentpath: Path, subpath: Path) -> bool:
+    """
+    Check if subpath is relative to parentpath
+
+    Parameters
+    ----------
+    parentpath
+        The (potential) parent path
+
+    subpath
+        The (potential) subpath
+
+    Returns
+    -------
+    rc
+        A boolean indicating whether subpath is relative to parentpath
+    """
+
+    if not (isinstance(parentpath, Path) and isinstance(subpath, Path)):
+        raise ValueError("Arguments must both be pathlib objects")
+
+    try:
+        subpath.relative_to(parentpath)
+        return True
+
+    except ValueError:
+        return False

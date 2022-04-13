@@ -2,7 +2,7 @@ from pathlib import Path
 import re
 import os
 import pytest
-from mkdocs_gallery.utils import matches_filepath_pattern
+from mkdocs_gallery.utils import matches_filepath_pattern, is_relative_to
 
 
 class TestFilepathPatternMatch:
@@ -42,3 +42,28 @@ class TestFilepathPatternMatch:
 
         with pytest.raises(AssertionError):
             matches_filepath_pattern(filepath, pattern)
+
+
+class TestRelativePaths:
+
+    @pytest.mark.parametrize(
+        "path1, path2, expected", [
+            ("parent", "parent/sub", True),
+            ("notparent", "parent/sub", False),
+        ])
+    def test_behavior(self, path1, path2, expected):
+        """Test that the function behaves as expected"""
+
+        assert is_relative_to(Path(path1), Path(path2)) == expected
+
+    @pytest.mark.parametrize(
+        "path1, path2", [
+            ("parent", "parent/sub"),
+            (Path("parent"), "parent/sub"),
+            ("parent", Path("parent/sub")),
+        ])
+    def test_not_paths_raises(self, path1, path2):
+        """Test that the function raises an exception when both arguments are not Path objects"""
+
+        with pytest.raises(ValueError):
+            is_relative_to(path1, path2)
