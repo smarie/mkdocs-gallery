@@ -25,6 +25,7 @@ from . import glr_path_static
 from .binder import copy_binder_files
 # from .docs_resolv import embed_code_links
 from .gen_gallery import parse_config, generate_gallery_md, summarize_failing_examples, fill_mkdocs_nav
+from .utils import is_relative_to
 
 
 class ConfigList(co.OptionallyRequired):
@@ -348,13 +349,10 @@ markdown_extensions:
         def wrap_callback(original_callback):
             def _callback(event):
                 for g in excluded_dirs:
-                    try:
-                        Path(event.src_path).relative_to(g)
+                    if is_relative_to(g, Path(event.src_path)):
                         # ignore this event: the file is in the gallery target dir.
                         # log.info(f"Ignoring event: {event}")
                         return
-                    except ValueError:
-                        pass
                 return original_callback(event)
             return _callback
 
