@@ -368,7 +368,7 @@ def is_relative_to(parentpath: Path, subpath: Path) -> bool:
     """
 
     if not (isinstance(parentpath, Path) and isinstance(subpath, Path)):
-        raise ValueError("Arguments must both be pathlib objects")
+        raise TypeError("Arguments must both be pathlib objects")
 
     try:
         subpath.relative_to(parentpath)
