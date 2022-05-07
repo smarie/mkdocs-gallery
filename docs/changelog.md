@@ -3,7 +3,7 @@
 ### 0.7.6 - Bugfixes
 
  - Fixed incorrect img `srcset` paths leading to figures not being displayed in gallery examples. Fixes [#47](https://github.com/smarie/mkdocs-gallery/issues/47)
- - Fixed `TypeError: startswith first arg must be str or a tuple of str, not WindowsPath` when running with `mkdocs serve`. Fixes [#45](https://github.com/smarie/mkdocs-gallery/isues/45)
+ - Fixed `TypeError: startswith first arg must be str or a tuple of str, not WindowsPath` when running with `mkdocs serve`. Fixes [#45](https://github.com/smarie/mkdocs-gallery/isues/45). PR [#46](https://github.com/smarie/mkdocs-gallery/pull/46) by [mchaaler](https://github.com/mchaaler).
 
 ### 0.7.5 - Bugfixes
 
