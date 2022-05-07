@@ -1105,6 +1105,93 @@
             <div id="l349"
                class="code sev- "><tt><i>349</i>     <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">False</span></tt>
             </div>
+            <div id="l350"
+               class="code sev- "><tt><i>350</i> &nbsp;</tt>
+            </div>
+            <div id="l351"
+               class="code sev- "><tt><i>351</i> &nbsp;</tt>
+            </div>
+            <div id="l352"
+               class="code sev- "><tt><i>352</i> <span class="k">def</span> <span class="nf">is_relative_to</span><span class="p">(</span><span class="n">parentpath</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">subpath</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span></tt>
+            </div>
+            <div id="l353"
+               class="code sev- "><tt><i>353</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l354"
+               class="code sev- "><tt><i>354</i> <span class="sd">    Check if subpath is relative to parentpath</span></tt>
+            </div>
+            <div id="l355"
+               class="code sev- "><tt><i>355</i> &nbsp;</tt>
+            </div>
+            <div id="l356"
+               class="code sev- "><tt><i>356</i> <span class="sd">    Parameters</span></tt>
+            </div>
+            <div id="l357"
+               class="code sev- "><tt><i>357</i> <span class="sd">    ----------</span></tt>
+            </div>
+            <div id="l358"
+               class="code sev- "><tt><i>358</i> <span class="sd">    parentpath</span></tt>
+            </div>
+            <div id="l359"
+               class="code sev- "><tt><i>359</i> <span class="sd">        The (potential) parent path</span></tt>
+            </div>
+            <div id="l360"
+               class="code sev- "><tt><i>360</i> &nbsp;</tt>
+            </div>
+            <div id="l361"
+               class="code sev- "><tt><i>361</i> <span class="sd">    subpath</span></tt>
+            </div>
+            <div id="l362"
+               class="code sev- "><tt><i>362</i> <span class="sd">        The (potential) subpath</span></tt>
+            </div>
+            <div id="l363"
+               class="code sev- "><tt><i>363</i> &nbsp;</tt>
+            </div>
+            <div id="l364"
+               class="code sev- "><tt><i>364</i> <span class="sd">    Returns</span></tt>
+            </div>
+            <div id="l365"
+               class="code sev- "><tt><i>365</i> <span class="sd">    -------</span></tt>
+            </div>
+            <div id="l366"
+               class="code sev- "><tt><i>366</i> <span class="sd">    rc</span></tt>
+            </div>
+            <div id="l367"
+               class="code sev- "><tt><i>367</i> <span class="sd">        A boolean indicating whether subpath is relative to parentpath</span></tt>
+            </div>
+            <div id="l368"
+               class="code sev- "><tt><i>368</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l369"
+               class="code sev- "><tt><i>369</i> &nbsp;</tt>
+            </div>
+            <div id="l370"
+               class="code sev- "><tt><i>370</i>     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">parentpath</span><span class="p">,</span> <span class="n">Path</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">subpath</span><span class="p">,</span> <span class="n">Path</span><span class="p">)):</span></tt>
+            </div>
+            <div id="l371"
+               class="code sev- "><tt><i>371</i>         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Arguments must both be pathlib objects&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l372"
+               class="code sev- "><tt><i>372</i> &nbsp;</tt>
+            </div>
+            <div id="l373"
+               class="code sev- "><tt><i>373</i>     <span class="k">try</span><span class="p">:</span></tt>
+            </div>
+            <div id="l374"
+               class="code sev- "><tt><i>374</i>         <span class="n">subpath</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">parentpath</span><span class="p">)</span></tt>
+            </div>
+            <div id="l375"
+               class="code sev- "><tt><i>375</i>         <span class="k">return</span> <span class="kc">True</span></tt>
+            </div>
+            <div id="l376"
+               class="code sev- "><tt><i>376</i> &nbsp;</tt>
+            </div>
+            <div id="l377"
+               class="code sev- "><tt><i>377</i>     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span></tt>
+            </div>
+            <div id="l378"
+               class="code sev- "><tt><i>378</i>         <span class="k">return</span> <span class="kc">False</span></tt>
+            </div>
             
          </div>
       </div>
