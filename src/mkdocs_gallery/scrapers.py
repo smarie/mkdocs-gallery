@@ -387,6 +387,9 @@ def save_figures(block, script: GalleryScript):
     return all_md
 
 
+PREFIX_LEN = len("mkd_glr_")
+
+
 def figure_md_or_html(
     figure_paths: List[Path],
     script: GalleryScript,
@@ -445,7 +448,7 @@ def figure_md_or_html(
     elif figure_paths:
         file_name = os.path.split(str(figure_paths[0]))[1]
         # remove ext & 'mkd_glr_' from start & n#'s from end
-        file_name_noext = os.path.splitext(file_name)[0][9:-4]
+        file_name_noext = os.path.splitext(file_name)[0][PREFIX_LEN:-4]
         # replace - & _ with \s
         file_name_final = re.sub(r'[-,_]', ' ', file_name_noext)
         alt = file_name_final
@@ -456,29 +459,28 @@ def figure_md_or_html(
     if len(figure_paths) == 1:
         figure_path = figure_paths[0]
         hinames = srcsetpaths[0]
-        srcset = _get_srcset_st(sources_dir, hinames)
+        srcset = _get_srcset_st(script_md_dir, hinames)
+        figure_path_rel_to_script_md_dir = figure_path.relative_to(script_md_dir).as_posix().lstrip('/')
         if raw_html:
             # html version
-            figure_path_rel_to_mkdocs_dir = figure_path.relative_to(sources_dir).as_posix().lstrip('/')
-            images_md = f'<img alt="{alt}" src="{figure_path_rel_to_mkdocs_dir}" srcset="{srcset}", ' \
+            images_md = f'<img alt="{alt}" src="../{figure_path_rel_to_script_md_dir}" srcset="{srcset}", ' \
                         f'class="sphx-glr-single-img" />'
         else:
             # markdown version
-            figure_path_rel_to_script_md_dir = figure_path.relative_to(script_md_dir).as_posix().lstrip('/')
             images_md = f'![{alt}](./{figure_path_rel_to_script_md_dir}){{: .mkd-glr-single-img srcset="{srcset}"}}'
 
     elif len(figure_paths) > 1:
         images_md = HLIST_HEADER
         for nn, figure_path in enumerate(figure_paths):
             hinames = srcsetpaths[nn]
-            srcset = _get_srcset_st(sources_dir, hinames)
-            figure_path_rel_to_mkdocs_dir = figure_path.relative_to(sources_dir).as_posix().lstrip('/')
-            images_md += (HLIST_SG_TEMPLATE % (figure_path_rel_to_mkdocs_dir, alt, srcset))
+            srcset = _get_srcset_st(script_md_dir, hinames)
+            figure_path_rel_to_script_md_dir = figure_path.relative_to(script_md_dir).as_posix().lstrip('/')
+            images_md += (HLIST_SG_TEMPLATE % (alt, figure_path_rel_to_script_md_dir, srcset))
 
     return images_md
 
 
-def _get_srcset_st(sources_dir, hinames):
+def _get_srcset_st(sources_dir: Path, hinames: Dict[float, Path]):
     """
     Create the srcset string for including on the md line.
     ie. sources_dir might be /home/sample-proj/source,
@@ -491,9 +493,8 @@ def _get_srcset_st(sources_dir, hinames):
     """
     srcst = ''
     for k in hinames.keys():
-        path = os.path.relpath(hinames[k],
-                               sources_dir).replace(os.sep, '/').lstrip('/')
-        srcst += '/' + path
+        path = hinames[k].relative_to(sources_dir).as_posix().lstrip('/')
+        srcst += '../' + path
         if k == 0:
             srcst += ', '
         else:
@@ -526,7 +527,7 @@ HLIST_IMAGE_MATPLOTLIB = """<li>
 </li>"""
 
 HLIST_SG_TEMPLATE = """
-    * ![%s](/%s){: .mkd-glr-multi-img srcset="%s"}
+    * ![%s](../%s){: .mkd-glr-multi-img srcset="%s"}
 """
 
 
