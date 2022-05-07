@@ -65,5 +65,5 @@ class TestRelativePaths:
     def test_not_paths_raises(self, path1, path2):
         """Test that the function raises an exception when both arguments are not Path objects"""
 
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             is_relative_to(path1, path2)
