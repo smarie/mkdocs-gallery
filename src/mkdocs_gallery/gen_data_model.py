@@ -22,7 +22,13 @@ from typing import List, Dict, Any, Tuple, Union, Iterable
 from pathlib import Path
 
 from .errors import ExtensionError
-from .utils import _smart_copy_md5, get_md5sum, _replace_by_new_if_needed, _new_file, matches_filepath_pattern
+from .utils import (_smart_copy_md5,
+                    get_md5sum,
+                    _replace_by_new_if_needed,
+                    _new_file,
+                    matches_filepath_pattern,
+                    is_relative_to,
+                    )
 
 
 def _has_readme(folder: Path) -> bool:
@@ -660,7 +666,7 @@ class Gallery(GalleryBase):
         self._attach(all_info=all_info)
 
         # Check that generated dir is inside docs dir
-        if not self.generated_dir.as_posix().startswith(self.all_info.mkdocs_docs_dir.as_posix()):
+        if not is_relative_to(self.all_info.mkdocs_docs_dir, self.generated_dir):
             raise ValueError("Generated gallery dirs can only be located as subfolders of the mkdocs 'docs_dir'.")
 
     def has_subsections(self) -> bool:
