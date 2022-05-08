@@ -15,7 +15,7 @@ import ast
 import pytest
 
 import mkdocs_gallery.gen_single as sg
-
+from mkdocs_gallery.utils import get_md5sum
 
 CONTENT = [
     '"""',
@@ -93,48 +93,46 @@ def test_bug_cases_of_notebook_syntax():
         assert read_block_contents == ref_block_contents
 
 
-# def test_direct_comment_after_docstring():
-#     # For more details see https://github.com/sphinx-gallery/sphinx-gallery/pull/49
-#     with tempfile.NamedTemporaryFile('w', delete=False) as f:
-#         f.write('\n'.join(['"Docstring"',
-#                            '# and now comes the module code',
-#                            '# with a second line of comment',
-#                            'x, y = 1, 2',
-#                            '']))
-#     try:
-#         file_conf, result = sg.split_code_and_text_blocks(f.name)
-#     finally:
-#         os.remove(f.name)
-#
-#     assert file_conf == {}
-#     expected_result = [
-#         ('text', 'Docstring', 1),
-#         ('code', '\n'.join(['# and now comes the module code',
-#                             '# with a second line of comment',
-#                             'x, y = 1, 2',
-#                             '']), 2)]
-#     assert result == expected_result
-#
-#
-# def test_final_rst_last_word(tmpdir):
-#     """Tests last word in final rst block included as text"""
-#     filename = str(tmpdir.join('temp.py'))
-#     with open(filename, 'w') as f:
-#         f.write('\n'.join(['"Docstring"',
-#                            '# comment only code block',
-#                            '#%%',
-#                            '# Include this whole sentence.']))
-#
-#     file_conf, result = sg.split_code_and_text_blocks(f.name)
-#
-#     assert file_conf == {}
-#     expected_result = [
-#         ('text', 'Docstring', 1),
-#         ('code', '# comment only code block\n', 2),
-#         ('text', 'Include this whole sentence.', 4)]
-#     assert result == expected_result
-#
-#
+def test_direct_comment_after_docstring(tmp_path):
+    # For more details see https://github.com/sphinx-gallery/sphinx-gallery/pull/49
+
+    tmp_file = tmp_path / 'temp.py'
+    tmp_file.write_text('\n'.join(['"Docstring"',
+                                   '# and now comes the module code',
+                                   '# with a second line of comment',
+                                   'x, y = 1, 2',
+                                   '']))
+    file_conf, result = sg.split_code_and_text_blocks(tmp_file)
+    assert file_conf == {}
+
+    expected_result = [
+        ('text', 'Docstring', 1),
+        ('code', '\n'.join(['# and now comes the module code',
+                            '# with a second line of comment',
+                            'x, y = 1, 2',
+                            '']), 2)]
+    assert result == expected_result
+
+
+def test_final_md_last_word(tmp_path):
+    """Tests last word in final rst block included as text"""
+
+    tmp_file = tmp_path / 'temp.py'
+    tmp_file.write_text('\n'.join(['"Docstring"',
+                                   '# comment only code block',
+                                   '#%%',
+                                   '# Include this whole sentence.']))
+
+    file_conf, result = sg.split_code_and_text_blocks(tmp_file)
+    assert file_conf == {}
+
+    expected_result = [
+        ('text', 'Docstring', 1),
+        ('code', '# comment only code block\n', 2),
+        ('text', 'Include this whole sentence.', 4)]
+    assert result == expected_result
+
+
 # def test_rst_block_after_docstring(gallery_conf, tmpdir):
 #     """Assert there is a blank line between the docstring and rst blocks."""
 #     filename = str(tmpdir.join('temp.py'))
@@ -256,18 +254,22 @@ def test_bug_cases_of_notebook_syntax():
 #     assert 'example_globals' in script_vars
 #     assert script_vars['example_globals']['a'] == 1.
 #     assert script_vars['example_globals']['b'] == 'foo'
-#
-#
-# def test_codestr2rst():
-#     """Test the correct translation of a code block into rst."""
-#     output = sg.codestr2rst('print("hello world")')
-#     reference = """\
-# .. code-block:: python
-#
-#     print("hello world")"""
-#     assert reference == output
-#
-#
+
+
+def test_codestr2md():
+    """Test the correct translation of a code block into rst."""
+
+    output = sg.codestr2md('print("hello world")')
+
+    reference = '\n'.join([
+        '```{.python }',
+        'print("hello world")```',
+        ''
+    ])
+
+    assert reference == output
+
+
 # def test_extract_intro_and_title():
 #     intro, title = sg.extract_intro_and_title('<string>',
 #                                               '\n'.join(CONTENT[1:10]))
@@ -316,21 +318,25 @@ def test_bug_cases_of_notebook_syntax():
 #         sg.extract_intro_and_title('<string>', '')  # no title
 #     with pytest.raises(ExtensionError, match='Could not find a title'):
 #         sg.extract_intro_and_title('<string>', '=====')  # no real title
-#
-#
-# @pytest.mark.parametrize(
-#     'mode,expected_md5',
-#     (['b', 'a546be453c8f436e744838a4801bd3a0'],
-#      ['t', 'ea8a570e9f3afc0a7c3f2a17a48b8047']))
-# def test_md5sums(mode, expected_md5):
-#     """Test md5sum check functions work on know file content."""
-#     file_content = b'Local test\r\n'
-#     with tempfile.NamedTemporaryFile('wb', delete=False) as f:
-#         f.write(file_content)
-#     try:
-#         file_md5 = sg.get_md5sum(f.name, mode)
-#         # verify correct md5sum
-#         assert file_md5 == expected_md5
+
+
+@pytest.mark.parametrize(
+    'mode,expected_md5',
+    (['b', 'a546be453c8f436e744838a4801bd3a0'],
+     ['t', 'ea8a570e9f3afc0a7c3f2a17a48b8047']))
+def test_md5sums(tmp_path, mode, expected_md5):
+    """Test md5sum check functions work on known file content."""
+
+    file_content = b'Local test\r\n'
+    tmp_file = tmp_path / 'temp.py'
+    tmp_file.write_bytes(file_content)
+
+    file_md5 = get_md5sum(tmp_file, mode)
+
+    # verify correct md5sum
+    assert file_md5 == expected_md5
+
+
 #         # False because is a new file
 #         assert not sg.md5sum_is_current(f.name)
 #         # Write md5sum to file to check is current
@@ -546,42 +552,42 @@ def test_bug_cases_of_notebook_syntax():
 #         else:
 #             assert code_output not in rst
 #             assert warn_output not in rst
-#
-#
-# @pytest.mark.parametrize('test_str', [
-#     '# sphinx_gallery_thumbnail_number= 2',
-#     '# sphinx_gallery_thumbnail_number=2',
-#     '#sphinx_gallery_thumbnail_number = 2',
-#     '    # sphinx_gallery_thumbnail_number=2'])
-# def test_thumbnail_number(test_str):
-#     # which plot to show as the thumbnail image
-#     with tempfile.NamedTemporaryFile('w', delete=False) as f:
-#         f.write('\n'.join(['"Docstring"',
-#                            test_str]))
-#     try:
-#         file_conf, blocks = sg.split_code_and_text_blocks(f.name)
-#     finally:
-#         os.remove(f.name)
-#     assert file_conf == {'thumbnail_number': 2}
-#
-#
-# @pytest.mark.parametrize('test_str', [
-#     "# sphinx_gallery_thumbnail_path= '_static/demo.png'",
-#     "# sphinx_gallery_thumbnail_path='_static/demo.png'",
-#     "#sphinx_gallery_thumbnail_path = '_static/demo.png'",
-#     "    # sphinx_gallery_thumbnail_path='_static/demo.png'"])
-# def test_thumbnail_path(test_str):
-#     # which plot to show as the thumbnail image
-#     with tempfile.NamedTemporaryFile('w', delete=False) as f:
-#         f.write('\n'.join(['"Docstring"',
-#                            test_str]))
-#     try:
-#         file_conf, blocks = sg.split_code_and_text_blocks(f.name)
-#     finally:
-#         os.remove(f.name)
-#     assert file_conf == {'thumbnail_path': '_static/demo.png'}
-#
-#
+
+
+@pytest.mark.parametrize('test_str', [
+    '# mkdocs_gallery_thumbnail_number= 2',
+    '# mkdocs_gallery_thumbnail_number=2',
+    '#mkdocs_gallery_thumbnail_number = 2',
+    '    # mkdocs_gallery_thumbnail_number=2'])
+def test_thumbnail_number(tmp_path, test_str):
+    """Which plot to show as the thumbnail image"""
+
+    tmp_file = tmp_path / 'temp.py'
+    tmp_file.write_text('\n'.join(['"Docstring"',
+                                   test_str]))
+
+    file_conf, blocks = sg.split_code_and_text_blocks(tmp_file)
+
+    assert file_conf == {'thumbnail_number': 2}
+
+
+@pytest.mark.parametrize('test_str', [
+    "# mkdocs_gallery_thumbnail_path= '_static/demo.png'",
+    "# mkdocs_gallery_thumbnail_path='_static/demo.png'",
+    "#mkdocs_gallery_thumbnail_path = '_static/demo.png'",
+    "    # mkdocs_gallery_thumbnail_path='_static/demo.png'"])
+def test_thumbnail_path(tmp_path, test_str):
+    """Which plot to show as the thumbnail image"""
+
+    tmp_file = tmp_path / 'temp.py'
+    tmp_file.write_text('\n'.join(['"Docstring"',
+                                   test_str]))
+
+    file_conf, blocks = sg.split_code_and_text_blocks(tmp_file)
+
+    assert file_conf == {'thumbnail_path': '_static/demo.png'}
+
+
 # def test_zip_notebooks(gallery_conf):
 #     """Test generated zipfiles are not corrupt."""
 #     gallery_conf.update(
