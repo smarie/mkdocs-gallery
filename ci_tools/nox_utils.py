@@ -22,7 +22,7 @@ from nox.sessions import Session
 nox_logger = logging.getLogger("nox")
 
 
-PY27, PY35, PY36, PY37, PY38, PY39, PY310 = "2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10"
+PY27, PY35, PY36, PY37, PY38, PY39, PY310, PY311 = "2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11"
 DONT_INSTALL = "dont_install"
 
 
