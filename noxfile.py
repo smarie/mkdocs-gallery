@@ -17,16 +17,17 @@ gh_org = "smarie"
 gh_repo = "mkdocs-gallery"
 
 ENVS = {
-    # python 3.10 is not available on conda yet
     # PY310: {"coverage": False, "pkg_specs": {"pip": ">19"}},
     PY39: {"coverage": False, "pkg_specs": {"pip": ">19"}},
-    PY38: {"coverage": False, "pkg_specs": {"pip": ">19"}},
-    PY37: {"coverage": True, "pkg_specs": {"pip": ">19"}},  # , "pytest-html": "1.9.0"
+    PY37: {"coverage": False, "pkg_specs": {"pip": ">19"}},
+    # IMPORTANT: this should be last so that the folder docs/reports is not deleted afterwards
+    PY38: {"coverage": True, "pkg_specs": {"pip": ">19"}},
 }
 
 
 # set the default activated sessions, minimal for CI
 nox.options.sessions = ["tests", "flake8", "docs"]  # , "docs", "gh_pages"
+nox.options.error_on_missing_interpreters = True
 nox.options.reuse_existing_virtualenvs = True  # this can be done using -r
 # if platform.system() == "Windows":  >> always use this for better control
 nox.options.default_venv_backend = "virtualenv"
@@ -148,7 +149,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
         session.run2("genbadge coverage -i '%s' -o '%s'" % (Folders.coverage_xml, Folders.coverage_badge))
 
 
-@power_session(python=PY38, logsdir=Folders.runlogs)
+@power_session(python=PY39, logsdir=Folders.runlogs)
 def flake8(session: PowerSession):
     """Launch flake8 qualimetry."""
 
@@ -180,7 +181,7 @@ MKDOCS_GALLERY_EXAMPLES_REQS = [
 ]
 
 
-@power_session(python=[PY37])
+@power_session(python=[PY39])
 def docs(session: PowerSession):
     """Generates the doc and serves it on a local http server. Pass '-- build' to build statically instead."""
 
@@ -196,7 +197,7 @@ def docs(session: PowerSession):
         session.run2("mkdocs serve")
 
 
-@power_session(python=[PY37])
+@power_session(python=[PY39])
 def publish(session: PowerSession):
     """Deploy the docs+reports on github pages. Note: this rebuilds the docs"""
 
@@ -227,7 +228,7 @@ def publish(session: PowerSession):
     # session.run2('codecov -t %s -f %s' % (codecov_token, Folders.coverage_xml))
 
 
-@power_session(python=[PY37])
+@power_session(python=[PY39])
 def release(session: PowerSession):
     """Create a release on github corresponding to the latest tag"""
 
@@ -288,19 +289,36 @@ def gha_list(session):
 
     # see https://stackoverflow.com/q/66747359/7262247
 
+    # The options
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-s", "--session", help="The nox base session name")
+    parser.add_argument(
+        "-v",
+        "--with_version",
+        action="store_true",
+        default=False,
+        help="Return a list of lists where the first element is the python version and the second the nox session.",
+    )
+    additional_args = parser.parse_args(session.posargs)
+
     # get the desired base session to generate the list for
-    if len(session.posargs) != 1:
-        raise ValueError("This session has a mandatory argument: <base_session_name>")
-    session_func = globals()[session.posargs[0]]
+    session_func = globals()[additional_args.session]
 
     # list all sessions for this base session
     try:
         session_func.parametrize
     except AttributeError:
-        sessions_list = ["%s-%s" % (session_func.__name__, py) for py in session_func.python]
+        if additional_args.with_version:
+            sessions_list = [{"python": py, "session": "%s-%s" % (session_func.__name__, py)} for py in session_func.python]
+        else:
+            sessions_list = ["%s-%s" % (session_func.__name__, py) for py in session_func.python]
     else:
-        sessions_list = ["%s-%s(%s)" % (session_func.__name__, py, param)
-                         for py, param in product(session_func.python, session_func.parametrize)]
+        if additional_args.with_version:
+            sessions_list = [{"python": py, "session": "%s-%s(%s)" % (session_func.__name__, py, param)}
+                             for py, param in product(session_func.python, session_func.parametrize)]
+        else:
+            sessions_list = ["%s-%s(%s)" % (session_func.__name__, py, param)
+                             for py, param in product(session_func.python, session_func.parametrize)]
 
     # print the list so that it can be caught by GHA.
     # Note that json.dumps is optional since this is a list of string.
