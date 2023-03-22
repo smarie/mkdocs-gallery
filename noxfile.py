@@ -9,7 +9,7 @@ import sys
 # add parent folder to python path so that we can import noxfile_utils.py
 # note that you need to "pip install -r noxfile-requiterements.txt" for this file to work.
 sys.path.append(str(Path(__file__).parent / "ci_tools"))
-from nox_utils import PY27, PY37, PY36, PY35, PY38, PY39, PY310, power_session, rm_folder, rm_file, PowerSession  # noqa
+from nox_utils import PY37, PY38, PY39, PY310, power_session, rm_folder, rm_file, PowerSession  # noqa
 
 
 pkg_name = "mkdocs_gallery"
@@ -29,7 +29,7 @@ ENVS = {
 nox.options.sessions = ["tests", "flake8", "docs"]  # , "docs", "gh_pages"
 nox.options.reuse_existing_virtualenvs = True  # this can be done using -r
 # if platform.system() == "Windows":  >> always use this for better control
-nox.options.default_venv_backend = "conda"
+nox.options.default_venv_backend = "virtualenv"
 # os.environ["NO_COLOR"] = "True"  # nox.options.nocolor = True does not work
 # nox.options.verbose = True
 
@@ -94,10 +94,10 @@ def tests(session: PowerSession, coverage, pkg_specs):
 
     # list all (conda list alone does not work correctly on github actions)
     # session.run2("conda list")
-    conda_prefix = Path(session.bin)
-    if conda_prefix.name == "bin":
-        conda_prefix = conda_prefix.parent
-    session.run2("conda list", env={"CONDA_PREFIX": str(conda_prefix), "CONDA_DEFAULT_ENV": session.get_session_id()})
+    # conda_prefix = Path(session.bin)
+    # if conda_prefix.name == "bin":
+    #     conda_prefix = conda_prefix.parent
+    # session.run2("conda list", env={"CONDA_PREFIX": str(conda_prefix), "CONDA_DEFAULT_ENV": session.get_session_id()})
 
     # Fail if the assumed python version is not the actual one
     session.run2("python ci_tools/check_python_version.py %s" % session.python)
