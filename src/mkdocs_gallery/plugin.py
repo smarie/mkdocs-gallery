@@ -54,30 +54,6 @@ class ConfigList(co.OptionallyRequired):
         return result
 
 
-class MySubConfig(co.SubConfig):
-    """Same as SubConfig except that it will be an empty dict when nothing is provided by user,
-    instead of a dict with all options containing their default values."""
-
-    def validate(self, value):
-        if value is None or len(value) == 0:
-            return None
-        else:
-            return super(MySubConfig, self).validate(value)
-
-    def run_validation(self, value):
-        """Fix SubConfig: errors and warnings were not caught
-
-        See https://github.com/mkdocs/mkdocs/pull/2710
-        """
-        failed, self.warnings = Config.validate(self)
-        if len(failed) > 0:
-            # get the first failing one
-            key, err = failed[0]
-            raise ConfigurationError(f"Sub-option {key!r} configuration error: {err}")
-
-        return self
-
-
 class Dir(co.Dir):
     """mkdocs.config.config_options.Dir replacement: returns a pathlib object instead of a string"""
     def run_validation(self, value):
@@ -122,7 +98,7 @@ class GalleryPlugin(BasePlugin):
         ('expected_failing_examples', ConfigList(File(exists=True))),
         ('thumbnail_size', ConfigList(co.Type(int), single_elt_allowed=False)),
         ('min_reported_time', co.Type(int)),
-        ('binder', MySubConfig(
+        ('binder', co.SubConfig(
             # Required keys
             ('org', co.Type(str, required=True)),
             ('repo', co.Type(str, required=True)),
