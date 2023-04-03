@@ -205,9 +205,11 @@ def check_binder_conf(binder_conf):
     # Set empty dict if user did not provide any configuration values
     if binder_conf is None:
         binder_conf = {}
-    elif (frozenset(binder_conf.values()) == frozenset()) or \
-         (frozenset(binder_conf.values()) == frozenset([None])) or \
-         (frozenset(binder_conf.values()) == frozenset([None, 'gh-pages', 'https://mybinder.org'])):
+    vals = binder_conf.values()
+    default_values = [None, 'gh-pages', 'https://mybinder.org']
+    if vals == []:
+        binder_conf = {}
+    elif all([val in default_values for val in vals]):
         binder_conf = {}
     # Return an empty dict if it's not configured
     if len(binder_conf) == 0:
