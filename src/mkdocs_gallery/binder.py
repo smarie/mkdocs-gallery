@@ -199,10 +199,17 @@ def _copy_binder_notebooks(gallery_conf, mkdocs_conf):
 def check_binder_conf(binder_conf):
     """Check to make sure that the Binder configuration is correct."""
 
-    # Grab the configuration and return None if it's not configured
-    binder_conf = {} if binder_conf is None else binder_conf
-    if not isinstance(binder_conf, dict):
+    if not isinstance(binder_conf, (dict, None)):
         raise ConfigError('`binder_conf` must be a dictionary or None.')
+
+    # Set empty dict if user did not provide any configuration values
+    if binder_conf is None:
+        binder_conf = {}
+    elif (frozenset(binder_conf.values()) == frozenset()) or \
+         (frozenset(binder_conf.values()) == frozenset([None])) or \
+         (frozenset(binder_conf.values()) == frozenset([None, 'gh-pages', 'https://mybinder.org'])):
+        binder_conf = {}
+    # Return an empty dict if it's not configured
     if len(binder_conf) == 0:
         return binder_conf
 
