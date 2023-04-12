@@ -2,7 +2,6 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
     <title>Coverage for src\mkdocs_gallery\gen_data_model.py: 92%</title>
     <link rel="icon" sizes="32x32" href="favicon_32.png">
     <link rel="stylesheet" href="style.css" type="text/css">
@@ -15,47 +14,71 @@
             <span class="text">Coverage for </span><b>src\mkdocs_gallery\gen_data_model.py</b>:
             <span class="pc_cov">92%</span>
         </h1>
-        <div id="help_panel_wrapper">
+        <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
             <label for="help_panel_state">
                 <img id="keyboard_icon" src="keybd_closed.png" alt="Show/hide keyboard shortcuts" />
             </label>
             <div id="help_panel">
                 <p class="legend">Shortcuts on this page</p>
-                <div>
-                    <p class="keyhelp">
+                <div class="keyhelp">
+                    <p>
                         <kbd>r</kbd>
                         <kbd>m</kbd>
                         <kbd>x</kbd>
                         <kbd>p</kbd>
                         &nbsp; toggle line displays
                     </p>
-                    <p class="keyhelp">
+                    <p>
                         <kbd>j</kbd>
-                        <kbd>k</kbd> &nbsp; next/prev highlighted chunk
+                        <kbd>k</kbd>
+                        &nbsp; next/prev highlighted chunk
                     </p>
-                    <p class="keyhelp">
+                    <p>
                         <kbd>0</kbd> &nbsp; (zero) top of page
                     </p>
-                    <p class="keyhelp">
+                    <p>
                         <kbd>1</kbd> &nbsp; (one) first highlighted chunk
+                    </p>
+                    <p>
+                        <kbd>[</kbd>
+                        <kbd>]</kbd>
+                        &nbsp; prev/next file
+                    </p>
+                    <p>
+                        <kbd>u</kbd> &nbsp; up to the index
+                    </p>
+                    <p>
+                        <kbd>?</kbd> &nbsp; show/hide this help
                     </p>
                 </div>
             </div>
-        </div>
+        </aside>
         <h2>
-            <span class="text">424 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">404<span class="text"> run</span></button>
+            <span class="text">433 statements &nbsp;</span>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">413<span class="text"> run</span></button>
             <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">20<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
             <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Toggle lines partially run">17<span class="text"> partial</span></button>
         </h2>
-        <div style="display: none;">
-            <button type="button" class="button_next_chunk" data-shortcut="j">Next highlighted chunk</button>
-            <button type="button" class="button_prev_chunk" data-shortcut="k">Previous highlighted chunk</button>
-            <button type="button" class="button_top_of_page" data-shortcut="0">Goto top of page</button>
-            <button type="button" class="button_first_chunk" data-shortcut="1">Goto first highlighted chunk</button>
-        </div>
+        <p class="text">
+            <a id="prevFileLink" class="nav" href="d_1b3d55d062079200_errors_py.html">&#xab; prev</a> &nbsp; &nbsp;
+            <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
+            <a id="nextFileLink" class="nav" href="d_1b3d55d062079200_gen_gallery_py.html">&#xbb; next</a>
+            &nbsp; &nbsp; &nbsp;
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.2.3">coverage.py v7.2.3</a>,
+            created at 2023-04-12 14:33 +0000
+        </p>
+        <aside class="hidden">
+            <button type="button" class="button_next_chunk" data-shortcut="j"/>
+            <button type="button" class="button_prev_chunk" data-shortcut="k"/>
+            <button type="button" class="button_top_of_page" data-shortcut="0"/>
+            <button type="button" class="button_first_chunk" data-shortcut="1"/>
+            <button type="button" class="button_prev_file" data-shortcut="["/>
+            <button type="button" class="button_next_file" data-shortcut="]"/>
+            <button type="button" class="button_to_index" data-shortcut="u"/>
+            <button type="button" class="button_show_hide_help" data-shortcut="?"/>
+        </aside>
     </div>
 </header>
 <main id="source">
@@ -301,7 +324,7 @@
     <p class="run"><span class="n"><a id="t240" href="#t240">240</a></span><span class="t">        <span class="key">return</span> <span class="nam">execute</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t241" href="#t241">241</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t242" href="#t242">242</a></span><span class="t">    <span class="op">@</span><span class="nam">property</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t243" href="#t243">243</a></span><span class="t">    <span class="key">def</span> <span class="nam">py_file_md5</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t243" href="#t243">243</a></span><span class="t">    <span class="key">def</span> <span class="nam">py_file_md5</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t244" href="#t244">244</a></span><span class="t">        <span class="str">"""The md5 checksum of the python script."""</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t245" href="#t245">245</a></span><span class="t">        <span class="key">if</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_py_file_md5</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t246" href="#t246">246</a></span><span class="t">            <span class="nam">self</span><span class="op">.</span><span class="nam">_py_file_md5</span> <span class="op">=</span> <span class="nam">get_md5sum</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">src_py_file</span><span class="op">,</span> <span class="nam">mode</span><span class="op">=</span><span class="str">'t'</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -318,7 +341,7 @@
     <p class="mis show_mis"><span class="n"><a id="t257" href="#t257">257</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">gallery</span><span class="op">.</span><span class="nam">generated_dir_rel_site_root</span> <span class="op">/</span> <span class="nam">self</span><span class="op">.</span><span class="nam">py_file_name</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t258" href="#t258">258</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t259" href="#t259">259</a></span><span class="t">    <span class="op">@</span><span class="nam">property</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t260" href="#t260">260</a></span><span class="t">    <span class="key">def</span> <span class="nam">codeobj_file</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t260" href="#t260">260</a></span><span class="t">    <span class="key">def</span> <span class="nam">codeobj_file</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t261" href="#t261">261</a></span><span class="t">        <span class="str">"""The code objects file to use to store example globals"""</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t262" href="#t262">262</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">gallery</span><span class="op">.</span><span class="nam">generated_dir</span> <span class="op">/</span> <span class="str">f"{self.script_stem}_codeobj.pickle"</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t263" href="#t263">263</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -343,7 +366,7 @@
     <p class="run"><span class="n"><a id="t282" href="#t282">282</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">gallery</span><span class="op">.</span><span class="nam">generated_dir_rel_site_root</span> <span class="op">/</span> <span class="str">f"{self.script_stem}.ipynb"</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t283" href="#t283">283</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t284" href="#t284">284</a></span><span class="t">    <span class="op">@</span><span class="nam">property</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t285" href="#t285">285</a></span><span class="t">    <span class="key">def</span> <span class="nam">md5_file</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t285" href="#t285">285</a></span><span class="t">    <span class="key">def</span> <span class="nam">md5_file</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t286" href="#t286">286</a></span><span class="t">        <span class="str">"""The path of the persisted md5 file written at the end of processing."""</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t287" href="#t287">287</a></span><span class="t">        <span class="nam">file</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">dwnld_py_file</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t288" href="#t288">288</a></span><span class="t">        <span class="key">return</span> <span class="nam">file</span><span class="op">.</span><span class="nam">with_name</span><span class="op">(</span><span class="nam">file</span><span class="op">.</span><span class="nam">name</span> <span class="op">+</span> <span class="str">'.md5'</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -642,7 +665,7 @@
     <p class="run"><span class="n"><a id="t581" href="#t581">581</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">root</span><span class="op">.</span><span class="nam">all_info</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t582" href="#t582">582</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t583" href="#t583">583</a></span><span class="t">    <span class="op">@</span><span class="nam">property</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t584" href="#t584">584</a></span><span class="t">    <span class="key">def</span> <span class="nam">conf</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t584" href="#t584">584</a></span><span class="t">    <span class="key">def</span> <span class="nam">conf</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t585" href="#t585">585</a></span><span class="t">        <span class="str">"""An alias to the global gallery configuration."""</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t586" href="#t586">586</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">root</span><span class="op">.</span><span class="nam">conf</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t587" href="#t587">587</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -652,17 +675,17 @@
     <p class="run"><span class="n"><a id="t591" href="#t591">591</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_parent</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t592" href="#t592">592</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t593" href="#t593">593</a></span><span class="t">    <span class="op">@</span><span class="nam">property</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t594" href="#t594">594</a></span><span class="t">    <span class="key">def</span> <span class="nam">scripts_dir_rel_project</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t594" href="#t594">594</a></span><span class="t">    <span class="key">def</span> <span class="nam">scripts_dir_rel_project</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t595" href="#t595">595</a></span><span class="t">        <span class="str">"""The relative path (wrt project root) where this subgallery scripts are located"""</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t596" href="#t596">596</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">root</span><span class="op">.</span><span class="nam">scripts_dir_rel_project</span> <span class="op">/</span> <span class="nam">self</span><span class="op">.</span><span class="nam">subpath</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t597" href="#t597">597</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t598" href="#t598">598</a></span><span class="t">    <span class="op">@</span><span class="nam">property</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t599" href="#t599">599</a></span><span class="t">    <span class="key">def</span> <span class="nam">scripts_dir</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t599" href="#t599">599</a></span><span class="t">    <span class="key">def</span> <span class="nam">scripts_dir</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t600" href="#t600">600</a></span><span class="t">        <span class="str">"""The absolute path (wrt project root) where this subgallery scripts are located"""</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t601" href="#t601">601</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">root</span><span class="op">.</span><span class="nam">scripts_dir</span> <span class="op">/</span> <span class="nam">self</span><span class="op">.</span><span class="nam">subpath</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t602" href="#t602">602</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t603" href="#t603">603</a></span><span class="t">    <span class="op">@</span><span class="nam">property</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t604" href="#t604">604</a></span><span class="t">    <span class="key">def</span> <span class="nam">generated_dir_rel_project</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t604" href="#t604">604</a></span><span class="t">    <span class="key">def</span> <span class="nam">generated_dir_rel_project</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t605" href="#t605">605</a></span><span class="t">        <span class="str">"""The relative path (wrt project root) where this subgallery will be generated"""</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t606" href="#t606">606</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">root</span><span class="op">.</span><span class="nam">generated_dir_rel_project</span> <span class="op">/</span> <span class="nam">self</span><span class="op">.</span><span class="nam">subpath</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t607" href="#t607">607</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -672,7 +695,7 @@
     <p class="run"><span class="n"><a id="t611" href="#t611">611</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">root</span><span class="op">.</span><span class="nam">generated_dir_rel_site_root</span> <span class="op">/</span> <span class="nam">self</span><span class="op">.</span><span class="nam">subpath</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t612" href="#t612">612</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t613" href="#t613">613</a></span><span class="t">    <span class="op">@</span><span class="nam">property</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t614" href="#t614">614</a></span><span class="t">    <span class="key">def</span> <span class="nam">generated_dir</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t614" href="#t614">614</a></span><span class="t">    <span class="key">def</span> <span class="nam">generated_dir</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t615" href="#t615">615</a></span><span class="t">        <span class="str">"""The absolute path where this subgallery will be generated"""</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t616" href="#t616">616</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">root</span><span class="op">.</span><span class="nam">generated_dir</span> <span class="op">/</span> <span class="nam">self</span><span class="op">.</span><span class="nam">subpath</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t617" href="#t617">617</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -827,7 +850,7 @@
     <p class="run"><span class="n"><a id="t766" href="#t766">766</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_all_info</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t767" href="#t767">767</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t768" href="#t768">768</a></span><span class="t">    <span class="op">@</span><span class="nam">property</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t769" href="#t769">769</a></span><span class="t">    <span class="key">def</span> <span class="nam">conf</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t769" href="#t769">769</a></span><span class="t">    <span class="key">def</span> <span class="nam">conf</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t770" href="#t770">770</a></span><span class="t">        <span class="str">"""An alias to the global gallery configuration."""</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t771" href="#t771">771</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">all_info</span><span class="op">.</span><span class="nam">gallery_conf</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t772" href="#t772">772</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -995,8 +1018,12 @@
 <footer>
     <div class="content">
         <p>
-            <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v6.3.2</a>,
-            created at 2022-05-07 14:53 +0000
+            <a id="prevFileLink" class="nav" href="d_1b3d55d062079200_errors_py.html">&#xab; prev</a> &nbsp; &nbsp;
+            <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
+            <a id="nextFileLink" class="nav" href="d_1b3d55d062079200_gen_gallery_py.html">&#xbb; next</a>
+            &nbsp; &nbsp; &nbsp;
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.2.3">coverage.py v7.2.3</a>,
+            created at 2023-04-12 14:33 +0000
         </p>
     </div>
 </footer>

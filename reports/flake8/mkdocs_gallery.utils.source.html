@@ -152,7 +152,7 @@
                class="code sev- "><tt><i>42</i> <span class="k">def</span> <span class="nf">rescale_image</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">max_width</span><span class="p">,</span> <span class="n">max_height</span><span class="p">):</span></tt>
             </div>
             <div id="l43"
-               class="code sev- "><tt><i>43</i>     <span class="sd">&quot;&quot;&quot;Scales an image with the same aspect ratio centered in an</span></tt>
+               class="code sev- "><tt><i>43</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;Scales an image with the same aspect ratio centered in an</span></tt>
             </div>
             <div id="l44"
                class="code sev- "><tt><i>44</i> <span class="sd">       image box with the given max_width and max_height</span></tt>
@@ -284,7 +284,7 @@
                class="code sev- "><tt><i>86</i> <span class="k">def</span> <span class="nf">optipng</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">()):</span></tt>
             </div>
             <div id="l87"
-               class="code sev- "><tt><i>87</i>     <span class="sd">&quot;&quot;&quot;Optimize a PNG in place.</span></tt>
+               class="code sev- "><tt><i>87</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimize a PNG in place.</span></tt>
             </div>
             <div id="l88"
                class="code sev- "><tt><i>88</i> &nbsp;</tt>
@@ -422,7 +422,7 @@
                class="code sev- "><tt><i>124</i> <span class="k">def</span> <span class="nf">replace_ext</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">new_ext</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expected_ext</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span></tt>
             </div>
             <div id="l125"
-               class="code sev- "><tt><i>125</i>     <span class="sd">&quot;&quot;&quot;Replace the extension in `file` with `new_ext`, with optional initial `expected_ext` check.</span></tt>
+               class="code sev- "><tt><i>125</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;Replace the extension in `file` with `new_ext`, with optional initial `expected_ext` check.</span></tt>
             </div>
             <div id="l126"
                class="code sev- "><tt><i>126</i> &nbsp;</tt>
@@ -503,7 +503,7 @@
                class="code sev- "><tt><i>151</i> <span class="k">def</span> <span class="nf">get_md5sum</span><span class="p">(</span><span class="n">src_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">):</span></tt>
             </div>
             <div id="l152"
-               class="code sev- "><tt><i>152</i>     <span class="sd">&quot;&quot;&quot;Returns md5sum of file</span></tt>
+               class="code sev- "><tt><i>152</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns md5sum of file</span></tt>
             </div>
             <div id="l153"
                class="code sev- "><tt><i>153</i> &nbsp;</tt>
@@ -569,7 +569,7 @@
                class="code sev- "><tt><i>170</i> <span class="k">def</span> <span class="nf">_get_old_file</span><span class="p">(</span><span class="n">new_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span></tt>
             </div>
             <div id="l171"
-               class="code sev- "><tt><i>171</i>     <span class="sd">&quot;&quot;&quot;Return the same file without the .new suffix&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>171</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the same file without the .new suffix&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l172"
                class="code sev- "><tt><i>172</i>     <span class="k">assert</span> <span class="n">new_file</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.new&#39;</span><span class="p">)</span>  <span class="c1"># noqa</span></tt>
@@ -587,7 +587,7 @@
                class="code sev- "><tt><i>176</i> <span class="k">def</span> <span class="nf">_have_same_md5</span><span class="p">(</span><span class="n">file_a</span><span class="p">,</span> <span class="n">file_b</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span></tt>
             </div>
             <div id="l177"
-               class="code sev- "><tt><i>177</i>     <span class="sd">&quot;&quot;&quot;Return `True` if both files have the same md5, computed using `mode`.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>177</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return `True` if both files have the same md5, computed using `mode`.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l178"
                class="code sev- "><tt><i>178</i>     <span class="k">return</span> <span class="n">get_md5sum</span><span class="p">(</span><span class="n">file_a</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="o">==</span> <span class="n">get_md5sum</span><span class="p">(</span><span class="n">file_b</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span></tt>
@@ -602,7 +602,7 @@
                class="code sev- "><tt><i>181</i> <span class="k">def</span> <span class="nf">_smart_move_md5</span><span class="p">(</span><span class="n">src_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">dst_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">md5_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span><span class="p">):</span></tt>
             </div>
             <div id="l182"
-               class="code sev- "><tt><i>182</i>     <span class="sd">&quot;&quot;&quot;Move `src_file` to `dst_file`, overwriting `dst_file` only if md5 has changed.</span></tt>
+               class="code sev- "><tt><i>182</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;Move `src_file` to `dst_file`, overwriting `dst_file` only if md5 has changed.</span></tt>
             </div>
             <div id="l183"
                class="code sev- "><tt><i>183</i> &nbsp;</tt>
@@ -686,7 +686,7 @@
                class="code sev- "><tt><i>209</i> <span class="k">def</span> <span class="nf">_new_file</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span></tt>
             </div>
             <div id="l210"
-               class="code sev- "><tt><i>210</i>     <span class="sd">&quot;&quot;&quot;Return the same file path with a .new additional extension.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>210</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the same file path with a .new additional extension.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l211"
                class="code sev- "><tt><i>211</i>     <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">.new&quot;</span><span class="p">)</span></tt>
@@ -701,7 +701,7 @@
                class="code sev- "><tt><i>214</i> <span class="k">def</span> <span class="nf">_replace_by_new_if_needed</span><span class="p">(</span><span class="n">file_new</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">md5_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span><span class="p">):</span></tt>
             </div>
             <div id="l215"
-               class="code sev- "><tt><i>215</i>     <span class="sd">&quot;&quot;&quot;Use `file_new` (suffix .new) instead of the old file (same path but no suffix).</span></tt>
+               class="code sev- "><tt><i>215</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;Use `file_new` (suffix .new) instead of the old file (same path but no suffix).</span></tt>
             </div>
             <div id="l216"
                class="code sev- "><tt><i>216</i> &nbsp;</tt>
@@ -749,7 +749,7 @@
                class="code sev- "><tt><i>230</i> <span class="k">def</span> <span class="nf">_smart_copy_md5</span><span class="p">(</span><span class="n">src_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">dst_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">src_md5</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">md5_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span></tt>
             </div>
             <div id="l231"
-               class="code sev- "><tt><i>231</i>     <span class="sd">&quot;&quot;&quot;Copy `src_file` to `dst_file`, overwriting `dst_file`, only if md5 has changed.</span></tt>
+               class="code sev- "><tt><i>231</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;Copy `src_file` to `dst_file`, overwriting `dst_file`, only if md5 has changed.</span></tt>
             </div>
             <div id="l232"
                class="code sev- "><tt><i>232</i> &nbsp;</tt>
@@ -980,7 +980,7 @@
                class="code sev- "><tt><i>307</i> <span class="k">class</span> <span class="nc">Bunch</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span></tt>
             </div>
             <div id="l308"
-               class="code sev- "><tt><i>308</i>     <span class="sd">&quot;&quot;&quot;Dictionary-like object that exposes its keys as attributes.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>308</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;Dictionary-like object that exposes its keys as attributes.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l309"
                class="code sev- "><tt><i>309</i> &nbsp;</tt>
@@ -1004,7 +1004,7 @@
                class="code sev- "><tt><i>315</i> <span class="k">def</span> <span class="nf">_has_pypandoc</span><span class="p">():</span></tt>
             </div>
             <div id="l316"
-               class="code sev- "><tt><i>316</i>     <span class="sd">&quot;&quot;&quot;Check if pypandoc package available.&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>316</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if pypandoc package available.&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l317"
                class="code sev- "><tt><i>317</i>     <span class="k">try</span><span class="p">:</span></tt>
@@ -1040,7 +1040,7 @@
                class="code sev- "><tt><i>327</i> <span class="k">def</span> <span class="nf">matches_filepath_pattern</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span></tt>
             </div>
             <div id="l328"
-               class="code sev- "><tt><i>328</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>328</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l329"
                class="code sev- "><tt><i>329</i> <span class="sd">    Check if filepath matches pattern</span></tt>
@@ -1115,7 +1115,7 @@
                class="code sev- "><tt><i>352</i> <span class="k">def</span> <span class="nf">is_relative_to</span><span class="p">(</span><span class="n">parentpath</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">subpath</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span></tt>
             </div>
             <div id="l353"
-               class="code sev- "><tt><i>353</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
+               class="code sev- "><tt><i>353</i> <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span></tt>
             </div>
             <div id="l354"
                class="code sev- "><tt><i>354</i> <span class="sd">    Check if subpath is relative to parentpath</span></tt>
