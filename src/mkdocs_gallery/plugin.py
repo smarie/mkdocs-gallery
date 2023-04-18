@@ -9,7 +9,9 @@ The mkdocs plugin entry point
 import re
 
 from pathlib import Path
+from packaging import version
 
+from mkdocs import __version__ as mkdocs_version_str
 from mkdocs.config.base import ValidationError, Config
 from mkdocs.config import config_options as co
 from mkdocs.exceptions import ConfigurationError
@@ -26,6 +28,10 @@ from .binder import copy_binder_files
 # from .docs_resolv import embed_code_links
 from .gen_gallery import parse_config, generate_gallery_md, summarize_failing_examples, fill_mkdocs_nav
 from .utils import is_relative_to
+
+
+mkdocs_version = version.parse(mkdocs_version_str)
+is_mkdocs_14_or_greater = mkdocs_version >= version.parse("1.4")
 
 
 class ConfigList(co.OptionallyRequired):
@@ -54,30 +60,6 @@ class ConfigList(co.OptionallyRequired):
         return result
 
 
-class MySubConfig(co.SubConfig):
-    """Same as SubConfig except that it will be an empty dict when nothing is provided by user,
-    instead of a dict with all options containing their default values."""
-
-    def validate(self, value):
-        if value is None or len(value) == 0:
-            return None
-        else:
-            return super(MySubConfig, self).validate(value)
-
-    def run_validation(self, value):
-        """Fix SubConfig: errors and warnings were not caught
-
-        See https://github.com/mkdocs/mkdocs/pull/2710
-        """
-        failed, self.warnings = Config.validate(self)
-        if len(failed) > 0:
-            # get the first failing one
-            key, err = failed[0]
-            raise ConfigurationError(f"Sub-option {key!r} configuration error: {err}")
-
-        return self
-
-
 class Dir(co.Dir):
     """mkdocs.config.config_options.Dir replacement: returns a pathlib object instead of a string"""
     def run_validation(self, value):
@@ -88,6 +70,63 @@ class File(co.File):
     """mkdocs.config.config_options.File replacement: returns a pathlib object instead of a string"""
     def run_validation(self, value):
         return Path(co.File.run_validation(self, value))
+
+
+# Binder configuration is a "sub config". This has changed in mkdocs 1.4, handling both here.
+if is_mkdocs_14_or_greater:
+    # Construct a class where class attributes are the config options
+    class _BinderOptions(co.Config):
+        # Required keys
+        org = co.Type(str)
+        repo = co.Type(str)
+        dependencies = ConfigList(File(exists=True))
+        # Optional keys
+        branch = co.Type(str, default="gh-pages")
+        binderhub_url = co.URL(default="https://mybinder.org")
+        filepath_prefix = co.Optional(co.Type(str))  # default is None
+        notebooks_dir = co.Optional(co.Type(str))  # default is "notebooks"
+        use_jupyter_lab = co.Optional(co.Type(bool))  # default is False
+
+    def create_binder_config():
+        return co.SubConfig(_BinderOptions)
+else:
+    # Use MySubConfig
+    class MySubConfig(co.SubConfig):
+        """Same as SubConfig except that it will be an empty dict when nothing is provided by user,
+        instead of a dict with all options containing their default values."""
+
+        def validate(self, value):
+            if value is None or len(value) == 0:
+                return None
+            else:
+                return super(MySubConfig, self).validate(value)
+
+        def run_validation(self, value):
+            """Fix SubConfig: errors and warnings were not caught
+
+            See https://github.com/mkdocs/mkdocs/pull/2710
+            """
+            failed, self.warnings = Config.validate(self)
+            if len(failed) > 0:
+                # get the first failing one
+                key, err = failed[0]
+                raise ConfigurationError(f"Sub-option {key!r} configuration error: {err}")
+
+            return self
+
+    def create_binder_config():
+        return MySubConfig(
+            # Required keys
+            ('org', co.Type(str, required=True)),
+            ('repo', co.Type(str, required=True)),
+            ('dependencies', ConfigList(File(exists=True), required=True)),
+            # Optional keys
+            ('branch', co.Type(str, required=True, default="gh-pages")),
+            ('binderhub_url', co.URL(required=True, default="https://mybinder.org")),
+            ('filepath_prefix', co.Type(str)),  # default is None
+            ('notebooks_dir', co.Type(str)),  # default is "notebooks"
+            ('use_jupyter_lab', co.Type(bool)),  # default is False
+        )
 
 
 class GalleryPlugin(BasePlugin):
@@ -122,18 +161,7 @@ class GalleryPlugin(BasePlugin):
         ('expected_failing_examples', ConfigList(File(exists=True))),
         ('thumbnail_size', ConfigList(co.Type(int), single_elt_allowed=False)),
         ('min_reported_time', co.Type(int)),
-        ('binder', MySubConfig(
-            # Required keys
-            ('org', co.Type(str, required=True)),
-            ('repo', co.Type(str, required=True)),
-            ('dependencies', ConfigList(File(exists=True), required=True)),
-            # Optional keys
-            ('branch', co.Type(str, required=True, default="gh-pages")),
-            ('binderhub_url', co.URL(required=True, default="https://mybinder.org")),
-            ('filepath_prefix', co.Type(str)),  # default is None
-            ('notebooks_dir', co.Type(str)),  # default is "notebooks"
-            ('use_jupyter_lab', co.Type(bool)),  # default is False
-        )),
+        ('binder', create_binder_config()),
         ('image_scrapers', ConfigList(co.Type(str))),
         ('compress_images', ConfigList(co.Type(str))),
         ('reset_modules', ConfigList(co.Type(str))),

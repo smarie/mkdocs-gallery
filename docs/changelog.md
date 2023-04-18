@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.7.7 - (In progress) Bugfixes
+
+ - Fixed `AttributeError: MySubConfig has no '_pre_validate'` with `mkdocs` version `1.4` or greater. Fixes [#57](https://github.com/smarie/mkdocs-gallery/issues/57)
+
 ### 0.7.6 - Bugfixes
 
  - Fixed incorrect img `srcset` paths leading to figures not being displayed in gallery examples. Fixes [#47](https://github.com/smarie/mkdocs-gallery/issues/47)

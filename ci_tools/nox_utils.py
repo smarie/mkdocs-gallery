@@ -322,7 +322,10 @@ def read_pyproject_toml():
         nox_logger.debug("\nA `pyproject.toml` file exists. Loading it.")
         pyproject = toml.load("pyproject.toml")
         requires = pyproject['build-system']['requires']
-        conda_pkgs = pyproject['tool']['conda']['conda_packages']
+        try:
+            conda_pkgs = pyproject['tool']['conda']['conda_packages']
+        except KeyError:
+            conda_pkgs = ()
         return requires, conda_pkgs
     else:
         raise FileNotFoundError("No `pyproject.toml` file exists. No dependency will be installed ...")
