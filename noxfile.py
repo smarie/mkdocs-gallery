@@ -10,7 +10,7 @@ import sys
 # add parent folder to python path so that we can import noxfile_utils.py
 # note that you need to "pip install -r noxfile-requiterements.txt" for this file to work.
 sys.path.append(str(Path(__file__).parent / "ci_tools"))
-from nox_utils import PY37, PY38, PY39, PY310, power_session, rm_folder, rm_file, PowerSession  # noqa
+from nox_utils import PY27, PY37, PY36, PY35, PY38, PY39, PY310, PY311, power_session, rm_folder, rm_file, PowerSession  # noqa
 
 
 pkg_name = "mkdocs_gallery"
@@ -18,7 +18,8 @@ gh_org = "smarie"
 gh_repo = "mkdocs-gallery"
 
 ENVS = {
-    # PY310: {"coverage": False, "pkg_specs": {"pip": ">19"}},
+    PY311: {"coverage": False, "pkg_specs": {"pip": ">19"}},
+    PY310: {"coverage": False, "pkg_specs": {"pip": ">19"}},
     PY39: {"coverage": False, "pkg_specs": {"pip": ">19"}},
     PY37: {"coverage": False, "pkg_specs": {"pip": ">19"}},
     # IMPORTANT: this should be last so that the folder docs/reports is not deleted afterwards
