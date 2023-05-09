@@ -899,7 +899,7 @@ class AllInformation:
         """
 
         # The project root directory
-        project_root_dir = Path(mkdocs_conf['config_file_path']).parent
+        project_root_dir = Path(os.path.abspath(mkdocs_conf['config_file_path'])).parent
         project_root2 = Path(os.getcwd())
         if project_root2 != project_root_dir:
             raise ValueError("The project root dir is ambiguous ! Please report this issue to mkdocs-gallery.")
