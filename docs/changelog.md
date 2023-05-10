@@ -12,18 +12,18 @@
 ### 0.7.6 - Bugfixes
 
  - Fixed incorrect img `srcset` paths leading to figures not being displayed in gallery examples. Fixes [#47](https://github.com/smarie/mkdocs-gallery/issues/47)
- - Fixed `TypeError: startswith first arg must be str or a tuple of str, not WindowsPath` when running with `mkdocs serve`. Fixes [#45](https://github.com/smarie/mkdocs-gallery/isues/45). PR [#46](https://github.com/smarie/mkdocs-gallery/pull/46) by [mchaaler](https://github.com/mchaaler).
+ - Fixed `TypeError: startswith first arg must be str or a tuple of str, not WindowsPath` when running with `mkdocs serve`. Fixes [#45](https://github.com/smarie/mkdocs-gallery/issues/45). PR [#46](https://github.com/smarie/mkdocs-gallery/pull/46) by [mchaaler](https://github.com/mchaaler).
 
 ### 0.7.5 - Bugfixes
 
- - Examples expected to fail are now correctly skipped in case of identical md5 hash, too. Fixes [#34](https://github.com/smarie/mkdocs-gallery/isues/34). PR [#39](https://github.com/smarie/mkdocs-gallery/pull/39) by [mchaaler](https://github.com/mchaaler).
+ - Examples expected to fail are now correctly skipped in case of identical md5 hash, too. Fixes [#34](https://github.com/smarie/mkdocs-gallery/issues/34). PR [#39](https://github.com/smarie/mkdocs-gallery/pull/39) by [mchaaler](https://github.com/mchaaler).
 
 ### 0.7.4 - Bugfixes
 
  - Python scripts are now correctly skipped in case of identical md5 hash. Fixes [#29](https://github.com/smarie/mkdocs-gallery/issues/29). PR [#27](https://github.com/smarie/mkdocs-gallery/pull/27) by [mchaaler](https://github.com/mchaaler).
  - Fixed error when `edit_url` is set to empty to [disable the "edit page" feature](https://www.mkdocs.org/user-guide/configuration/#edit_uri). Fixes [#32](https://github.com/smarie/mkdocs-gallery/issues/32). PR [#27](https://github.com/smarie/mkdocs-gallery/pull/27) by [mchaaler](https://github.com/mchaaler).
  
-This release was yanked because of [#34](https://github.com/smarie/mkdocs-gallery/isues/34).
+This release was yanked because of [#34](https://github.com/smarie/mkdocs-gallery/issues/34).
 
 ### 0.7.3 - Bugfix
 
