@@ -3,6 +3,7 @@
 ### 0.7.X - (in progress) Bugfixes
 
  - (todo)
+ - Support relative path to `mkdocs.yaml` file using `--config-file` option. Fixes [#63](https://github.com/smarie/mkdocs-gallery/issues/63). PR [#64](https://github.com/smarie/mkdocs-gallery/pull/64) by [fgrbr](https://github.com/fgrbr).
 
 ### 0.7.7 - Bugfixes and new python versions
 
