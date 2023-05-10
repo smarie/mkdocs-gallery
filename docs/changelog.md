@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.7.X - (in progress) Bugfixes
+
+ - (todo)
+
 ### 0.7.7 - Bugfixes and new python versions
 
  - Official support for python 3.10 and 3.11. PR [#52](https://github.com/smarie/mkdocs-gallery/pull/52) by [GenevieveBuckley](https://github.com/GenevieveBuckley)
