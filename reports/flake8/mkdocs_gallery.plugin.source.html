@@ -827,7 +827,7 @@
                class="code sev- "><tt><i>270</i>         <span class="c1"># (note: same as in AllInformation class but we do not store the whole object)</span></tt>
             </div>
             <div id="l271"
-               class="code sev- "><tt><i>271</i>         <span class="n">project_root_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;config_file_path&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">parent</span></tt>
+               class="code sev- "><tt><i>271</i>         <span class="n">project_root_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;config_file_path&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">parent</span></tt>
             </div>
             <div id="l272"
                class="code sev- "><tt><i>272</i>         <span class="bp">self</span><span class="o">.</span><span class="n">docs_dir_rel_proj</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;docs_dir&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">project_root_dir</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span></tt>

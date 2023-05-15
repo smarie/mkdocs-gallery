@@ -66,8 +66,8 @@
             <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="d_c494cfb98e882f3d_py_source_parser_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.2.3">coverage.py v7.2.3</a>,
-            created at 2023-04-24 08:05 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.2.5">coverage.py v7.2.5</a>,
+            created at 2023-05-15 16:05 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -352,7 +352,7 @@
     <p class="pln"><span class="n"><a id="t268" href="#t268">268</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t269" href="#t269">269</a></span><span class="t">        <span class="com"># Store the docs dir relative to project dir</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t270" href="#t270">270</a></span><span class="t">        <span class="com"># (note: same as in AllInformation class but we do not store the whole object)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t271" href="#t271">271</a></span><span class="t">        <span class="nam">project_root_dir</span> <span class="op">=</span> <span class="nam">Path</span><span class="op">(</span><span class="nam">config</span><span class="op">[</span><span class="str">'config_file_path'</span><span class="op">]</span><span class="op">)</span><span class="op">.</span><span class="nam">parent</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t271" href="#t271">271</a></span><span class="t">        <span class="nam">project_root_dir</span> <span class="op">=</span> <span class="nam">Path</span><span class="op">(</span><span class="nam">os</span><span class="op">.</span><span class="nam">path</span><span class="op">.</span><span class="nam">abspath</span><span class="op">(</span><span class="nam">config</span><span class="op">[</span><span class="str">'config_file_path'</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">.</span><span class="nam">parent</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t272" href="#t272">272</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">docs_dir_rel_proj</span> <span class="op">=</span> <span class="nam">Path</span><span class="op">(</span><span class="nam">config</span><span class="op">[</span><span class="str">'docs_dir'</span><span class="op">]</span><span class="op">)</span><span class="op">.</span><span class="nam">relative_to</span><span class="op">(</span><span class="nam">project_root_dir</span><span class="op">)</span><span class="op">.</span><span class="nam">as_posix</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t273" href="#t273">273</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t274" href="#t274">274</a></span><span class="t">    <span class="key">def</span> <span class="nam">on_files</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">files</span><span class="op">,</span> <span class="nam">config</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -579,8 +579,8 @@
             <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="d_c494cfb98e882f3d_py_source_parser_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.2.3">coverage.py v7.2.3</a>,
-            created at 2023-04-24 08:05 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.2.5">coverage.py v7.2.5</a>,
+            created at 2023-05-15 16:05 +0000
         </p>
     </div>
 </footer>
