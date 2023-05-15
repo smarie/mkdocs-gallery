@@ -209,6 +209,9 @@ def _complete_gallery_conf(
     # Check capture_repr
     capture_repr = gallery_conf["capture_repr"]
     supported_reprs = ["__repr__", "__str__", "_repr_html_"]
+    if isinstance(capture_repr, list):
+        # Convert to tuple.
+        gallery_conf["capture_repr"] = capture_repr = tuple(capture_repr)
     if isinstance(capture_repr, tuple):
         for rep in capture_repr:
             if rep not in supported_reprs:
