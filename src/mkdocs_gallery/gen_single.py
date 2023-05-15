@@ -7,50 +7,42 @@
 Generator for a single script example in a gallery.
 """
 
-from __future__ import division, print_function, absolute_import
+from __future__ import absolute_import, division, print_function
 
-from typing import List, Tuple, Set
-
-from pathlib import Path
-
-from time import time
-import copy
-import contextlib
 import ast
-from functools import partial
+import codeop
+import contextlib
+import copy
 import gc
-import pickle
 import importlib
-from io import StringIO
 import os
+import pickle
 import re
-from textwrap import indent
-import warnings
-from shutil import copyfile
 import subprocess
 import sys
 import traceback
-import codeop
+import warnings
+from functools import partial
+from io import StringIO
+from pathlib import Path
+from shutil import copyfile
+from textwrap import indent
+from time import time
+from typing import List, Set, Tuple
 
 from tqdm import tqdm
 
-from .errors import ExtensionError
-from .gen_data_model import GalleryScript, GalleryScriptResults, GalleryBase
-
-from .scrapers import (save_figures, clean_modules, _find_image_ext, ImageNotFoundError)
-from .utils import (rescale_image, _replace_by_new_if_needed, _new_file,
-                    optipng)
-
-from . import mkdocs_compatibility, glr_path_static
-from .backreferences import (_write_backreferences, _thumbnail_div,
-                             identify_names)
-from .py_source_parser import (split_code_and_text_blocks,
-                               remove_config_comments)
-
-from .notebook import jupyter_notebook, save_notebook
+from . import glr_path_static, mkdocs_compatibility
+from .backreferences import _thumbnail_div, _write_backreferences, identify_names
 from .binder import check_binder_conf, gen_binder_md
+from .errors import ExtensionError
+from .gen_data_model import GalleryBase, GalleryScript, GalleryScriptResults
+from .notebook import jupyter_notebook, save_notebook
+from .py_source_parser import remove_config_comments, split_code_and_text_blocks
+from .scrapers import ImageNotFoundError, _find_image_ext, clean_modules, save_figures
+from .utils import _new_file, _replace_by_new_if_needed, optipng, rescale_image
 
-logger = mkdocs_compatibility.getLogger('mkdocs-gallery')
+logger = mkdocs_compatibility.getLogger("mkdocs-gallery")
 
 
 ###############################################################################
@@ -62,7 +54,7 @@ class _LoggingTee(object):
     def __init__(self, src_filename: Path):
         self.logger = logger
         self.src_filename = src_filename
-        self.logger_buffer = ''
+        self.logger_buffer = ""
         self.set_std_and_reset_position()
 
     def set_std_and_reset_position(self):
@@ -82,27 +74,27 @@ class _LoggingTee(object):
         self.output.write(data)
 
         if self.first_write:
-            self.logger.verbose('Output from %s', self.src_filename)  # color='brown')
+            self.logger.verbose("Output from %s", self.src_filename)  # color='brown')
             self.first_write = False
 
         data = self.logger_buffer + data
         lines = data.splitlines()
-        if data and data[-1] not in '\r\n':
+        if data and data[-1] not in "\r\n":
             # Wait to write last line if it's incomplete. It will write next
             # time or when the LoggingTee is flushed.
             self.logger_buffer = lines[-1]
             lines = lines[:-1]
         else:
-            self.logger_buffer = ''
+            self.logger_buffer = ""
 
         for line in lines:
-            self.logger.verbose('%s', line)
+            self.logger.verbose("%s", line)
 
     def flush(self):
         self.output.flush()
         if self.logger_buffer:
-            self.logger.verbose('%s', self.logger_buffer)
-            self.logger_buffer = ''
+            self.logger.verbose("%s", self.logger_buffer)
+            self.logger_buffer = ""
 
     # When called from a local terminal seaborn needs it in Python3
     def isatty(self):
@@ -162,7 +154,7 @@ HTML_HEADER = """<div class="output_subarea output_html rendered_html output_res
 """
 
 
-def codestr2md(codestr, lang: str = 'python', lineno=None, is_exc: bool = False):
+def codestr2md(codestr, lang: str = "python", lineno=None, is_exc: bool = False):
     """Return markdown code block from code string."""
 
     # if lineno is not None:
@@ -185,7 +177,7 @@ def codestr2md(codestr, lang: str = 'python', lineno=None, is_exc: bool = False)
 
 def _regroup(x):
     x = x.groups()
-    return x[0] + x[1].split('.')[-1] + x[2]
+    return x[0] + x[1].split(".")[-1] + x[2]
 
 
 def _sanitize_md(string):
@@ -194,18 +186,18 @@ def _sanitize_md(string):
     TODO is this still needed ?
     """
     # :class:`a.b.c <thing here>`, :ref:`abc <thing here>` --> thing here
-    p, e = r'(\s|^):[^:\s]+:`', r'`(\W|$)'
-    string = re.sub(p + r'\S+\s*<([^>`]+)>' + e, r'\1\2\3', string)
+    p, e = r"(\s|^):[^:\s]+:`", r"`(\W|$)"
+    string = re.sub(p + r"\S+\s*<([^>`]+)>" + e, r"\1\2\3", string)
     # :class:`~a.b.c` --> c
-    string = re.sub(p + r'~([^`]+)' + e, _regroup, string)
+    string = re.sub(p + r"~([^`]+)" + e, _regroup, string)
     # :class:`a.b.c` --> a.b.c
-    string = re.sub(p + r'([^`]+)' + e, r'\1\2\3', string)
+    string = re.sub(p + r"([^`]+)" + e, r"\1\2\3", string)
 
     # ``whatever thing`` --> whatever thing
-    p = r'(\s|^)`'
-    string = re.sub(p + r'`([^`]+)`' + e, r'\1\2\3', string)
+    p = r"(\s|^)`"
+    string = re.sub(p + r"`([^`]+)`" + e, r"\1\2\3", string)
     # `whatever thing` --> whatever thing
-    string = re.sub(p + r'([^`]+)' + e, r'\1\2\3', string)
+    string = re.sub(p + r"([^`]+)" + e, r"\1\2\3", string)
     return string
 
 
@@ -214,9 +206,9 @@ def _sanitize_md(string):
 # This conditional is not perfect but should hopefully be good enough.
 RE_3_OR_MORE_NON_ASCII = r"([\W _])\1{3,}"  # 3 or more identical chars
 
-RST_TITLE_MARKER = re.compile(rf'^[ ]*{RE_3_OR_MORE_NON_ASCII}[ ]*$')
-MD_TITLE_MARKER = re.compile(r'^[ ]*[#]+[ ]*(.*)[ ]*$')  # One or more starting hash with optional whitespaces before.
-FIRST_NON_MARKER_WITHOUT_HASH = re.compile(rf'^[# ]*(?!{RE_3_OR_MORE_NON_ASCII})[# ]*(.+)', re.MULTILINE)
+RST_TITLE_MARKER = re.compile(rf"^[ ]*{RE_3_OR_MORE_NON_ASCII}[ ]*$")
+MD_TITLE_MARKER = re.compile(r"^[ ]*[#]+[ ]*(.*)[ ]*$")  # One or more starting hash with optional whitespaces before.
+FIRST_NON_MARKER_WITHOUT_HASH = re.compile(rf"^[# ]*(?!{RE_3_OR_MORE_NON_ASCII})[# ]*(.+)", re.MULTILINE)
 
 
 def extract_readme_title(file: Path, contents: str) -> str:
@@ -289,10 +281,10 @@ def extract_readme_last_subtitle(file: Path, contents: str) -> str:
 
 def extract_paragraphs(doc: str) -> List[str]:
     # lstrip is just in case docstring has a '\n\n' at the beginning
-    paragraphs = doc.lstrip().split('\n\n')
+    paragraphs = doc.lstrip().split("\n\n")
 
     # remove comments and other syntax like `.. _link:`
-    paragraphs = [p for p in paragraphs if not p.startswith('.. ') and len(p) > 0]
+    paragraphs = [p for p in paragraphs if not p.startswith(".. ") and len(p) > 0]
 
     return paragraphs
 
@@ -321,8 +313,10 @@ def extract_intro_and_title(docstring: str, script: GalleryScript) -> Tuple[str,
     # Extract paragraphs from the text
     paragraphs = extract_paragraphs(docstring)
     if len(paragraphs) == 0:
-        raise ExtensionError(f"Example docstring should have a header for the example title. "
-                             f"Please check the example file:\n {script.script_file}\n")
+        raise ExtensionError(
+            f"Example docstring should have a header for the example title. "
+            f"Please check the example file:\n {script.script_file}\n"
+        )
 
     # Title is the first paragraph with any RST/Markdown title chars
     # removed, i.e. lines that consist of (3 or more of the same) 7-bit
@@ -339,12 +333,12 @@ def extract_intro_and_title(docstring: str, script: GalleryScript) -> Tuple[str,
     intro_paragraph = title if len(paragraphs) < 2 else paragraphs[1]
 
     # Concatenate all lines of the first paragraph
-    intro = re.sub('\n', ' ', intro_paragraph)
+    intro = re.sub("\n", " ", intro_paragraph)
     intro = _sanitize_md(intro)
 
     # Truncate at 95 chars
     if len(intro) > 95:
-        intro = intro[:95] + '...'
+        intro = intro[:95] + "..."
 
     return title, intro
 
@@ -380,7 +374,7 @@ def create_thumb_from_image(script: GalleryScript, src_image_path: Path) -> Path
             # Create something to replace the thumbnail
             default_thumb_path = script.gallery_conf.get("default_thumb_file")
             if default_thumb_path is None:
-                default_thumb_path = os.path.join(glr_path_static(), 'no_image.png')
+                default_thumb_path = os.path.join(glr_path_static(), "no_image.png")
 
             src_image_path, ext = _find_image_ext(Path(default_thumb_path))
 
@@ -390,15 +384,20 @@ def create_thumb_from_image(script: GalleryScript, src_image_path: Path) -> Path
 
     # - Then create the thum file by copying the src image, possibly rescaling it.
     thumb_file = script.get_thumbnail_file(ext)
-    if ext in ('.svg', '.gif'):
+    if ext in (".svg", ".gif"):
         # No need to rescale image
         copyfile(src_image_path, thumb_file)
     else:
         # Need to rescale image
         max_width, max_hegiht = script.gallery_conf["thumbnail_size"]
-        rescale_image(in_file=src_image_path, out_file=thumb_file, max_width=max_width, max_height=max_hegiht)
-        if 'thumbnails' in script.gallery_conf['compress_images']:
-            optipng(thumb_file, script.gallery_conf['compress_images_args'])
+        rescale_image(
+            in_file=src_image_path,
+            out_file=thumb_file,
+            max_width=max_width,
+            max_height=max_hegiht,
+        )
+        if "thumbnails" in script.gallery_conf["compress_images"]:
+            optipng(thumb_file, script.gallery_conf["compress_images_args"])
 
     return thumb_file
 
@@ -470,7 +469,7 @@ def generate(gallery: GalleryBase, seen_backrefs: Set) -> Tuple[str, str, str, L
 
 
 def is_failing_example(script: GalleryScript):
-    return script.src_py_file in script.gallery_conf['failing_examples']
+    return script.src_py_file in script.gallery_conf["failing_examples"]
 
 
 def handle_exception(exc_info, script: GalleryScript):
@@ -500,27 +499,28 @@ def handle_exception(exc_info, script: GalleryScript):
     root = os.path.dirname(__file__) + os.sep
     for ii, s in enumerate(stack, 1):
         # Trim our internal stack
-        if s.filename.startswith(root + 'gen_gallery.py') and s.name == 'call_memory':
+        if s.filename.startswith(root + "gen_gallery.py") and s.name == "call_memory":
             start = max(ii, start)
-        elif s.filename.startswith(root + 'gen_single.py'):
+        elif s.filename.startswith(root + "gen_single.py"):
             # SyntaxError
-            if s.name == 'execute_code_block' and ('compile(' in s.line or 'save_figures' in s.line):
+            if s.name == "execute_code_block" and ("compile(" in s.line or "save_figures" in s.line):
                 start = max(ii, start)
             # Any other error
-            elif s.name == '__call__':
+            elif s.name == "__call__":
                 start = max(ii, start)
             # Our internal input() check
-            elif s.name == '_check_input' and ii == len(stack):
+            elif s.name == "_check_input" and ii == len(stack):
                 stop = ii - 1
     stack = stack[start:stop]
 
-    formatted_exception = 'Traceback (most recent call last):\n' + ''.join(
-        traceback.format_list(stack) +
-        traceback.format_exception_only(etype, exc))
+    formatted_exception = "Traceback (most recent call last):\n" + "".join(
+        traceback.format_list(stack) + traceback.format_exception_only(etype, exc)
+    )
 
     src_file = script.src_py_file
     expected = src_file in _expected_failing_examples(
-        gallery_conf=script.gallery_conf, mkdocs_conf=script.gallery.all_info.mkdocs_conf
+        gallery_conf=script.gallery_conf,
+        mkdocs_conf=script.gallery.all_info.mkdocs_conf,
     )
     if expected:
         # func, color = logger.info, 'blue'
@@ -530,7 +530,7 @@ def handle_exception(exc_info, script: GalleryScript):
         func = logger.warning
     func(f"{src_file} failed to execute correctly: {formatted_exception}")  # , color=color)
 
-    except_md = codestr2md(formatted_exception, lang='pytb', is_exc=True)
+    except_md = codestr2md(formatted_exception, lang="pytb", is_exc=True)
 
     # Ensure it's marked as our style: this is now already done in codestr2md
     # except_md = "{: .mkd-glr-script-out }\n\n" + except_md
@@ -577,35 +577,36 @@ class _exec_once(object):
     def __call__(self):
         if not self.run:
             self.run = True
-            old_main = sys.modules.get('__main__', None)
+            old_main = sys.modules.get("__main__", None)
             with patch_warnings():
-                sys.modules['__main__'] = self.fake_main
+                sys.modules["__main__"] = self.fake_main
                 try:
                     exec(self.code, self.fake_main.__dict__)  # noqa  # our purpose is to execute code :)
                 finally:
                     if old_main is not None:
-                        sys.modules['__main__'] = old_main
+                        sys.modules["__main__"] = old_main
 
 
 def _get_memory_base(gallery_conf):
     """Get the base amount of memory used by running a Python process."""
-    if not gallery_conf['plot_gallery']:
-        return 0.
+    if not gallery_conf["plot_gallery"]:
+        return 0.0
     # There might be a cleaner way to do this at some point
     from memory_profiler import memory_usage
-    if sys.platform in ('win32', 'darwin'):
+
+    if sys.platform in ("win32", "darwin"):
         sleep, timeout = (1, 2)
     else:
         sleep, timeout = (0.5, 1)
     proc = subprocess.Popen(
-        [sys.executable, '-c',
-            'import time, sys; time.sleep(%s); sys.exit(0)' % sleep],
-        close_fds=True)
+        [sys.executable, "-c", "import time, sys; time.sleep(%s); sys.exit(0)" % sleep],
+        close_fds=True,
+    )
     memories = memory_usage(proc, interval=1e-3, timeout=timeout)
     kwargs = dict(timeout=timeout) if sys.version_info >= (3, 5) else {}
     proc.communicate(**kwargs)
     # On OSX sometimes the last entry can be None
-    memories = [mem for mem in memories if mem is not None] + [0.]
+    memories = [mem for mem in memories if mem is not None] + [0.0]
     memory_base = max(memories)
     return memory_base
 
@@ -643,24 +644,21 @@ def _exec_and_get_memory(compiler, ast_Module, code_ast, script: GalleryScript):
         is_last_expr = True
         last_val = code_ast.body.pop().value
         # exec body minus last expression
-        mem_body, _ = script.gallery_conf['call_memory'](
-            _exec_once(
-                compiler(code_ast, src_file, 'exec'),
-                script.run_vars.fake_main))
+        mem_body, _ = script.gallery_conf["call_memory"](
+            _exec_once(compiler(code_ast, src_file, "exec"), script.run_vars.fake_main)
+        )
         # exec last expression, made into assignment
-        body = [ast.Assign(targets=[ast.Name(id='___', ctx=ast.Store())], value=last_val)]
+        body = [ast.Assign(targets=[ast.Name(id="___", ctx=ast.Store())], value=last_val)]
         last_val_ast = ast_Module(body=body)
         ast.fix_missing_locations(last_val_ast)
-        mem_last, _ = script.gallery_conf['call_memory'](
-            _exec_once(
-                compiler(last_val_ast, src_file, 'exec'),
-                script.run_vars.fake_main))
+        mem_last, _ = script.gallery_conf["call_memory"](
+            _exec_once(compiler(last_val_ast, src_file, "exec"), script.run_vars.fake_main)
+        )
         mem_max = max(mem_body, mem_last)
     else:
-        mem_max, _ = script.gallery_conf['call_memory'](
-            _exec_once(
-                compiler(code_ast, src_file, 'exec'),
-                script.run_vars.fake_main))
+        mem_max, _ = script.gallery_conf["call_memory"](
+            _exec_once(compiler(code_ast, src_file, "exec"), script.run_vars.fake_main)
+        )
 
     return is_last_expr, mem_max
 
@@ -668,11 +666,11 @@ def _exec_and_get_memory(compiler, ast_Module, code_ast, script: GalleryScript):
 def _get_last_repr(gallery_conf, ___):
     """Get a repr of the last expression, using first method in 'capture_repr'
     available for the last expression."""
-    for meth in gallery_conf['capture_repr']:
+    for meth in gallery_conf["capture_repr"]:
         try:
             last_repr = getattr(___, meth)()
             # for case when last statement is print()
-            if last_repr is None or last_repr == 'None':
+            if last_repr is None or last_repr == "None":
                 repr_meth = None
             else:
                 repr_meth = meth
@@ -695,29 +693,29 @@ def _get_code_output(is_last_expr, script: GalleryScript, logging_tee, images_md
     repr_meth = None
     if is_last_expr:
         # capture the last repr variable
-        ___ = example_globals['___']
+        ___ = example_globals["___"]
         ignore_repr = False
-        if gallery_conf['ignore_repr_types']:
-            ignore_repr = re.search(gallery_conf['ignore_repr_types'], str(type(___)))
-        if gallery_conf['capture_repr'] != () and not ignore_repr:
+        if gallery_conf["ignore_repr_types"]:
+            ignore_repr = re.search(gallery_conf["ignore_repr_types"], str(type(___)))
+        if gallery_conf["capture_repr"] != () and not ignore_repr:
             last_repr, repr_meth = _get_last_repr(gallery_conf, ___)
 
     captured_std = logging_tee.output.getvalue().expandtabs()
 
     # normal string output
-    if repr_meth in ['__repr__', '__str__'] and last_repr:
+    if repr_meth in ["__repr__", "__str__"] and last_repr:
         captured_std = f"{captured_std}\n{last_repr}"
 
     if captured_std and not captured_std.isspace():
         captured_std = CODE_OUTPUT.format(captured_std)
     else:
-        captured_std = ''
+        captured_std = ""
 
     # give html output its own header
-    if repr_meth == '_repr_html_':
-        captured_html = HTML_HEADER.format(indent(last_repr, u' ' * 4))
+    if repr_meth == "_repr_html_":
+        captured_html = HTML_HEADER.format(indent(last_repr, " " * 4))
     else:
-        captured_html = ''
+        captured_html = ""
 
     code_output = f"""
 {images_md}
@@ -762,8 +760,8 @@ def execute_code_block(compiler, block, script: GalleryScript):
     blabel, bcontent, lineno = block
 
     # If example is not suitable to run anymore, skip executing its blocks
-    if script.run_vars.stop_executing or blabel == 'text':
-        return ''
+    if script.run_vars.stop_executing or blabel == "text":
+        return ""
 
     cwd = os.getcwd()
     # Redirect output to stdout
@@ -779,14 +777,14 @@ def execute_code_block(compiler, block, script: GalleryScript):
     sys.path.append(os.getcwd())
 
     # Save figures unless there is a `mkdocs_gallery_defer_figures` flag
-    match = re.search(r'^[\ \t]*#\s*mkdocs_gallery_defer_figures[\ \t]*\n?', bcontent, re.MULTILINE)
+    match = re.search(r"^[\ \t]*#\s*mkdocs_gallery_defer_figures[\ \t]*\n?", bcontent, re.MULTILINE)
     need_save_figures = match is None
 
     try:
         ast_Module = _ast_module()
         code_ast = ast_Module([bcontent])
         flags = ast.PyCF_ONLY_AST | compiler.flags
-        code_ast = compile(bcontent, src_file, 'exec', flags, dont_inherit=1)
+        code_ast = compile(bcontent, src_file, "exec", flags, dont_inherit=1)
         ast.increment_lineno(code_ast, lineno - 1)
 
         is_last_expr, mem_max = _exec_and_get_memory(compiler, ast_Module, code_ast, script=script)
@@ -805,16 +803,16 @@ def execute_code_block(compiler, block, script: GalleryScript):
         except_md, formatted_exception = handle_exception(sys.exc_info(), script)
 
         # Breaks build on first example error
-        if script.gallery_conf['abort_on_example_error']:
+        if script.gallery_conf["abort_on_example_error"]:
             raise
 
         # Stores failing file
-        script.gallery_conf['failing_examples'][src_file] = formatted_exception
+        script.gallery_conf["failing_examples"][src_file] = formatted_exception
 
         # Stop further execution on that script
         script.run_vars.stop_executing = True
 
-        code_output = u"\n{0}\n\n\n\n".format(except_md)
+        code_output = "\n{0}\n\n\n\n".format(except_md)
         # still call this even though we won't use the images so that
         # figures are closed
         if need_save_figures:
@@ -828,15 +826,14 @@ def execute_code_block(compiler, block, script: GalleryScript):
         logging_tee.restore_std()
 
     # Sanitize ANSI escape characters from MD output
-    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-    code_output = ansi_escape.sub('', code_output)
+    ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+    code_output = ansi_escape.sub("", code_output)
 
     return code_output
 
 
 def _check_input(prompt=None):
-    raise ExtensionError(
-        'Cannot use input() builtin function in mkdocs-gallery examples')
+    raise ExtensionError("Cannot use input() builtin function in mkdocs-gallery examples")
 
 
 def parse_and_execute(script: GalleryScript, script_blocks):
@@ -866,22 +863,24 @@ def parse_and_execute(script: GalleryScript, script_blocks):
     """
     # Examples may contain if __name__ == '__main__' guards for in example scikit-learn if the example uses
     # multiprocessing. Here we create a new __main__ module, and temporarily change sys.modules when running our example
-    fake_main = importlib.util.module_from_spec(importlib.util.spec_from_loader('__main__', None))
+    fake_main = importlib.util.module_from_spec(importlib.util.spec_from_loader("__main__", None))
     script.run_vars.fake_main = fake_main
 
     example_globals = fake_main.__dict__
-    example_globals.update({
-        # A lot of examples contains 'print(__doc__)' for example in
-        # scikit-learn so that running the example prints some useful
-        # information. Because the docstring has been separated from
-        # the code blocks in mkdocs-gallery, __doc__ is actually
-        # __builtin__.__doc__ in the execution context and we do not
-        # want to print it
-        '__doc__': '',
-        # Don't ever support __file__: Issues #166 #212
-        # Don't let them use input()
-        'input': _check_input,
-    })
+    example_globals.update(
+        {
+            # A lot of examples contains 'print(__doc__)' for example in
+            # scikit-learn so that running the example prints some useful
+            # information. Because the docstring has been separated from
+            # the code blocks in mkdocs-gallery, __doc__ is actually
+            # __builtin__.__doc__ in the execution context and we do not
+            # want to print it
+            "__doc__": "",
+            # Don't ever support __file__: Issues #166 #212
+            # Don't let them use input()
+            "input": _check_input,
+        }
+    )
     script.run_vars.example_globals = example_globals
 
     # Manipulate the sys.argv before running the example
@@ -894,13 +893,13 @@ def parse_and_execute(script: GalleryScript, script_blocks):
     sys.argv[0] = script.src_py_file.as_posix()
 
     # Allow users to provide additional args through the 'reset_argv' option
-    sys.argv[1:] = script.gallery_conf['reset_argv'](script)
+    sys.argv[1:] = script.gallery_conf["reset_argv"](script)
 
     # Perform a garbage collection before starting so that perf kpis are accurate (memory and time)
     gc.collect()
 
     # Initial memory used
-    memory_start, _ = script.gallery_conf['call_memory'](lambda: None)
+    memory_start, _ = script.gallery_conf["call_memory"](lambda: None)
     script.run_vars.memory_used_in_blocks = [memory_start]  # include at least one entry to avoid max() ever failing
 
     t_start = time()
@@ -923,10 +922,10 @@ def parse_and_execute(script: GalleryScript, script_blocks):
     script.write_final_md5_file()
 
     # Declare the example as "passing"
-    script.gallery_conf['passing_examples'].append(script)
+    script.gallery_conf["passing_examples"].append(script)
 
     script.run_vars.memory_delta = max(script.run_vars.memory_used_in_blocks) - memory_start
-    memory_used = script.gallery_conf['memory_base'] + script.run_vars.memory_delta
+    memory_used = script.gallery_conf["memory_base"] + script.run_vars.memory_delta
 
     return output_blocks, time_elapsed, memory_used
 
@@ -966,22 +965,22 @@ def generate_file_md(script: GalleryScript, seen_backrefs=None) -> GalleryScript
 
         # ...however for executables (not shared modules) we might need to run anyway because of config
         if script.is_executable_example():
-            if script.gallery_conf['run_stale_examples']:
+            if script.gallery_conf["run_stale_examples"]:
                 # Run anyway because config says so.
                 skip_and_return = False
             else:
                 # Add the example to the "stale examples" before returning
-                script.gallery_conf['stale_examples'].append(script.dwnld_py_file)
+                script.gallery_conf["stale_examples"].append(script.dwnld_py_file)
                 # If expected to fail, let's remove it from the 'expected_failing_examples' list,
                 # assuming it did when previously executed
-                if script.src_py_file in script.gallery_conf['expected_failing_examples']:
-                    script.gallery_conf['expected_failing_examples'].remove(script.src_py_file)
+                if script.src_py_file in script.gallery_conf["expected_failing_examples"]:
+                    script.gallery_conf["expected_failing_examples"].remove(script.src_py_file)
 
         if skip_and_return:
             # Return with 0 exec time and mem usage, and the existing thumbnail
             thumb_source_path = script.get_thumbnail_source(file_conf)
             thumb_file = create_thumb_from_image(script, thumb_source_path)
-            return GalleryScriptResults(script=script, intro=intro, exec_time=0., memory=0., thumb=thumb_file)
+            return GalleryScriptResults(script=script, intro=intro, exec_time=0.0, memory=0.0, thumb=thumb_file)
 
     # Reset matplotlib, seaborn, etc. if needed
     if script.is_executable_example():
@@ -995,26 +994,25 @@ def generate_file_md(script: GalleryScript, seen_backrefs=None) -> GalleryScript
         output_blocks, time_elapsed, memory_used = parse_and_execute(script, script_blocks)
         logger.debug(f"{script.src_py_file} ran in : {time_elapsed:.2g} seconds\n")
     else:
-        output_blocks = [''] * len(script_blocks)
-        time_elapsed = memory_used = 0.  # don't let the output change
+        output_blocks = [""] * len(script_blocks)
+        time_elapsed = memory_used = 0.0  # don't let the output change
         logger.debug(f"{script.src_py_file} parsed (not executed)\n")
 
         # Create as many dummy images as required if needed (default none) so that references to script images
         # Can still work, even if the script was not executed (in development mode typically, to go fast).
         # See https://sphinx-gallery.github.io/stable/configuration.html#generating-dummy-images
-        nb_dummy_images_to_generate = file_conf.get('dummy_images', None)
+        nb_dummy_images_to_generate = file_conf.get("dummy_images", None)
         if nb_dummy_images_to_generate is not None:
             if type(nb_dummy_images_to_generate) is not int:
                 raise ExtensionError("mkdocs_gallery: 'dummy_images' setting is not a number, got {dummy_image!r}")
 
-            stock_img = os.path.join(glr_path_static(), 'no_image.png')
+            stock_img = os.path.join(glr_path_static(), "no_image.png")
             script.generate_n_dummy_images(img=stock_img, nb=nb_dummy_images_to_generate)
 
     # Remove the mkdocs-gallery configuration comments from the script if needed
-    if script.gallery_conf['remove_config_comments']:
+    if script.gallery_conf["remove_config_comments"]:
         script_blocks = [
-            (label, remove_config_comments(content), line_number)
-            for label, content, line_number in script_blocks
+            (label, remove_config_comments(content), line_number) for label, content, line_number in script_blocks
         ]
 
     # Remove final empty block, which can occur after config comments are removed
@@ -1033,7 +1031,7 @@ def generate_file_md(script: GalleryScript, seen_backrefs=None) -> GalleryScript
     # Create the image thumbnail for the gallery summary
     if is_failing_example(script):
         # Failing example thumbnail
-        thumb_source_path = Path(os.path.join(glr_path_static(), 'broken_example.png'))
+        thumb_source_path = Path(os.path.join(glr_path_static(), "broken_example.png"))
     else:
         # Get the thumbnail source image, possibly from config
         thumb_source_path = script.get_thumbnail_source(file_conf)
@@ -1044,10 +1042,10 @@ def generate_file_md(script: GalleryScript, seen_backrefs=None) -> GalleryScript
     example_nb = jupyter_notebook(script, script_blocks)
     ipy_file = _new_file(script.ipynb_file)
     save_notebook(example_nb, ipy_file)
-    _replace_by_new_if_needed(ipy_file, md5_mode='t')
+    _replace_by_new_if_needed(ipy_file, md5_mode="t")
 
     # Write names
-    if script.gallery_conf['inspect_global_variables']:
+    if script.gallery_conf["inspect_global_variables"]:
         global_variables = script.run_vars.example_globals
     else:
         global_variables = None
@@ -1057,20 +1055,28 @@ def generate_file_md(script: GalleryScript, seen_backrefs=None) -> GalleryScript
     if example_code_obj:
         # Write a pickle file (.pickle) containing `example_code_obj`
         codeobj_fname = _new_file(script.codeobj_file)
-        with open(codeobj_fname, 'wb') as fid:
+        with open(codeobj_fname, "wb") as fid:
             pickle.dump(example_code_obj, fid, pickle.HIGHEST_PROTOCOL)
         _replace_by_new_if_needed(codeobj_fname)
 
-    backrefs = set('{module_short}.{name}'.format(**cobj)
-                   for cobjs in example_code_obj.values()
-                   for cobj in cobjs
-                   if cobj['module'].startswith(script.gallery_conf['doc_module']))
+    backrefs = set(
+        "{module_short}.{name}".format(**cobj)
+        for cobjs in example_code_obj.values()
+        for cobj in cobjs
+        if cobj["module"].startswith(script.gallery_conf["doc_module"])
+    )
 
     # Create results object
-    res = GalleryScriptResults(script=script, intro=intro, exec_time=time_elapsed, memory=memory_used, thumb=thumb_file)
+    res = GalleryScriptResults(
+        script=script,
+        intro=intro,
+        exec_time=time_elapsed,
+        memory=memory_used,
+        thumb=thumb_file,
+    )
 
     # Write backreferences if required
-    if script.gallery_conf['backreferences_dir'] is not None:
+    if script.gallery_conf["backreferences_dir"] is not None:
         _write_backreferences(backrefs, seen_backrefs, script_results=res)
 
     return res
@@ -1133,25 +1139,24 @@ def generate_md_from_blocks(script_blocks, output_blocks, file_conf, gallery_con
     for bi, ((blabel, bcontent, lineno), code_output) in enumerate(zip(script_blocks, output_blocks)):
         # do not add comment to the title block (bi=0), otherwise the linking does not work properly
         if bi > 0:
-            example_md += MD_BLOCK_HEADER.format(
-                lineno, lineno + bcontent.count('\n'))
+            example_md += MD_BLOCK_HEADER.format(lineno, lineno + bcontent.count("\n"))
 
-        if blabel == 'code':
-            if not file_conf.get('line_numbers', gallery_conf.get('line_numbers', False)):
+        if blabel == "code":
+            if not file_conf.get("line_numbers", gallery_conf.get("line_numbers", False)):
                 lineno = None
 
-            code_md = codestr2md(bcontent, lang=gallery_conf['lang'], lineno=lineno) + '\n'
+            code_md = codestr2md(bcontent, lang=gallery_conf["lang"], lineno=lineno) + "\n"
             if is_example_notebook_like:
                 example_md += code_md
                 example_md += code_output
             else:
                 example_md += code_output
-                if 'mkd-glr-script-out' in code_output:
+                if "mkd-glr-script-out" in code_output:
                     # Add some vertical space after output
                     example_md += "\n\n<br />\n\n"  # "|\n\n"
                 example_md += code_md
         else:
-            block_separator = '\n\n' if not bcontent.endswith('\n') else '\n'
+            block_separator = "\n\n" if not bcontent.endswith("\n") else "\n"
             example_md += bcontent + block_separator
 
     return example_md
@@ -1180,12 +1185,12 @@ def get_example_md_wrapper(script: GalleryScript, time_elapsed: float, memory_us
         Part of the final markdown that goes after the notebook / python script.
     """
     # Check binder configuration
-    binder_conf = check_binder_conf(script.gallery_conf.get('binder'))
+    binder_conf = check_binder_conf(script.gallery_conf.get("binder"))
     use_binder = len(binder_conf) > 0
 
     # Write header
     src_relative = script.src_py_file_rel_project.as_posix()
-    binder_text = (" or to run this example in your browser via Binder" if use_binder else "")
+    binder_text = " or to run this example in your browser via Binder" if use_binder else ""
     md_before = EXAMPLE_HEADER.format(pyfile_to_edit=src_relative, opt_binder_text=binder_text)
 
     # Footer
@@ -1195,8 +1200,8 @@ def get_example_md_wrapper(script: GalleryScript, time_elapsed: float, memory_us
         time_m, time_s = divmod(time_elapsed, 60)
         md_after += TIMING_CONTENT.format(time_m, time_s)
 
-    if script.gallery_conf['show_memory']:
-        md_after += (f"**Estimated memory usage:** {memory_used:.0f} MB\n\n")
+    if script.gallery_conf["show_memory"]:
+        md_after += f"**Estimated memory usage:** {memory_used:.0f} MB\n\n"
 
     # Download buttons
     # - Generate a binder URL if specified

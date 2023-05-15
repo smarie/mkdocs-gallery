@@ -23,3 +23,6 @@ build-backend = "setuptools.build_meta"
 #     "plotly",
 # ]
 # pytest: not with conda ! does not work in old python 2.7 and 3.5
+
+[tool.black]
+line-length = 120

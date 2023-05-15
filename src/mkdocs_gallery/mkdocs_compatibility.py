@@ -8,6 +8,7 @@ Backwards-compatility shims for mkdocs. Only logger is here for now.
 """
 
 import logging
+
 from mkdocs.utils import warning_filter
 
 
@@ -17,7 +18,7 @@ def red(msg):
 
 
 def getLogger(name="mkdocs-gallery"):
-    """From https://github.com/fralau/mkdocs-mermaid2-plugin/pull/19/. """
+    """From https://github.com/fralau/mkdocs-mermaid2-plugin/pull/19/."""
     log = logging.getLogger("mkdocs.plugins." + name)
     log.addFilter(warning_filter)
 

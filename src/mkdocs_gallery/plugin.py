@@ -6,29 +6,26 @@
 """
 The mkdocs plugin entry point
 """
+import os
 import re
-
 from pathlib import Path
-from packaging import version
+from typing import Any, Dict, List, Union
 
 from mkdocs import __version__ as mkdocs_version_str
-from mkdocs.config.base import ValidationError, Config
 from mkdocs.config import config_options as co
+from mkdocs.config.base import Config, ValidationError
 from mkdocs.exceptions import ConfigurationError
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.files import Files
 from mkdocs.structure.pages import Page
-
-from typing import Dict, Any, List, Union
-
-import os
+from packaging import version
 
 from . import glr_path_static
 from .binder import copy_binder_files
-# from .docs_resolv import embed_code_links
-from .gen_gallery import parse_config, generate_gallery_md, summarize_failing_examples, fill_mkdocs_nav
-from .utils import is_relative_to
 
+# from .docs_resolv import embed_code_links
+from .gen_gallery import fill_mkdocs_nav, generate_gallery_md, parse_config, summarize_failing_examples
+from .utils import is_relative_to
 
 mkdocs_version = version.parse(mkdocs_version_str)
 is_mkdocs_14_or_greater = mkdocs_version >= version.parse("1.4")
@@ -37,7 +34,12 @@ is_mkdocs_14_or_greater = mkdocs_version >= version.parse("1.4")
 class ConfigList(co.OptionallyRequired):
     """A list or single element of configuration matching a specific ConfigOption"""
 
-    def __init__(self, item_config: co.BaseConfigOption, single_elt_allowed: bool = True, **kwargs):
+    def __init__(
+        self,
+        item_config: co.BaseConfigOption,
+        single_elt_allowed: bool = True,
+        **kwargs,
+    ):
         super().__init__(**kwargs)
         self.single_elt_allowed = single_elt_allowed
         self.item_config = item_config
@@ -45,7 +47,7 @@ class ConfigList(co.OptionallyRequired):
     def run_validation(self, value):
         if not isinstance(value, (list, tuple)):
             if self.single_elt_allowed:
-                value = (value, )
+                value = (value,)
             else:
                 msg = f"Expected a list but received a single element: {value}."
                 raise ValidationError(msg)
@@ -62,12 +64,14 @@ class ConfigList(co.OptionallyRequired):
 
 class Dir(co.Dir):
     """mkdocs.config.config_options.Dir replacement: returns a pathlib object instead of a string"""
+
     def run_validation(self, value):
         return Path(co.Dir.run_validation(self, value))
 
 
 class File(co.File):
     """mkdocs.config.config_options.File replacement: returns a pathlib object instead of a string"""
+
     def run_validation(self, value):
         return Path(co.File.run_validation(self, value))
 
@@ -89,6 +93,7 @@ if is_mkdocs_14_or_greater:
 
     def create_binder_config():
         return co.SubConfig(_BinderOptions)
+
 else:
     # Use MySubConfig
     class MySubConfig(co.SubConfig):
@@ -117,15 +122,15 @@ else:
     def create_binder_config():
         return MySubConfig(
             # Required keys
-            ('org', co.Type(str, required=True)),
-            ('repo', co.Type(str, required=True)),
-            ('dependencies', ConfigList(File(exists=True), required=True)),
+            ("org", co.Type(str, required=True)),
+            ("repo", co.Type(str, required=True)),
+            ("dependencies", ConfigList(File(exists=True), required=True)),
             # Optional keys
-            ('branch', co.Type(str, required=True, default="gh-pages")),
-            ('binderhub_url', co.URL(required=True, default="https://mybinder.org")),
-            ('filepath_prefix', co.Type(str)),  # default is None
-            ('notebooks_dir', co.Type(str)),  # default is "notebooks"
-            ('use_jupyter_lab', co.Type(bool)),  # default is False
+            ("branch", co.Type(str, required=True, default="gh-pages")),
+            ("binderhub_url", co.URL(required=True, default="https://mybinder.org")),
+            ("filepath_prefix", co.Type(str)),  # default is None
+            ("notebooks_dir", co.Type(str)),  # default is "notebooks"
+            ("use_jupyter_lab", co.Type(bool)),  # default is False
         )
 
 
@@ -135,51 +140,53 @@ class GalleryPlugin(BasePlugin):
     #     pio.renderers.default = "sphinx_gallery"
 
     config_scheme = (
-        ('conf_script', File(exists=True)),
-        ('filename_pattern', co.Type(str)),
-        ('ignore_pattern', co.Type(str)),
-        ('examples_dirs', ConfigList(Dir(exists=True))),
+        ("conf_script", File(exists=True)),
+        ("filename_pattern", co.Type(str)),
+        ("ignore_pattern", co.Type(str)),
+        ("examples_dirs", ConfigList(Dir(exists=True))),
         # 'reset_argv': DefaultResetArgv(),
-        ('subsection_order', co.Choice(choices=(None, "ExplicitOrder"))),
-        ('within_subsection_order', co.Choice(choices=("FileNameSortKey", "NumberOfCodeLinesSortKey"))),
-
-        ('gallery_dirs', ConfigList(Dir(exists=False))),
-        ('backreferences_dir', Dir(exists=False)),
-        ('doc_module', ConfigList(co.Type(str))),
+        ("subsection_order", co.Choice(choices=(None, "ExplicitOrder"))),
+        (
+            "within_subsection_order",
+            co.Choice(choices=("FileNameSortKey", "NumberOfCodeLinesSortKey")),
+        ),
+        ("gallery_dirs", ConfigList(Dir(exists=False))),
+        ("backreferences_dir", Dir(exists=False)),
+        ("doc_module", ConfigList(co.Type(str))),
         # 'reference_url': {},  TODO how to link code to external functions?
-        ('capture_repr', ConfigList(co.Type(str))),
-        ('ignore_repr_types', co.Type(str)),
+        ("capture_repr", ConfigList(co.Type(str))),
+        ("ignore_repr_types", co.Type(str)),
         # Build options
-        ('plot_gallery', co.Type(bool)),
-        ('download_all_examples', co.Type(bool)),
-        ('abort_on_example_error', co.Type(bool)),
-        ('only_warn_on_example_error', co.Type(bool)),
+        ("plot_gallery", co.Type(bool)),
+        ("download_all_examples", co.Type(bool)),
+        ("abort_on_example_error", co.Type(bool)),
+        ("only_warn_on_example_error", co.Type(bool)),
         # 'failing_examples': {},  # type: Set[str]
         # 'passing_examples': [],
         # 'stale_examples': [],
-        ('run_stale_examples', co.Type(bool)),
-        ('expected_failing_examples', ConfigList(File(exists=True))),
-        ('thumbnail_size', ConfigList(co.Type(int), single_elt_allowed=False)),
-        ('min_reported_time', co.Type(int)),
-        ('binder', create_binder_config()),
-        ('image_scrapers', ConfigList(co.Type(str))),
-        ('compress_images', ConfigList(co.Type(str))),
-        ('reset_modules', ConfigList(co.Type(str))),
-        ('first_notebook_cell', co.Type(str)),
-        ('last_notebook_cell', co.Type(str)),
-        ('notebook_images', co.Type(bool)),
+        ("run_stale_examples", co.Type(bool)),
+        ("expected_failing_examples", ConfigList(File(exists=True))),
+        ("thumbnail_size", ConfigList(co.Type(int), single_elt_allowed=False)),
+        ("min_reported_time", co.Type(int)),
+        ("binder", create_binder_config()),
+        ("image_scrapers", ConfigList(co.Type(str))),
+        ("compress_images", ConfigList(co.Type(str))),
+        ("reset_modules", ConfigList(co.Type(str))),
+        ("first_notebook_cell", co.Type(str)),
+        ("last_notebook_cell", co.Type(str)),
+        ("notebook_images", co.Type(bool)),
         # # 'pypandoc': False,
-        ('remove_config_comments', co.Type(bool)),
-        ('show_memory', co.Type(bool)),
-        ('show_signature', co.Type(bool)),
+        ("remove_config_comments", co.Type(bool)),
+        ("show_memory", co.Type(bool)),
+        ("show_signature", co.Type(bool)),
         # 'junit': '',
         # 'log_level': {'backreference_missing': 'warning'},
-        ('inspect_global_variables', co.Type(bool)),
+        ("inspect_global_variables", co.Type(bool)),
         # 'css': _KNOWN_CSS,
-        ('matplotlib_animations', co.Type(bool)),
-        ('image_srcset', ConfigList(co.Type(str))),
-        ('default_thumb_file', File(exists=True)),
-        ('line_numbers', co.Type(bool)),
+        ("matplotlib_animations", co.Type(bool)),
+        ("image_srcset", ConfigList(co.Type(str))),
+        ("default_thumb_file", File(exists=True)),
+        ("line_numbers", co.Type(bool)),
     )
 
     def on_config(self, config, **kwargs):
@@ -223,16 +230,16 @@ markdown_extensions:
 
         # Append static resources
         static_resources_dir = glr_path_static()
-        config['theme'].dirs.append(static_resources_dir)
+        config["theme"].dirs.append(static_resources_dir)
         for css_file in os.listdir(static_resources_dir):
             if css_file.endswith(".css"):
-                config['extra_css'].append(css_file)
+                config["extra_css"].append(css_file)
         # config['theme'].static_templates.add('search.html')
         # config['extra_javascript'].append('search/main.js')
 
         # Handle our custom class
-        if self.config['binder']:
-            self.config['binder'] = dict(self.config['binder'])
+        if self.config["binder"]:
+            self.config["binder"] = dict(self.config["binder"])
 
         # Remember the conf script location for later (for excluding files in `on_files` below)
         self.conf_script = self.config["conf_script"]
@@ -268,31 +275,33 @@ markdown_extensions:
 
         # Store the docs dir relative to project dir
         # (note: same as in AllInformation class but we do not store the whole object)
-        project_root_dir = Path(config['config_file_path']).parent
-        self.docs_dir_rel_proj = Path(config['docs_dir']).relative_to(project_root_dir).as_posix()
+        project_root_dir = Path(config["config_file_path"]).parent
+        self.docs_dir_rel_proj = Path(config["docs_dir"]).relative_to(project_root_dir).as_posix()
 
     def on_files(self, files, config):
         """Remove the gallery examples *source* md files (in "examples_dirs") from the built website"""
 
         # Get the list of gallery source files, possibly containing the readme.md that we wish to exclude
-        examples_dirs = self._get_dirs_relative_to(self.config['examples_dirs'], rel_to_dir=config['docs_dir'])
+        examples_dirs = self._get_dirs_relative_to(self.config["examples_dirs"], rel_to_dir=config["docs_dir"])
 
         # Add the binder config files if needed
-        binder_cfg = self.config['binder']
+        binder_cfg = self.config["binder"]
         if binder_cfg:
-            binder_files = [Path(path).relative_to(config['docs_dir']).as_posix() for path in binder_cfg['dependencies']]
+            binder_files = [
+                Path(path).relative_to(config["docs_dir"]).as_posix() for path in binder_cfg["dependencies"]
+            ]
         else:
             binder_files = []
 
         # Add the gallery config script if needed
         if self.conf_script:
-            conf_script = Path(self.conf_script).relative_to(config['docs_dir'])
+            conf_script = Path(self.conf_script).relative_to(config["docs_dir"])
             conf_script_parent = conf_script.parent.as_posix()
             if conf_script_parent == ".":
                 conf_script_parent = ""
             else:
                 conf_script_parent += r"\/"
-            conf_script_match = re.compile(fr"^{conf_script_parent}__\w*cache\w*__\/{conf_script.stem}[\w\-\.]*$")
+            conf_script_match = re.compile(rf"^{conf_script_parent}__\w*cache\w*__\/{conf_script.stem}[\w\-\.]*$")
             conf_script = conf_script.as_posix()
 
         def exclude(i):
@@ -337,8 +346,7 @@ markdown_extensions:
     #     return nav
 
     def on_page_content(self, html, page: Page, config: Config, files: Files):
-        """Edit the 'edit this page' link so that it points to gallery example source files.
-        """
+        """Edit the 'edit this page' link so that it points to gallery example source files."""
         page_path = Path(page.file.src_path).as_posix()
         try:
             # Do we have a gallery example source file path for this page ?
@@ -352,11 +360,11 @@ markdown_extensions:
             if page.edit_url is not None:
                 # Remove the dest gallery md file path relative to docs_dir
                 assert page.edit_url.endswith("/" + page_path)
-                edit_url = page.edit_url[:-len(page_path)-1]
+                edit_url = page.edit_url[: -len(page_path) - 1]
 
                 # Remove the docs_dir relative path with respect to project root
                 assert edit_url.endswith("/" + self.docs_dir_rel_proj)
-                edit_url = edit_url[:-len(self.docs_dir_rel_proj) - 1]
+                edit_url = edit_url[: -len(self.docs_dir_rel_proj) - 1]
 
                 # Finally add the example source relative to project root
                 page.edit_url = f"{edit_url}/{src.as_posix()}"
@@ -382,6 +390,7 @@ markdown_extensions:
                         # log.info(f"Ignoring event: {event}")
                         return
                 return original_callback(event)
+
             return _callback
 
         # TODO this is an ugly hack...
@@ -406,21 +415,21 @@ def merge_extra_config(extra_config: Dict[str, Any], config):
     for extension_cfg in extra_config["markdown_extensions"]:
         if isinstance(extension_cfg, str):
             extension_name = extension_cfg
-            if extension_name not in config['markdown_extensions']:
-                config['markdown_extensions'].append(extension_name)
+            if extension_name not in config["markdown_extensions"]:
+                config["markdown_extensions"].append(extension_name)
         elif isinstance(extension_cfg, dict):
             assert len(extension_cfg) == 1  # noqa
             extension_name, extension_options = extension_cfg.popitem()
-            if extension_name not in config['markdown_extensions']:
-                config['markdown_extensions'].append(extension_name)
-            if extension_name not in config['mdx_configs']:
-                config['mdx_configs'][extension_name] = extension_options
+            if extension_name not in config["markdown_extensions"]:
+                config["markdown_extensions"].append(extension_name)
+            if extension_name not in config["mdx_configs"]:
+                config["mdx_configs"][extension_name] = extension_options
             else:
                 # Only add options that are not already set
                 # TODO should we warn ?
                 for cfg_key, cfg_val in extension_options.items():
-                    if cfg_key not in config['mdx_configs'][extension_name]:
-                        config['mdx_configs'][extension_name][cfg_key] = cfg_val
+                    if cfg_key not in config["mdx_configs"][extension_name]:
+                        config["mdx_configs"][extension_name][cfg_key] = cfg_val
         else:
             raise TypeError(extension_cfg)
 
