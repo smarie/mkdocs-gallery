@@ -92,7 +92,10 @@ if is_mkdocs_14_or_greater:
         use_jupyter_lab = co.Optional(co.Type(bool))  # default is False
 
     def create_binder_config():
-        return co.SubConfig(_BinderOptions)
+        opt = co.SubConfig(_BinderOptions)
+        # Set the default value to None so that it is not (invalid) empty dict anymore. GH#45
+        opt.default = None
+        return opt
 
 else:
     # Use MySubConfig
@@ -168,7 +171,7 @@ class GalleryPlugin(BasePlugin):
         ("expected_failing_examples", ConfigList(File(exists=True))),
         ("thumbnail_size", ConfigList(co.Type(int), single_elt_allowed=False)),
         ("min_reported_time", co.Type(int)),
-        ("binder", create_binder_config()),
+        ("binder", co.Optional(create_binder_config())),
         ("image_scrapers", ConfigList(co.Type(str))),
         ("compress_images", ConfigList(co.Type(str))),
         ("reset_modules", ConfigList(co.Type(str))),
@@ -237,7 +240,7 @@ markdown_extensions:
         # config['theme'].static_templates.add('search.html')
         # config['extra_javascript'].append('search/main.js')
 
-        # Handle our custom class
+        # Handle our custom class - convert to a dict
         if self.config["binder"]:
             self.config["binder"] = dict(self.config["binder"])
 
