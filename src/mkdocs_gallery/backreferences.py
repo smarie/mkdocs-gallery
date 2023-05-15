@@ -11,24 +11,21 @@ Parses example file code in order to keep track of used functions
 """
 from __future__ import print_function, unicode_literals
 
-from importlib import import_module
-
-from typing import Set
-
 import ast
 import codecs
 import collections
-from html import escape
 import inspect
 import os
 import re
 import warnings
-
-from .errors import ExtensionError
+from html import escape
+from importlib import import_module
+from typing import Set
 
 from . import mkdocs_compatibility
-from .gen_data_model import GalleryScriptResults, AllInformation
-from .utils import _replace_by_new_if_needed, _new_file
+from .errors import ExtensionError
+from .gen_data_model import AllInformation, GalleryScriptResults
+from .utils import _new_file, _replace_by_new_if_needed
 
 
 class DummyClass(object):
@@ -41,7 +38,7 @@ class DummyClass(object):
     @property
     def prop(self):
         """Property."""
-        return 'Property'
+        return "Property"
 
 
 class NameFinder(ast.NodeVisitor):
@@ -56,13 +53,13 @@ class NameFinder(ast.NodeVisitor):
         self.global_variables = global_variables or {}
         self.accessed_names = set()
 
-    def visit_Import(self, node, prefix=''):
+    def visit_Import(self, node, prefix=""):
         for alias in node.names:
             local_name = alias.asname or alias.name
             self.imported_names[local_name] = prefix + alias.name
 
     def visit_ImportFrom(self, node):
-        self.visit_Import(node, node.module + '.')
+        self.visit_Import(node, node.module + ".")
 
     def visit_Name(self, node):
         self.accessed_names.add(node.id)
@@ -76,7 +73,7 @@ class NameFinder(ast.NodeVisitor):
         if isinstance(node, ast.Name):
             # This is a.b, not e.g. a().b
             attrs.append(node.id)
-            self.accessed_names.add('.'.join(reversed(attrs)))
+            self.accessed_names.add(".".join(reversed(attrs)))
         else:
             # need to get a in a().b
             self.visit(node)
@@ -84,16 +81,16 @@ class NameFinder(ast.NodeVisitor):
     def get_mapping(self):
         options = list()
         for name in self.accessed_names:
-            local_name_split = name.split('.')
+            local_name_split = name.split(".")
             # first pass: by global variables and object inspection (preferred)
             for split_level in range(len(local_name_split)):
-                local_name = '.'.join(local_name_split[:split_level + 1])
-                remainder = name[len(local_name):]
+                local_name = ".".join(local_name_split[: split_level + 1])
+                remainder = name[len(local_name) :]
                 if local_name in self.global_variables:
                     obj = self.global_variables[local_name]
                     class_attr, method = False, []
                     if remainder:
-                        for level in remainder[1:].split('.'):
+                        for level in remainder[1:].split("."):
                             last_obj = obj
                             # determine if it's a property
                             prop = getattr(last_obj.__class__, level, None)
@@ -126,26 +123,23 @@ class NameFinder(ast.NodeVisitor):
                     for cc in classes:
                         module = inspect.getmodule(cc)
                         if module is not None:
-                            module = module.__name__.split('.')
+                            module = module.__name__.split(".")
                             class_name = cc.__qualname__
                             # a.b.C.meth could be documented as a.C.meth,
                             # so go down the list
                             for depth in range(len(module), 0, -1):
-                                full_name = '.'.join(
-                                    module[:depth] + [class_name] + method)
-                                options.append(
-                                    (name, full_name, class_attr, is_class))
+                                full_name = ".".join(module[:depth] + [class_name] + method)
+                                options.append((name, full_name, class_attr, is_class))
             # second pass: by import (can't resolve as well without doing
             # some actions like actually importing the modules, so use it
             # as a last resort)
             for split_level in range(len(local_name_split)):
-                local_name = '.'.join(local_name_split[:split_level + 1])
-                remainder = name[len(local_name):]
+                local_name = ".".join(local_name_split[: split_level + 1])
+                remainder = name[len(local_name) :]
                 if local_name in self.imported_names:
                     full_name = self.imported_names[local_name] + remainder
                     is_class = class_attr = False  # can't tell without import
-                    options.append(
-                        (name, full_name, class_attr, is_class))
+                    options.append((name, full_name, class_attr, is_class))
         return options
 
 
@@ -157,7 +151,7 @@ def _from_import(a, b):
     #     exec(imp_line, scope, scope)
     # return scope
     with warnings.catch_warnings(record=True):  # swallow warnings
-        warnings.simplefilter('ignore')
+        warnings.simplefilter("ignore")
         m = import_module(a)
         obj = getattr(m, b)
 
@@ -166,8 +160,8 @@ def _from_import(a, b):
 
 def _get_short_module_name(module_name, obj_name):
     """Get the shortest possible module name."""
-    if '.' in obj_name:
-        obj_name, attr = obj_name.split('.')
+    if "." in obj_name:
+        obj_name, attr = obj_name.split(".")
     else:
         attr = None
     # scope = {}
@@ -181,10 +175,10 @@ def _get_short_module_name(module_name, obj_name):
         if attr is not None and not hasattr(real_obj, attr):  # wrong class
             return None  # wrong object
 
-    parts = module_name.split('.')
+    parts = module_name.split(".")
     short_name = module_name
     for i in range(len(parts) - 1, 0, -1):
-        short_name = '.'.join(parts[:i])
+        short_name = ".".join(parts[:i])
         # scope = {}
         try:
             imported_obj = _from_import(short_name, obj_name)
@@ -192,25 +186,19 @@ def _get_short_module_name(module_name, obj_name):
             assert real_obj is imported_obj  # noqa
         except Exception:  # libraries can throw all sorts of exceptions...
             # get the last working module name
-            short_name = '.'.join(parts[:(i + 1)])
+            short_name = ".".join(parts[: (i + 1)])
             break
     return short_name
 
 
-_regex = re.compile(r':(?:'
-                    r'func(?:tion)?|'
-                    r'meth(?:od)?|'
-                    r'attr(?:ibute)?|'
-                    r'obj(?:ect)?|'
-                    r'class):`~?(\S*)`'
-                    )
+_regex = re.compile(r":(?:" r"func(?:tion)?|" r"meth(?:od)?|" r"attr(?:ibute)?|" r"obj(?:ect)?|" r"class):`~?(\S*)`")
 
 
-def identify_names(script_blocks, global_variables=None, node=''):
+def identify_names(script_blocks, global_variables=None, node=""):
     """Build a codeobj summary by identifying and resolving used names."""
 
-    if node == '':  # mostly convenience for testing functions
-        c = '\n'.join(txt for kind, txt, _ in script_blocks if kind == 'code')
+    if node == "":  # mostly convenience for testing functions
+        c = "\n".join(txt for kind, txt, _ in script_blocks if kind == "code")
         node = ast.parse(c)
 
     # Get matches from the code (AST)
@@ -220,7 +208,7 @@ def identify_names(script_blocks, global_variables=None, node=''):
     names = list(finder.get_mapping())
 
     # Get matches from docstring inspection
-    text = '\n'.join(txt for kind, txt, _ in script_blocks if kind == 'text')
+    text = "\n".join(txt for kind, txt, _ in script_blocks if kind == "text")
     names.extend((x, x, False, False) for x in re.findall(_regex, text))
     example_code_obj = collections.OrderedDict()  # order is important
 
@@ -231,12 +219,12 @@ def identify_names(script_blocks, global_variables=None, node=''):
 
         # name is as written in file (e.g. np.asarray)
         # full_name includes resolved import path (e.g. numpy.asarray)
-        splitted = full_name.rsplit('.', 1 + class_like)
+        splitted = full_name.rsplit(".", 1 + class_like)
         if len(splitted) == 1:
-            splitted = ('builtins', splitted[0])
+            splitted = ("builtins", splitted[0])
         elif len(splitted) == 3:  # class-like
             assert class_like  # noqa
-            splitted = (splitted[0], '.'.join(splitted[1:]))
+            splitted = (splitted[0], ".".join(splitted[1:]))
         else:
             assert not class_like  # noqa
 
@@ -244,8 +232,12 @@ def identify_names(script_blocks, global_variables=None, node=''):
 
         # get shortened module name
         module_short = _get_short_module_name(module, attribute)
-        cobj = {'name': attribute, 'module': module,
-                'module_short': module_short or module, 'is_class': is_class}
+        cobj = {
+            "name": attribute,
+            "module": module,
+            "module_short": module_short or module,
+            "is_class": is_class,
+        }
 
         example_code_obj[name].append(cobj)
 
@@ -310,8 +302,12 @@ def _thumbnail_div(script_results: GalleryScriptResults, is_backref: bool = Fals
     example_html = script_results.script.md_file_rel_root_gallery.with_suffix("")
 
     template = BACKREF_THUMBNAIL_TEMPLATE if is_backref else THUMBNAIL_TEMPLATE
-    return template.format(snippet=escape(script_results.intro), thumbnail=thumb, title=script_results.script.title,
-                           example_html=example_html)
+    return template.format(
+        snippet=escape(script_results.intro),
+        thumbnail=thumb,
+        title=script_results.script.title,
+        example_html=example_html,
+    )
 
 
 def _write_backreferences(backrefs: Set, seen_backrefs: Set, script_results: GalleryScriptResults):
@@ -338,14 +334,14 @@ def _write_backreferences(backrefs: Set, seen_backrefs: Set, script_results: Gal
 
         # Create new or append to existing file
         seen = backref in seen_backrefs
-        with codecs.open(str(include_path), 'a' if seen else 'w', encoding='utf-8') as ex_file:
+        with codecs.open(str(include_path), "a" if seen else "w", encoding="utf-8") as ex_file:
             # If first ref: write header
             if not seen:
                 # Be aware that if the number of lines of this heading changes,
                 #   the minigallery directive should be modified accordingly
-                heading = 'Examples using ``%s``' % backref
-                ex_file.write('\n\n' + heading + '\n')
-                ex_file.write('^' * len(heading) + '\n')
+                heading = "Examples using ``%s``" % backref
+                ex_file.write("\n\n" + heading + "\n")
+                ex_file.write("^" * len(heading) + "\n")
 
             # Write the thumbnail
             ex_file.write(_thumbnail_div(script_results, is_backref=True))
@@ -354,8 +350,8 @@ def _write_backreferences(backrefs: Set, seen_backrefs: Set, script_results: Gal
 
 def _finalize_backreferences(seen_backrefs, all_info: AllInformation):
     """Replace backref files only if necessary."""
-    logger = mkdocs_compatibility.getLogger('mkdocs-gallery')
-    if all_info.gallery_conf['backreferences_dir'] is None:
+    logger = mkdocs_compatibility.getLogger("mkdocs-gallery")
+    if all_info.gallery_conf["backreferences_dir"] is None:
         return
 
     for backref in seen_backrefs:
@@ -363,11 +359,10 @@ def _finalize_backreferences(seen_backrefs, all_info: AllInformation):
         path = _new_file(all_info.get_backreferences_file(backref))
         if path.exists():
             # Simply drop the .new suffix
-            _replace_by_new_if_needed(path, md5_mode='t')
+            _replace_by_new_if_needed(path, md5_mode="t")
         else:
             # No file: warn
-            level = all_info.gallery_conf['log_level'].get('backreference_missing', 'warning')
+            level = all_info.gallery_conf["log_level"].get("backreference_missing", "warning")
             func = getattr(logger, level)
-            func('Could not find backreferences file: %s' % (path,))
-            func('The backreferences are likely to be erroneous '
-                 'due to file system case insensitivity.')
+            func("Could not find backreferences file: %s" % (path,))
+            func("The backreferences are likely to be erroneous " "due to file system case insensitivity.")

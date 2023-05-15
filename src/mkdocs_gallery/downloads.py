@@ -10,16 +10,14 @@ Utilities for downloadable items
 from __future__ import absolute_import, division, print_function
 
 from pathlib import Path
-
 from typing import List
-
 from zipfile import ZipFile
+
 from .gen_data_model import Gallery
+from .utils import _new_file, _replace_by_new_if_needed
 
-from .utils import _replace_by_new_if_needed, _new_file
 
-
-def python_zip(file_list: List[Path], gallery: Gallery, extension='.py'):
+def python_zip(file_list: List[Path], gallery: Gallery, extension=".py"):
     """Stores all files in file_list with modified extension `extension` into an zip file
 
     Parameters
@@ -41,11 +39,11 @@ def python_zip(file_list: List[Path], gallery: Gallery, extension='.py'):
     zipfile : Path
         zip file, written as `<target_dir>_{python,jupyter}.zip` depending on the extension
     """
-    zipfile = gallery.zipfile_python if extension == '.py' else gallery.zipfile_jupyter
+    zipfile = gallery.zipfile_python if extension == ".py" else gallery.zipfile_jupyter
 
     # Create the new zip
     zipfile_new = _new_file(zipfile)
-    with ZipFile(str(zipfile_new), mode='w') as zipf:
+    with ZipFile(str(zipfile_new), mode="w") as zipf:
         for file in file_list:
             file_src = file.with_suffix(extension)
             zipf.write(file_src, file_src.relative_to(gallery.generated_dir))

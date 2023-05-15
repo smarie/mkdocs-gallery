@@ -7,28 +7,24 @@
 Classes holding information related to gallery examples and exposing derived information, typically paths.
 """
 
-from shutil import copyfile
-
-from abc import abstractmethod, ABC
-
-import re
-
 import os
+import re
 import stat
 import weakref
-
-from typing import List, Dict, Any, Tuple, Union, Iterable
-
+from abc import ABC, abstractmethod
 from pathlib import Path
+from shutil import copyfile
+from typing import Any, Dict, Iterable, List, Tuple, Union
 
 from .errors import ExtensionError
-from .utils import (_smart_copy_md5,
-                    get_md5sum,
-                    _replace_by_new_if_needed,
-                    _new_file,
-                    matches_filepath_pattern,
-                    is_relative_to,
-                    )
+from .utils import (
+    _new_file,
+    _replace_by_new_if_needed,
+    _smart_copy_md5,
+    get_md5sum,
+    is_relative_to,
+    matches_filepath_pattern,
+)
 
 
 def _has_readme(folder: Path) -> bool:
@@ -41,9 +37,9 @@ def _get_readme(dir_: Path, raise_error=True) -> Path:
     assert dir_.is_absolute()  # noqa
 
     # extensions = ['.txt'] + sorted(gallery_conf['app'].config['source_suffix'])
-    extensions = ['.txt'] + ['.md']  # TODO should this be read from mkdocs config ? like above
+    extensions = [".txt"] + [".md"]  # TODO should this be read from mkdocs config ? like above
     for ext in extensions:
-        for fname in ('README', 'Readme', 'readme'):
+        for fname in ("README", "Readme", "readme"):
             fpth = dir_ / (fname + ext)
             if fpth.is_file():
                 return fpth
@@ -51,7 +47,8 @@ def _get_readme(dir_: Path, raise_error=True) -> Path:
         raise ExtensionError(
             "Example directory {0} does not have a README/Readme/readme file "
             "with one of the expected file extensions {1}. Please write one to "
-            "introduce your gallery.".format(str(dir_), extensions))
+            "introduce your gallery.".format(str(dir_), extensions)
+        )
     return None
 
 
@@ -113,18 +110,15 @@ def gen_repr(hide: Union[str, Iterable] = (), show: Union[str, Iterable] = ()):
         raise ValueError("Either provide show or hide")
 
     if isinstance(show, str):
-        show = (show, )
+        show = (show,)
 
     if isinstance(hide, str):
-        hide = (hide, )
+        hide = (hide,)
 
     def __repr__(self):
         show_ = self.__slots__ if not show else show
 
-        attrs = ",".join("%s=%r" % (k, getattr(self, k))
-                         for k in show_
-                         if k not in hide
-                         )
+        attrs = ",".join("%s=%r" % (k, getattr(self, k)) for k in show_ if k not in hide)
         return "%s(%s)" % (type(self).__name__, attrs)
 
     return __repr__
@@ -132,11 +126,19 @@ def gen_repr(hide: Union[str, Iterable] = (), show: Union[str, Iterable] = ()):
 
 class GalleryScriptResults:
     """Result of running a single gallery file"""
+
     __slots__ = ("script", "intro", "exec_time", "memory", "thumb")
 
     __repr__ = gen_repr()
 
-    def __init__(self, script: "GalleryScript", intro: str, exec_time: float, memory: float, thumb: Path):
+    def __init__(
+        self,
+        script: "GalleryScript",
+        intro: str,
+        exec_time: float,
+        memory: float,
+        thumb: Path,
+    ):
         self.script = script
         self.intro = intro
         self.exec_time = exec_time
@@ -151,8 +153,14 @@ class GalleryScriptResults:
 
 class ScriptRunVars:
     """The variables created when a script is run."""
+
     __slots__ = (
-        "image_path_iterator", "example_globals", "memory_used_in_blocks", "memory_delta", "fake_main", "stop_executing"
+        "image_path_iterator",
+        "example_globals",
+        "memory_used_in_blocks",
+        "memory_delta",
+        "fake_main",
+        "stop_executing",
     )
 
     __repr__ = gen_repr()
@@ -180,7 +188,14 @@ class ScriptRunVars:
 class GalleryScript:
     """Represents a gallery script and all related files (notebook, md5, etc.)"""
 
-    __slots__ = ("__weakref__", "_gallery", "script_stem", "title", "_py_file_md5", "run_vars")
+    __slots__ = (
+        "__weakref__",
+        "_gallery",
+        "script_stem",
+        "title",
+        "_py_file_md5",
+        "run_vars",
+    )
 
     __repr__ = gen_repr(hide=("__weakref__", "_gallery"))
 
@@ -235,15 +250,15 @@ class GalleryScript:
         is_executable_example : bool
             True if script has to be executed
         """
-        filename_pattern = self.gallery_conf.get('filename_pattern')
-        execute = matches_filepath_pattern(self.src_py_file, filename_pattern) and self.gallery_conf['plot_gallery']
+        filename_pattern = self.gallery_conf.get("filename_pattern")
+        execute = matches_filepath_pattern(self.src_py_file, filename_pattern) and self.gallery_conf["plot_gallery"]
         return execute
 
     @property
     def py_file_md5(self):
         """The md5 checksum of the python script."""
         if self._py_file_md5 is None:
-            self._py_file_md5 = get_md5sum(self.src_py_file, mode='t')
+            self._py_file_md5 = get_md5sum(self.src_py_file, mode="t")
         return self._py_file_md5
 
     @property
@@ -262,14 +277,19 @@ class GalleryScript:
         return self.gallery.generated_dir / f"{self.script_stem}_codeobj.pickle"
 
     def make_dwnld_py_file(self):
-        """Copy src file to target file. Use md5 to not overwrite if not necessary. """
+        """Copy src file to target file. Use md5 to not overwrite if not necessary."""
 
         # Use the possibly already computed md5 if available
         md5 = None
         if self.dwnld_py_file.exists():
             md5 = self.py_file_md5
 
-        _smart_copy_md5(src_file=self.src_py_file, dst_file=self.dwnld_py_file, src_md5=md5, md5_mode='t')
+        _smart_copy_md5(
+            src_file=self.src_py_file,
+            dst_file=self.dwnld_py_file,
+            src_md5=md5,
+            md5_mode="t",
+        )
 
     @property
     def ipynb_file(self) -> Path:
@@ -285,7 +305,7 @@ class GalleryScript:
     def md5_file(self):
         """The path of the persisted md5 file written at the end of processing."""
         file = self.dwnld_py_file
-        return file.with_name(file.name + '.md5')
+        return file.with_name(file.name + ".md5")
 
     def write_final_md5_file(self):
         """Writes the persisted md5 file."""
@@ -301,7 +321,7 @@ class GalleryScript:
         src_md5_file = self.md5_file
         if src_md5_file.exists():
             ref_md5 = src_md5_file.read_text()
-            md5_has_changed = (actual_md5 != ref_md5)
+            md5_has_changed = actual_md5 != ref_md5
         else:
             md5_has_changed = True
 
@@ -365,7 +385,7 @@ class GalleryScript:
         os.chmod(write_file_new, mode & ro_mask)
 
         # In case it wasn't in our pattern, only replace the file if it's still stale.
-        _replace_by_new_if_needed(write_file_new, md5_mode='t')
+        _replace_by_new_if_needed(write_file_new, md5_mode="t")
 
     def get_thumbnail_source(self, file_conf) -> Path:
         """Get the path to the image to use as the thumbnail.
@@ -379,8 +399,8 @@ class GalleryScript:
             ``# mkdocs_gallery_<name> = <value>``
         """
         # Read specification of the figure to display as thumbnail from main text
-        thumbnail_number = file_conf.get('thumbnail_number', None)
-        thumbnail_path = file_conf.get('thumbnail_path', None)
+        thumbnail_number = file_conf.get("thumbnail_number", None)
+        thumbnail_path = file_conf.get("thumbnail_path", None)
 
         # thumbnail_number has priority.
         if thumbnail_number is None and thumbnail_path is None:
@@ -391,8 +411,9 @@ class GalleryScript:
             # Option 1: generate thumbnail from a numbered figure in the script
 
             if not isinstance(thumbnail_number, int):
-                raise ExtensionError(f"mkdocs_gallery_thumbnail_number setting is not a number, got "
-                                     f"{thumbnail_number!r}")
+                raise ExtensionError(
+                    f"mkdocs_gallery_thumbnail_number setting is not a number, got " f"{thumbnail_number!r}"
+                )
 
             # negative index means counting from the last one
             if thumbnail_number < 0:
@@ -416,6 +437,7 @@ class GalleryScript:
 
 class GalleryBase(ABC):
     """The common part between gallery roots and subsections."""
+
     __slots__ = ("title", "scripts", "_readme_file")
 
     @property
@@ -431,7 +453,7 @@ class GalleryBase(ABC):
     @property
     @abstractmethod
     def subpath(self) -> Path:
-        """Return the subpath for this subgallery. If this is not a subgallery, return `.` """
+        """Return the subpath for this subgallery. If this is not a subgallery, return `.`"""
 
     @property
     @abstractmethod
@@ -465,11 +487,11 @@ class GalleryBase(ABC):
     @property
     def exec_times_md_file(self) -> Path:
         """The absolute path to the execution times markdown file associated with this gallery"""
-        return self.generated_dir / 'mg_execution_times.md'
+        return self.generated_dir / "mg_execution_times.md"
 
     def is_ignored_script_file(self, f: Path):
         """Return True if file `f` is ignored according to the 'ignore_pattern' configuration."""
-        return re.search(self.conf['ignore_pattern'], os.path.normpath(str(f))) is not None
+        return re.search(self.conf["ignore_pattern"], os.path.normpath(str(f))) is not None
 
     def collect_script_files(self, apply_ignore_pattern: bool = True, sort_files: bool = True):
         """Collects script files to process in this gallery and sort them according to configuration.
@@ -493,7 +515,7 @@ class GalleryBase(ABC):
 
         # sort them
         if sort_files:
-            listdir = sorted(listdir, key=self.conf['within_subsection_order']())
+            listdir = sorted(listdir, key=self.conf["within_subsection_order"]())
 
         # Convert to proper objects
         self.scripts: List[GalleryScript] = [GalleryScript(self, f) for f in listdir]
@@ -553,6 +575,7 @@ class GalleryBase(ABC):
 
 class GallerySubSection(GalleryBase):
     """Represents a subsection in a gallery."""
+
     __slots__ = ("__weakref__", "_parent", "subpath")
 
     __repr__ = gen_repr(hide=("__weakref__", "_parent"))
@@ -625,13 +648,25 @@ class Gallery(GalleryBase):
 
     Subgalleries are attached as a separate member.
     """
-    __slots__ = ("__weakref__", "scripts_dir_rel_project", "generated_dir_rel_project", "subsections", "_all_info")
+
+    __slots__ = (
+        "__weakref__",
+        "scripts_dir_rel_project",
+        "generated_dir_rel_project",
+        "subsections",
+        "_all_info",
+    )
 
     __repr__ = gen_repr(hide=("__weakref__", "subsections", "_all_info"))
 
     subpath = Path(".")
 
-    def __init__(self, all_info: "AllInformation", scripts_dir_rel_project: Path, generated_dir_rel_project: Path):
+    def __init__(
+        self,
+        all_info: "AllInformation",
+        scripts_dir_rel_project: Path,
+        generated_dir_rel_project: Path,
+    ):
         """
 
         Parameters
@@ -709,25 +744,31 @@ class Gallery(GalleryBase):
         assert self.subsections is None, "This method can only be called once !"  # noqa
 
         # List all subfolders with a valid readme
-        subfolders = [subfolder for subfolder in self.scripts_dir.iterdir()
-                      if subfolder.is_dir() and _has_readme(subfolder)]
+        subfolders = [
+            subfolder for subfolder in self.scripts_dir.iterdir() if subfolder.is_dir() and _has_readme(subfolder)
+        ]
 
         # Sort them
-        _sortkey = self.conf['subsection_order']
+        _sortkey = self.conf["subsection_order"]
         sortkey = _sortkey
         if _sortkey is not None:
+
             def sortkey(subfolder: Path):
                 # Apply on the string representation of the folder
                 return sortkey(str(subfolder))
 
         sorted_subfolders = sorted(subfolders, key=sortkey)
 
-        self.subsections = tuple((
-            GallerySubSection(self, subpath=f.relative_to(self.scripts_dir))
-            for f in sorted_subfolders
-        ))
+        self.subsections = tuple(
+            (GallerySubSection(self, subpath=f.relative_to(self.scripts_dir)) for f in sorted_subfolders)
+        )
 
-    def collect_script_files(self, recurse: bool = True, apply_ignore_pattern: bool = True, sort_files: bool = True):
+    def collect_script_files(
+        self,
+        recurse: bool = True,
+        apply_ignore_pattern: bool = True,
+        sort_files: bool = True,
+    ):
         """Collects script files to process in this gallery and sort them according to configuration.
 
         Parameters
@@ -798,7 +839,14 @@ class Gallery(GalleryBase):
 
 class AllInformation:
     """Represent all galleries as well as the global configuration."""
-    __slots__ = ("__weakref__", "galleries", "gallery_conf", "mkdocs_conf", "project_root_dir")
+
+    __slots__ = (
+        "__weakref__",
+        "galleries",
+        "gallery_conf",
+        "mkdocs_conf",
+        "project_root_dir",
+    )
 
     __repr__ = gen_repr(show="project_root_dir")
 
@@ -807,7 +855,7 @@ class AllInformation:
         gallery_conf: Dict[str, Any],
         mkdocs_conf: Dict[str, Any],
         project_root_dir: Path,
-        gallery_elts: Tuple[Gallery, ...] = ()
+        gallery_elts: Tuple[Gallery, ...] = (),
     ):
         """
 
@@ -858,8 +906,11 @@ class AllInformation:
         generated_dir_rel_project = Path(generated_dir).relative_to(self.project_root_dir)
 
         # Create the gallery
-        g = Gallery(all_info=self, scripts_dir_rel_project=scripts_dir_rel_project,
-                    generated_dir_rel_project=generated_dir_rel_project)
+        g = Gallery(
+            all_info=self,
+            scripts_dir_rel_project=scripts_dir_rel_project,
+            generated_dir_rel_project=generated_dir_rel_project,
+        )
 
         # Add it to the list
         self.galleries.append(g)
@@ -870,12 +921,17 @@ class AllInformation:
             g.populate_subsections()
 
     def collect_script_files(
-            self, do_subgalleries: bool = True, apply_ignore_pattern: bool = True, sort_files: bool = True
+        self,
+        do_subgalleries: bool = True,
+        apply_ignore_pattern: bool = True,
+        sort_files: bool = True,
     ):
         """Triggers the files collection in all galleries."""
         for g in self.galleries:
             g.collect_script_files(
-                recurse=do_subgalleries, apply_ignore_pattern=apply_ignore_pattern, sort_files=sort_files
+                recurse=do_subgalleries,
+                apply_ignore_pattern=apply_ignore_pattern,
+                sort_files=sort_files,
             )
 
     def get_all_script_files(self):
@@ -884,10 +940,10 @@ class AllInformation:
     @property
     def backrefs_dir(self) -> Path:
         """The absolute path to the backreferences dir"""
-        return Path(self.gallery_conf['backreferences_dir'])
+        return Path(self.gallery_conf["backreferences_dir"])
 
     def get_backreferences_file(self, module_name) -> Path:
-        """Return the path to the backreferences file to use for `module_name` """
+        """Return the path to the backreferences file to use for `module_name`"""
         return self.backrefs_dir / f"{module_name}.examples"
 
     @classmethod
@@ -899,17 +955,21 @@ class AllInformation:
         """
 
         # The project root directory
-        project_root_dir = Path(os.path.abspath(mkdocs_conf['config_file_path'])).parent
+        project_root_dir = Path(os.path.abspath(mkdocs_conf["config_file_path"])).parent
         project_root2 = Path(os.getcwd())
         if project_root2 != project_root_dir:
             raise ValueError("The project root dir is ambiguous ! Please report this issue to mkdocs-gallery.")
 
         # Create the global object
-        all_info = AllInformation(gallery_conf=gallery_conf, mkdocs_conf=mkdocs_conf, project_root_dir=project_root_dir)
+        all_info = AllInformation(
+            gallery_conf=gallery_conf,
+            mkdocs_conf=mkdocs_conf,
+            project_root_dir=project_root_dir,
+        )
 
         # Source and destination of the galleries
-        examples_dirs = gallery_conf['examples_dirs']
-        gallery_dirs = gallery_conf['gallery_dirs']
+        examples_dirs = gallery_conf["examples_dirs"]
+        gallery_dirs = gallery_conf["gallery_dirs"]
 
         if not isinstance(examples_dirs, list):
             examples_dirs = [examples_dirs]
@@ -918,7 +978,7 @@ class AllInformation:
             gallery_dirs = [gallery_dirs]
 
         # Back references page
-        backreferences_dir = gallery_conf['backreferences_dir']
+        backreferences_dir = gallery_conf["backreferences_dir"]
         if backreferences_dir:
             Path(backreferences_dir).mkdir(parents=True, exist_ok=True)
 
