@@ -33,7 +33,9 @@ plugins:
       backreferences_dir: docs/generated/backreferences  # where to generate the back references summary
       doc_module: ['mkdocs_gallery', 'numpy']
       # reference_url: {sphinx_gallery: None},
-      image_scrapers: matplotlib
+      image_scrapers:
+        - matplotlib
+        - mayavi
       compress_images: ['images', 'thumbnails']
       # specify the order of examples to be according to filename
       within_subsection_order: FileNameSortKey

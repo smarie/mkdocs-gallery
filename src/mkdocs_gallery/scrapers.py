@@ -310,7 +310,7 @@ def mayavi_scraper(block, script: GalleryScript):
     e = mlab.get_engine()
     for scene, image_path in zip(e.scenes, image_path_iterator):
         try:
-            mlab.savefig(image_path, figure=scene)
+            mlab.savefig(str(image_path), figure=scene)
         except Exception:
             mlab.close(all=True)
             raise
