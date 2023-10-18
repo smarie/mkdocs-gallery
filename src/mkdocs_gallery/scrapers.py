@@ -137,7 +137,7 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
 
     # Check for srcset hidpi images
     srcset = gallery_conf.get("image_srcset", [])
-    srcset_mult_facs = [1]  # one is always supplied...
+    srcset_mult_facs = [1.0]  # one is always supplied...
     for st in srcset:
         if (len(st) > 0) and (st[-1] == "x"):
             # "2x" = "2.0"
@@ -160,7 +160,7 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
 
     # Then standard images
     for fig_num, image_path in zip(plt.get_fignums(), script.run_vars.image_path_iterator):
-        image_path = PurePosixPath(image_path)
+        image_path = Path(image_path)
         if "format" in kwargs:
             image_path = image_path.with_suffix("." + kwargs["format"])
 
@@ -192,32 +192,31 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
 
         # save the figures, and populate the srcsetpaths
         try:
-            fig.savefig(image_path, **these_kwargs)
+            fig.savefig(str(image_path), **these_kwargs)
             dpi0 = matplotlib.rcParams["savefig.dpi"]
             if dpi0 == "figure":
                 dpi0 = fig.dpi
             dpi0 = these_kwargs.get("dpi", dpi0)
-            srcsetpaths = {0: image_path}
+            srcsetpaths = {0.0: image_path}
 
             # save other srcset paths, keyed by multiplication factor:
             for mult in srcset_mult_facs:
-                if not (mult == 1):
+                if mult != 1:
                     multst = f"{mult}".replace(".", "_")
                     name = f"{image_path.stem}_{multst}x{image_path.suffix}"
-                    hipath = image_path.parent / PurePosixPath(name)
+                    hipath = image_path.parent / name
                     hikwargs = these_kwargs.copy()
                     hikwargs["dpi"] = mult * dpi0
-                    fig.savefig(hipath, **hikwargs)
+                    fig.savefig(str(hipath), **hikwargs)
                     srcsetpaths[mult] = hipath
-            srcsetpaths = [srcsetpaths]
         except Exception:
             plt.close("all")
             raise
 
         if "images" in gallery_conf["compress_images"]:
-            optipng(str(image_path), gallery_conf["compress_images_args"])
-            for hipath in srcsetpaths[0].items():
-                optipng(str(hipath), gallery_conf["compress_images_args"])
+            optipng(image_path, gallery_conf["compress_images_args"])
+            for mult, hipath in srcsetpaths.items():
+                optipng(hipath, gallery_conf["compress_images_args"])
 
         image_mds.append((image_path, fig_titles, srcsetpaths))
 
