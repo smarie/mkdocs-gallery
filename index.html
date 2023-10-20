@@ -1254,7 +1254,12 @@ docs/                # base mkdocs source directory
 
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">search</span><span class="w">  </span><span class="c1"># make sure the search plugin is still enabled</span>
 </code></pre></div>
-<p>Most <a href="https://sphinx-gallery.github.io/stable/configuration.html">sphinx-gallery configuration options</a> are supported and can be configured in here after <code>examples_dirs</code> and <code>gallery_dirs</code>. All paths should be relative to the <code>mkdocs.yml</code> file (which is supposed to be located at project root). </p>
+<p>Most <a href="https://sphinx-gallery.github.io/stable/configuration.html">sphinx-gallery configuration options</a> are supported and can be configured in here after <code>examples_dirs</code> and <code>gallery_dirs</code>. All paths should be relative to the <code>mkdocs.yml</code> file (which is supposed to be located at project root).</p>
+<p>For some general rules:</p>
+<ol>
+<li>The default matching filename pattern is <code>plot_</code>, so to have your files run, ensure the filenames are prefixed with <code>plot_</code>.</li>
+<li><code>__init__.py</code> files are ignored. You can change what's ignored by setting the <code>ignore_pattern</code> as per the <a href="https://sphinx-gallery.github.io/stable/configuration.html">sphinx-gallery configuration options</a></li>
+</ol>
 <p>You can look at the configuration used to generate this site as an example: <a href="https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml">mkdocs.yml</a>.</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
