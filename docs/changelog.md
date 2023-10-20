@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.7.9 - (In Progress)
+
+ - TBD
+
 ### 0.7.8 - Bugfixes
 
  - Fixed `Plugin 'gallery' option 'binder': Sub-option 'org': Required configuration not provided.`. Fixes [#62](https://github.com/smarie/mkdocs-gallery/issues/62)
