@@ -19,7 +19,7 @@ import os
 import re
 import sys
 from distutils.version import LooseVersion
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from textwrap import indent
 from typing import Dict, List, Optional
 from warnings import filterwarnings
@@ -209,13 +209,14 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
                     hikwargs["dpi"] = mult * dpi0
                     fig.savefig(str(hipath), **hikwargs)
                     srcsetpaths[mult] = hipath
+            srcsetpaths = [srcsetpaths]
         except Exception:
             plt.close("all")
             raise
 
         if "images" in gallery_conf["compress_images"]:
             optipng(image_path, gallery_conf["compress_images_args"])
-            for mult, hipath in srcsetpaths.items():
+            for mult, hipath in srcsetpaths[0].items():
                 optipng(hipath, gallery_conf["compress_images_args"])
 
         image_mds.append((image_path, fig_titles, srcsetpaths))
@@ -446,7 +447,6 @@ def figure_md_or_html(
         srcsetpaths = [{0: fl} for fl in figure_paths]
 
     # Get all images relative to the website sources root
-    sources_dir = script.gallery.all_info.mkdocs_docs_dir
     script_md_dir = script.gallery.generated_dir
 
     # Get alt text
