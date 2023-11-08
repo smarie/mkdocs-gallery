@@ -10,10 +10,10 @@ Parser for python source files
 from __future__ import absolute_import, division, print_function
 
 import ast
+import platform
 import re
-import sys
 import tokenize
-from distutils.version import LooseVersion
+from packaging.version import parse as parse_version
 from io import BytesIO
 from pathlib import Path
 from textwrap import dedent
@@ -106,7 +106,7 @@ def _get_docstring_and_rest(file: Path):
             'unless the file is ignored by "ignore_pattern"'
         )
 
-    if LooseVersion(sys.version) >= LooseVersion("3.7"):
+    if parse_version(platform.python_version()) >= parse_version("3.7"):
         docstring = ast.get_docstring(node)
         assert docstring is not None  # noqa  # should be guaranteed above
         # This is just for backward compat
