@@ -59,7 +59,12 @@ plugins:
   - search  # make sure the search plugin is still enabled
 ```
 
-Most [sphinx-gallery configuration options](https://sphinx-gallery.github.io/stable/configuration.html) are supported and can be configured in here after `examples_dirs` and `gallery_dirs`. All paths should be relative to the `mkdocs.yml` file (which is supposed to be located at project root). 
+Most [sphinx-gallery configuration options](https://sphinx-gallery.github.io/stable/configuration.html) are supported and can be configured in here after `examples_dirs` and `gallery_dirs`. All paths should be relative to the `mkdocs.yml` file (which is supposed to be located at project root).
+
+For some general rules:
+
+1. The default matching filename pattern is `plot_`, so to have your files run, ensure the filenames are prefixed with `plot_`.
+2. `__init__.py` files are ignored. You can change what's ignored by setting the `ignore_pattern` as per the [sphinx-gallery configuration options](https://sphinx-gallery.github.io/stable/configuration.html)
 
 You can look at the configuration used to generate this site as an example: [mkdocs.yml](https://github.com/smarie/mkdocs-gallery/blob/main/mkdocs.yml).
 
