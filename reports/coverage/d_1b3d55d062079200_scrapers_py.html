@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="d_1b3d55d062079200_sorting_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.3.2">coverage.py v7.3.2</a>,
-            created at 2023-10-20 10:10 +0000
+            created at 2023-11-08 15:04 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -102,7 +102,7 @@
     <p class="run"><span class="n"><a id="t18" href="#t18">18</a></span><span class="t"><span class="key">import</span> <span class="nam">os</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t19" href="#t19">19</a></span><span class="t"><span class="key">import</span> <span class="nam">re</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t20" href="#t20">20</a></span><span class="t"><span class="key">import</span> <span class="nam">sys</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t21" href="#t21">21</a></span><span class="t"><span class="key">from</span> <span class="nam">distutils</span><span class="op">.</span><span class="nam">version</span> <span class="key">import</span> <span class="nam">LooseVersion</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t21" href="#t21">21</a></span><span class="t"><span class="key">from</span> <span class="nam">packaging</span><span class="op">.</span><span class="nam">version</span> <span class="key">import</span> <span class="nam">parse</span> <span class="key">as</span> <span class="nam">parse_version</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t22" href="#t22">22</a></span><span class="t"><span class="key">from</span> <span class="nam">pathlib</span> <span class="key">import</span> <span class="nam">Path</span><span class="op">,</span> <span class="nam">PurePosixPath</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t23" href="#t23">23</a></span><span class="t"><span class="key">from</span> <span class="nam">textwrap</span> <span class="key">import</span> <span class="nam">indent</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t24" href="#t24">24</a></span><span class="t"><span class="key">from</span> <span class="nam">typing</span> <span class="key">import</span> <span class="nam">Dict</span><span class="op">,</span> <span class="nam">List</span><span class="op">,</span> <span class="nam">Optional</span>&nbsp;</span><span class="r"></span></p>
@@ -356,7 +356,7 @@
     <p class="run"><span class="n"><a id="t272" href="#t272">272</a></span><span class="t">    <span class="nam">thumb_size</span> <span class="op">=</span> <span class="nam">gallery_conf</span><span class="op">[</span><span class="str">"thumbnail_size"</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t273" href="#t273">273</a></span><span class="t">    <span class="nam">use_dpi</span> <span class="op">=</span> <span class="nam">round</span><span class="op">(</span><span class="nam">min</span><span class="op">(</span><span class="nam">t_s</span> <span class="op">/</span> <span class="nam">f_s</span> <span class="key">for</span> <span class="nam">t_s</span><span class="op">,</span> <span class="nam">f_s</span> <span class="key">in</span> <span class="nam">zip</span><span class="op">(</span><span class="nam">thumb_size</span><span class="op">,</span> <span class="nam">fig_size</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t274" href="#t274">274</a></span><span class="t">    <span class="com"># FFmpeg is buggy for GIFs before Matplotlib 3.3.1</span>&nbsp;</span><span class="r"></span></p>
-    <p class="par run show_par"><span class="n"><a id="t275" href="#t275">275</a></span><span class="t">    <span class="key">if</span> <span class="nam">LooseVersion</span><span class="op">(</span><span class="nam">matplotlib</span><span class="op">.</span><span class="nam">__version__</span><span class="op">)</span> <span class="op">>=</span> <span class="nam">LooseVersion</span><span class="op">(</span><span class="str">"3.3.1"</span><span class="op">)</span> <span class="key">and</span> <span class="nam">FFMpegWriter</span><span class="op">.</span><span class="nam">isAvailable</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">275&#x202F;&#x219B;&#x202F;277</span><span class="annotate long">line 275 didn't jump to line 277, because the condition on line 275 was never false</span></span></p>
+    <p class="par run show_par"><span class="n"><a id="t275" href="#t275">275</a></span><span class="t">    <span class="key">if</span> <span class="nam">parse_version</span><span class="op">(</span><span class="nam">matplotlib</span><span class="op">.</span><span class="nam">__version__</span><span class="op">)</span> <span class="op">>=</span> <span class="nam">parse_version</span><span class="op">(</span><span class="str">"3.3.1"</span><span class="op">)</span> <span class="key">and</span> <span class="nam">FFMpegWriter</span><span class="op">.</span><span class="nam">isAvailable</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">275&#x202F;&#x219B;&#x202F;277</span><span class="annotate long">line 275 didn't jump to line 277, because the condition on line 275 was never false</span></span></p>
     <p class="run"><span class="n"><a id="t276" href="#t276">276</a></span><span class="t">        <span class="nam">writer</span> <span class="op">=</span> <span class="str">"ffmpeg"</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t277" href="#t277">277</a></span><span class="t">    <span class="key">elif</span> <span class="nam">ImageMagickWriter</span><span class="op">.</span><span class="nam">isAvailable</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t278" href="#t278">278</a></span><span class="t">        <span class="nam">writer</span> <span class="op">=</span> <span class="str">"imagemagick"</span>&nbsp;</span><span class="r"></span></p>
@@ -690,7 +690,7 @@
             <a id="nextFileLink" class="nav" href="d_1b3d55d062079200_sorting_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.3.2">coverage.py v7.3.2</a>,
-            created at 2023-10-20 10:10 +0000
+            created at 2023-11-08 15:04 +0000
         </p>
     </div>
 </footer>

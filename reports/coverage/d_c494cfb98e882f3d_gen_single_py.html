@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for src/mkdocs_gallery/gen_single.py: 86%</title>
+    <title>Coverage for src/mkdocs_gallery/gen_single.py: 84%</title>
     <link rel="icon" sizes="32x32" href="favicon_32.png">
     <link rel="stylesheet" href="style.css" type="text/css">
     <script type="text/javascript" src="coverage_html.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>src/mkdocs_gallery/gen_single.py</b>:
-            <span class="pc_cov">86%</span>
+            <span class="pc_cov">84%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -56,10 +56,10 @@
         </aside>
         <h2>
             <span class="text">495 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">448<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">47<span class="text"> missing</span></button>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">442<span class="text"> run</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">53<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
-            <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Toggle lines partially run">37<span class="text"> partial</span></button>
+            <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Toggle lines partially run">35<span class="text"> partial</span></button>
         </h2>
         <p class="text">
             <a id="prevFileLink" class="nav" href="d_c494cfb98e882f3d_gen_gallery_py.html">&#xab; prev</a> &nbsp; &nbsp;
@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="d_c494cfb98e882f3d_mkdocs_compatibility_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.3.2">coverage.py v7.3.2</a>,
-            created at 2023-10-20 10:09 +0000
+            created at 2023-11-08 15:02 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -623,15 +623,15 @@
     <p class="pln"><span class="n"><a id="t539" href="#t539">539</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t540" href="#t540">540</a></span><span class="t"><span class="com"># Adapted from github.com/python/cpython/blob/3.7/Lib/warnings.py</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t541" href="#t541">541</a></span><span class="t"><span class="key">def</span> <span class="nam">_showwarning</span><span class="op">(</span><span class="nam">message</span><span class="op">,</span> <span class="nam">category</span><span class="op">,</span> <span class="nam">filename</span><span class="op">,</span> <span class="nam">lineno</span><span class="op">,</span> <span class="nam">file</span><span class="op">=</span><span class="key">None</span><span class="op">,</span> <span class="nam">line</span><span class="op">=</span><span class="key">None</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="par run show_par"><span class="n"><a id="t542" href="#t542">542</a></span><span class="t">    <span class="key">if</span> <span class="nam">file</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">542&#x202F;&#x219B;&#x202F;548</span><span class="annotate long">line 542 didn't jump to line 548, because the condition on line 542 was never false</span></span></p>
-    <p class="run"><span class="n"><a id="t543" href="#t543">543</a></span><span class="t">        <span class="nam">file</span> <span class="op">=</span> <span class="nam">sys</span><span class="op">.</span><span class="nam">stderr</span>&nbsp;</span><span class="r"></span></p>
-    <p class="par run show_par"><span class="n"><a id="t544" href="#t544">544</a></span><span class="t">        <span class="key">if</span> <span class="nam">file</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">544&#x202F;&#x219B;&#x202F;547</span><span class="annotate long">line 544 didn't jump to line 547, because the condition on line 544 was never true</span></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t542" href="#t542">542</a></span><span class="t">    <span class="key">if</span> <span class="nam">file</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t543" href="#t543">543</a></span><span class="t">        <span class="nam">file</span> <span class="op">=</span> <span class="nam">sys</span><span class="op">.</span><span class="nam">stderr</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t544" href="#t544">544</a></span><span class="t">        <span class="key">if</span> <span class="nam">file</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t545" href="#t545">545</a></span><span class="t">            <span class="com"># sys.stderr is None when run with pythonw.exe:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t546" href="#t546">546</a></span><span class="t">            <span class="com"># warnings get lost</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t547" href="#t547">547</a></span><span class="t">            <span class="key">return</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t548" href="#t548">548</a></span><span class="t">    <span class="nam">text</span> <span class="op">=</span> <span class="nam">warnings</span><span class="op">.</span><span class="nam">formatwarning</span><span class="op">(</span><span class="nam">message</span><span class="op">,</span> <span class="nam">category</span><span class="op">,</span> <span class="nam">filename</span><span class="op">,</span> <span class="nam">lineno</span><span class="op">,</span> <span class="nam">line</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t549" href="#t549">549</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t550" href="#t550">550</a></span><span class="t">        <span class="nam">file</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="nam">text</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t548" href="#t548">548</a></span><span class="t">    <span class="nam">text</span> <span class="op">=</span> <span class="nam">warnings</span><span class="op">.</span><span class="nam">formatwarning</span><span class="op">(</span><span class="nam">message</span><span class="op">,</span> <span class="nam">category</span><span class="op">,</span> <span class="nam">filename</span><span class="op">,</span> <span class="nam">lineno</span><span class="op">,</span> <span class="nam">line</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t549" href="#t549">549</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t550" href="#t550">550</a></span><span class="t">        <span class="nam">file</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="nam">text</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t551" href="#t551">551</a></span><span class="t">    <span class="key">except</span> <span class="nam">OSError</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t552" href="#t552">552</a></span><span class="t">        <span class="com"># the file (probably stderr) is invalid - this warning gets lost.</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t553" href="#t553">553</a></span><span class="t">        <span class="key">pass</span>&nbsp;</span><span class="r"></span></p>
@@ -1317,7 +1317,7 @@
             <a id="nextFileLink" class="nav" href="d_c494cfb98e882f3d_mkdocs_compatibility_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.3.2">coverage.py v7.3.2</a>,
-            created at 2023-10-20 10:09 +0000
+            created at 2023-11-08 15:02 +0000
         </p>
     </div>
 </footer>
