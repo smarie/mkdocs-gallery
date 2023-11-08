@@ -2,7 +2,7 @@
 
 ### 0.7.9 - (In Progress)
 
- - Swapped from deprecated `disutils.version` to `packaging.version`. Fixes [#76](https://github.com/smarie/mkdocs-gallery/issues/76)
+ - Swapped from deprecated `disutils.version` to `packaging.version`. PR [#79](https://github.com/smarie/mkdocs-gallery/pull/79) by [Samreay](https://github.com/Samreay)
 
 ### 0.7.8 - Bugfixes
 
