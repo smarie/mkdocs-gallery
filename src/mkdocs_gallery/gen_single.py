@@ -733,7 +733,6 @@ def _reset_cwd_syspath(cwd, new_path):
     if new_path in sys.path:
         sys.path.remove(new_path)
     os.chdir(cwd)
-    # sys.path = sys_path
 
 
 def execute_code_block(compiler, block, script: GalleryScript):
@@ -775,7 +774,6 @@ def execute_code_block(compiler, block, script: GalleryScript):
     # created by the example get created in this directory
     os.chdir(src_file.parent)
 
-    sys_path = copy.deepcopy(sys.path)
     new_path = os.getcwd()
     sys.path.append(new_path)
 
