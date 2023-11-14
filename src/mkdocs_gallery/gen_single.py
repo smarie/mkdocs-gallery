@@ -728,10 +728,12 @@ def _get_code_output(is_last_expr, script: GalleryScript, logging_tee, images_md
     return code_output
 
 
-def _reset_cwd_syspath(cwd, sys_path):
+def _reset_cwd_syspath(cwd, new_path):
     """Reset cwd and sys.path."""
+    if new_path in sys.path:
+        sys.path.remove(new_path)
     os.chdir(cwd)
-    sys.path = sys_path
+    # sys.path = sys_path
 
 
 def execute_code_block(compiler, block, script: GalleryScript):
@@ -774,7 +776,8 @@ def execute_code_block(compiler, block, script: GalleryScript):
     os.chdir(src_file.parent)
 
     sys_path = copy.deepcopy(sys.path)
-    sys.path.append(os.getcwd())
+    new_path = os.getcwd()
+    sys.path.append(new_path)
 
     # Save figures unless there is a `mkdocs_gallery_defer_figures` flag
     match = re.search(r"^[\ \t]*#\s*mkdocs_gallery_defer_figures[\ \t]*\n?", bcontent, re.MULTILINE)
@@ -818,11 +821,11 @@ def execute_code_block(compiler, block, script: GalleryScript):
         if need_save_figures:
             save_figures(block, script)
     else:
-        _reset_cwd_syspath(cwd, sys_path)
+        _reset_cwd_syspath(cwd, new_path)
 
         code_output = _get_code_output(is_last_expr, script, logging_tee, images_md)
     finally:
-        _reset_cwd_syspath(cwd, sys_path)
+        _reset_cwd_syspath(cwd, new_path)
         logging_tee.restore_std()
 
     # Sanitize ANSI escape characters from MD output
