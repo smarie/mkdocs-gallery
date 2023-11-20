@@ -137,7 +137,7 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
 
     # Check for srcset hidpi images
     srcset = gallery_conf.get("image_srcset", [])
-    srcset_mult_facs = [1.0]  # one is always supplied...
+    srcset_mult_facs = [1]  # one is always supplied...
     for st in srcset:
         if (len(st) > 0) and (st[-1] == "x"):
             # "2x" = "2.0"
@@ -192,22 +192,22 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
 
         # save the figures, and populate the srcsetpaths
         try:
-            fig.savefig(str(image_path), **these_kwargs)
+            fig.savefig(image_path, **these_kwargs)
             dpi0 = matplotlib.rcParams["savefig.dpi"]
             if dpi0 == "figure":
                 dpi0 = fig.dpi
             dpi0 = these_kwargs.get("dpi", dpi0)
-            srcsetpaths = {0.0: image_path}
+            srcsetpaths = {0: image_path}
 
             # save other srcset paths, keyed by multiplication factor:
             for mult in srcset_mult_facs:
-                if mult != 1:
+                if not (mult == 1):
                     multst = f"{mult}".replace(".", "_")
                     name = f"{image_path.stem}_{multst}x{image_path.suffix}"
-                    hipath = image_path.parent / name
+                    hipath = image_path.parent / Path(name)
                     hikwargs = these_kwargs.copy()
                     hikwargs["dpi"] = mult * dpi0
-                    fig.savefig(str(hipath), **hikwargs)
+                    fig.savefig(hipath, **hikwargs)
                     srcsetpaths[mult] = hipath
             srcsetpaths = [srcsetpaths]
         except Exception:
@@ -216,7 +216,7 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
 
         if "images" in gallery_conf["compress_images"]:
             optipng(image_path, gallery_conf["compress_images_args"])
-            for mult, hipath in srcsetpaths[0].items():
+            for _, hipath in srcsetpaths[0].items():
                 optipng(hipath, gallery_conf["compress_images_args"])
 
         image_mds.append((image_path, fig_titles, srcsetpaths))
@@ -447,6 +447,7 @@ def figure_md_or_html(
         srcsetpaths = [{0: fl} for fl in figure_paths]
 
     # Get all images relative to the website sources root
+    sources_dir = script.gallery.all_info.mkdocs_docs_dir
     script_md_dir = script.gallery.generated_dir
 
     # Get alt text
