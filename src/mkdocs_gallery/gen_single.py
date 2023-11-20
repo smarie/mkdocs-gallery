@@ -774,6 +774,7 @@ def execute_code_block(compiler, block, script: GalleryScript):
     # created by the example get created in this directory
     os.chdir(src_file.parent)
 
+    # Add the example dir to the path temporarily (will be removed after execution)
     new_path = os.getcwd()
     sys.path.append(new_path)
 
