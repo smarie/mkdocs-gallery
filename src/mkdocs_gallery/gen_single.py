@@ -728,7 +728,7 @@ def _get_code_output(is_last_expr, script: GalleryScript, logging_tee, images_md
     return code_output
 
 
-def _reset_cwd_syspath(cwd, new_path):
+def _reset_cwd_syspath(cwd, path_to_remove):
     """Reset cwd and sys.path."""
     if new_path in sys.path:
         sys.path.remove(new_path)
