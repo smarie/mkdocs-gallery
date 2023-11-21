@@ -69,8 +69,12 @@ jobs:
           python-version: 3.9
           architecture: x64
 
-      # Setup Qt libraries for mayavi pyqt backend used in demo example
-      - uses: tlambert03/setup-qt-libs@v1
+      # Setup Qt libraries and OpenGL for mayavi pyqt backend used in demo example
+      - name: Setup Qt libraries
+        uses: tlambert03/setup-qt-libs@v1
+
+      - name: OpenGL Actions
+        uses: NishkarshRaj/OpenGL_Actions@1.0
 
       - name: Install noxfile requirements
         run: pip install -r noxfile-requirements.txt
