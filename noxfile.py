@@ -214,7 +214,10 @@ def docs(session: PowerSession):
 @power_session(python=[PY39])
 def publish(session: PowerSession):
     """Deploy the docs+reports on github pages. Note: this rebuilds the docs"""
-
+    if sys.platform is "linux" and session.python >=3.8:
+        MKDOCS_GALLERY_EXAMPLES_REQS = MKDOCS_GALLERY_EXAMPLES_BASE_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS
+    else:
+        MKDOCS_GALLERY_EXAMPLES_REQS = MKDOCS_GALLERY_EXAMPLES_BASE_REQS
     session.install_reqs(
         phase="mkdocs",
         phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS
