@@ -181,9 +181,8 @@ MKDOCS_GALLERY_EXAMPLES_REQS = [
     # "memory_profiler",
     "pillow",  # PIL, required for image rescaling
     # mayavi dependency for tests requires mayavi, vtk, and pyqt
-    "vtk==9.2.6",  # vtk dependency can be removed after mayavi>=4.7.4 is released.
-    "mayavi==4.7.3",  # we want mayavi>=4.7.4 when available due to https://github.com/enthought/mayavi/pull/1272
     "PyQt5",
+    "https://github.com/enthought/mayavi.git",  # we want mayavi>=4.7.4 when available due to https://github.com/enthought/mayavi/pull/1272
 ]
 
 
