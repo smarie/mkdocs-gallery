@@ -1154,6 +1154,7 @@
 <li>Fixed <code>AttributeError</code> when <code>optipng</code> is installed and used through the <code>compress_images</code> option. PR <a href="https://github.com/smarie/mkdocs-gallery/pull/77">#77</a> by <a href="https://github.com/Samreay">Samreay</a></li>
 <li>Swapped from deprecated <code>disutils.version</code> to <code>packaging.version</code>. PR <a href="https://github.com/smarie/mkdocs-gallery/pull/79">#79</a> by <a href="https://github.com/Samreay">Samreay</a></li>
 <li>Re-raise errors for better ExtensionError messages, so users have full details about the original problem. PR <a href="https://github.com/smarie/mkdocs-gallery/pull/58">#58</a> by <a href="https://github.com/GenevieveBuckley">GenevieveBuckley</a></li>
+<li><code>sys.path</code> modifications now persist accross blocks of an example. <code>sys.path</code> is still reset after each example. PR <a href="https://github.com/smarie/mkdocs-gallery/pull/82">#82</a> by <a href="https://github.com/Louis-Pujol">Louis-Pujol</a>.</li>
 </ul>
 <h3 id="078-bugfixes">0.7.8 - Bugfixes<a class="headerlink" href="#078-bugfixes" title="Permanent link">&para;</a></h3>
 <ul>
