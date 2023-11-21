@@ -181,6 +181,7 @@ MKDOCS_GALLERY_EXAMPLES_REQS = [
     # "memory_profiler",
     "pillow",  # PIL, required for image rescaling
     "PyQt5",  # PyQt is required for the mayavi backend
+    "PyOpenGL",  # PyOpenGL is required for mayavi backend on Windows OS
     "git+https://github.com/enthought/mayavi.git",  # we want mayavi>=4.7.4 when available due to https://github.com/enthought/mayavi/pull/1272
 ]
 
