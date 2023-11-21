@@ -18,7 +18,7 @@ file generated for each example script.
 import os
 import re
 import sys
-from distutils.version import LooseVersion
+from packaging.version import parse as parse_version
 from pathlib import Path, PurePosixPath
 from textwrap import indent
 from typing import Dict, List, Optional
@@ -272,7 +272,7 @@ def _anim_md(anim, image_path, gallery_conf):
     thumb_size = gallery_conf["thumbnail_size"]
     use_dpi = round(min(t_s / f_s for t_s, f_s in zip(thumb_size, fig_size)))
     # FFmpeg is buggy for GIFs before Matplotlib 3.3.1
-    if LooseVersion(matplotlib.__version__) >= LooseVersion("3.3.1") and FFMpegWriter.isAvailable():
+    if parse_version(matplotlib.__version__) >= parse_version("3.3.1") and FFMpegWriter.isAvailable():
         writer = "ffmpeg"
     elif ImageMagickWriter.isAvailable():
         writer = "imagemagick"
