@@ -180,7 +180,7 @@ MKDOCS_GALLERY_EXAMPLES_REQS = [
     "plotly",
     # "memory_profiler",
     "pillow",  # PIL, required for image rescaling
-    "mayavi",
+    "git+https://github.com/enthought/mayavi.git",  # We need mayavi>=4.7.4 due to https://github.com/enthought/mayavi/pull/1272
 ]
 
 
