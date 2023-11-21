@@ -31,17 +31,12 @@ jobs:
           python-version: 3.9
           architecture: x64
 
-      # Setup Qt libraries for mayavi pyqt backend used in demo example
-      - uses: tlambert03/setup-qt-libs@v1
-
       - name: Install noxfile requirements
         run: pip install -r noxfile-requirements.txt
 
       - name: List 'tests' nox sessions and required python versions
         id: set-matrix
-        uses: aganders3/headless-gui@v1
-        with:
-          run: echo "matrix=$(nox -s gha_list -- -s tests -v)" >> $GITHUB_OUTPUT
+        run: echo "::set-output name=matrix::$(nox -s gha_list -- -s tests -v)"
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}  # save nox sessions list to outputs
@@ -73,6 +68,9 @@ jobs:
         with:
           python-version: 3.9
           architecture: x64
+
+      # Setup Qt libraries for mayavi pyqt backend used in demo example
+      - uses: tlambert03/setup-qt-libs@v1
 
       - name: Install noxfile requirements
         run: pip install -r noxfile-requirements.txt
