@@ -3,6 +3,7 @@
 ### 0.7.9 - (In Progress)
 
  - Swapped from deprecated `disutils.version` to `packaging.version`. PR [#79](https://github.com/smarie/mkdocs-gallery/pull/79) by [Samreay](https://github.com/Samreay)
+ - Rewrited `gen_single._reset_cwd_syspath` function to let `sys.path` modifications persist accross blocks. PR [#82](https://github.com/smarie/mkdocs-gallery/pull/82) by [Louis-Pujol](https://github.com/Louis-Pujol).
 
 ### 0.7.8 - Bugfixes
 
