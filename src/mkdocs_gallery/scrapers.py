@@ -19,7 +19,7 @@ import os
 import re
 import sys
 from packaging.version import parse as parse_version
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from textwrap import indent
 from typing import Dict, List, Optional
 from warnings import filterwarnings
@@ -160,7 +160,7 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
 
     # Then standard images
     for fig_num, image_path in zip(plt.get_fignums(), script.run_vars.image_path_iterator):
-        image_path = PurePosixPath(image_path)
+        image_path = Path(image_path)
         if "format" in kwargs:
             image_path = image_path.with_suffix("." + kwargs["format"])
 
@@ -204,7 +204,7 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
                 if not (mult == 1):
                     multst = f"{mult}".replace(".", "_")
                     name = f"{image_path.stem}_{multst}x{image_path.suffix}"
-                    hipath = image_path.parent / PurePosixPath(name)
+                    hipath = image_path.parent / Path(name)
                     hikwargs = these_kwargs.copy()
                     hikwargs["dpi"] = mult * dpi0
                     fig.savefig(hipath, **hikwargs)
@@ -215,9 +215,9 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
             raise
 
         if "images" in gallery_conf["compress_images"]:
-            optipng(str(image_path), gallery_conf["compress_images_args"])
-            for hipath in srcsetpaths[0].items():
-                optipng(str(hipath), gallery_conf["compress_images_args"])
+            optipng(image_path, gallery_conf["compress_images_args"])
+            for _, hipath in srcsetpaths[0].items():
+                optipng(hipath, gallery_conf["compress_images_args"])
 
         image_mds.append((image_path, fig_titles, srcsetpaths))
 
