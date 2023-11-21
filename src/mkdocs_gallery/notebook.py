@@ -7,25 +7,26 @@
 Parser for Jupyter notebooks
 """
 
-from __future__ import division, absolute_import, print_function
-from functools import partial
+from __future__ import absolute_import, division, print_function
+
 import argparse
 import base64
+import copy
 import json
 import mimetypes
 import os
 import re
 import sys
-import copy
+from functools import partial
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List
 
 from . import mkdocs_compatibility
 from .errors import ExtensionError
-from .py_source_parser import split_code_and_text_blocks
 from .gen_data_model import GalleryScript
+from .py_source_parser import split_code_and_text_blocks
 
-logger = mkdocs_compatibility.getLogger('mkdocs-gallery')
+logger = mkdocs_compatibility.getLogger("mkdocs-gallery")
 
 
 def jupyter_notebook_skeleton():
@@ -37,23 +38,20 @@ def jupyter_notebook_skeleton():
             "kernelspec": {
                 "display_name": "Python " + str(py_version[0]),
                 "language": "python",
-                "name": "python" + str(py_version[0])
+                "name": "python" + str(py_version[0]),
             },
             "language_info": {
-                "codemirror_mode": {
-                    "name": "ipython",
-                    "version": py_version[0]
-                },
+                "codemirror_mode": {"name": "ipython", "version": py_version[0]},
                 "file_extension": ".py",
                 "mimetype": "text/x-python",
                 "name": "python",
                 "nbconvert_exporter": "python",
                 "pygments_lexer": "ipython" + str(py_version[0]),
-                "version": '{0}.{1}.{2}'.format(*sys.version_info[:3])
-            }
+                "version": "{0}.{1}.{2}".format(*sys.version_info[:3]),
+            },
         },
         "nbformat": 4,
-        "nbformat_minor": 0
+        "nbformat_minor": 0,
     }
     return notebook_skeleton
 
@@ -61,9 +59,9 @@ def jupyter_notebook_skeleton():
 def directive_fun(match, directive):
     """Helper to fill in directives"""
     directive_to_alert = dict(note="info", warning="danger")
-    return ('<div class="alert alert-{0}"><h4>{1}</h4><p>{2}</p></div>'
-            .format(directive_to_alert[directive], directive.capitalize(),
-                    match.group(1).strip()))
+    return '<div class="alert alert-{0}"><h4>{1}</h4><p>{2}</p></div>'.format(
+        directive_to_alert[directive], directive.capitalize(), match.group(1).strip()
+    )
 
 
 def rst2md(text, gallery_conf, target_dir, heading_levels):
@@ -89,93 +87,89 @@ def rst2md(text, gallery_conf, target_dir, heading_levels):
     adornment_characters = "=`:.'\"~^_*+#<>-"
     headings = re.compile(
         # Start of string or blank line
-        r'(?P<pre>\A|^[ \t]*\n)'
+        r"(?P<pre>\A|^[ \t]*\n)"
         # Optional over characters, allowing leading space on heading text
-        r'(?:(?P<over>[{0}])(?P=over)*\n[ \t]*)?'
+        r"(?:(?P<over>[{0}])(?P=over)*\n[ \t]*)?"
         # The heading itself, with at least one non-white space character
-        r'(?P<heading>\S[^\n]*)\n'
+        r"(?P<heading>\S[^\n]*)\n"
         # Under character, setting to same character if over present.
-        r'(?P<under>(?(over)(?P=over)|[{0}]))(?P=under)*$'
-        r''.format(adornment_characters),
-        flags=re.M)
+        r"(?P<under>(?(over)(?P=over)|[{0}]))(?P=under)*$" r"".format(adornment_characters),
+        flags=re.M,
+    )
 
     text = re.sub(
         headings,
-        lambda match: '{1}{0} {2}'.format(
-            '#'*heading_levels[match.group('over', 'under')],
-            *match.group('pre', 'heading')),
-        text)
+        lambda match: "{1}{0} {2}".format(
+            "#" * heading_levels[match.group("over", "under")], *match.group("pre", "heading")
+        ),
+        text,
+    )
 
-    math_eq = re.compile(r'^\.\. math::((?:.+)?(?:\n+^  .+)*)', flags=re.M)
-    text = re.sub(math_eq,
-                  lambda match: r'\begin{{align}}{0}\end{{align}}'.format(
-                      match.group(1).strip()),
-                  text)
-    inline_math = re.compile(r':math:`(.+?)`', re.DOTALL)
-    text = re.sub(inline_math, r'$\1$', text)
+    math_eq = re.compile(r"^\.\. math::((?:.+)?(?:\n+^  .+)*)", flags=re.M)
+    text = re.sub(
+        math_eq,
+        lambda match: r"\begin{{align}}{0}\end{{align}}".format(match.group(1).strip()),
+        text,
+    )
+    inline_math = re.compile(r":math:`(.+?)`", re.DOTALL)
+    text = re.sub(inline_math, r"$\1$", text)
 
-    directives = ('warning', 'note')
+    directives = ("warning", "note")
     for directive in directives:
-        directive_re = re.compile(r'^\.\. %s::((?:.+)?(?:\n+^  .+)*)'
-                                  % directive, flags=re.M)
-        text = re.sub(directive_re,
-                      partial(directive_fun, directive=directive), text)
+        directive_re = re.compile(r"^\.\. %s::((?:.+)?(?:\n+^  .+)*)" % directive, flags=re.M)
+        text = re.sub(directive_re, partial(directive_fun, directive=directive), text)
 
-    links = re.compile(r'^ *\.\. _.*:.*$\n', flags=re.M)
-    text = re.sub(links, '', text)
+    links = re.compile(r"^ *\.\. _.*:.*$\n", flags=re.M)
+    text = re.sub(links, "", text)
 
-    refs = re.compile(r':ref:`')
-    text = re.sub(refs, '`', text)
+    refs = re.compile(r":ref:`")
+    text = re.sub(refs, "`", text)
 
-    contents = re.compile(r'^\s*\.\. contents::.*$(\n +:\S+: *$)*\n',
-                          flags=re.M)
-    text = re.sub(contents, '', text)
+    contents = re.compile(r"^\s*\.\. contents::.*$(\n +:\S+: *$)*\n", flags=re.M)
+    text = re.sub(contents, "", text)
 
-    images = re.compile(
-        r'^\.\. image::(.*$)((?:\n +:\S+:.*$)*)\n',
-        flags=re.M)
-    image_opts = re.compile(r'\n +:(\S+): +(.*)$', flags=re.M)
+    images = re.compile(r"^\.\. image::(.*$)((?:\n +:\S+:.*$)*)\n", flags=re.M)
+    image_opts = re.compile(r"\n +:(\S+): +(.*)$", flags=re.M)
     text = re.sub(
         images,
         lambda match: '<img src="{}"{}>\n'.format(
-            generate_image_src(
-                match.group(1).strip(), gallery_conf, target_dir),
-            re.sub(image_opts, r' \1="\2"', match.group(2) or '')),
-        text)
+            generate_image_src(match.group(1).strip(), gallery_conf, target_dir),
+            re.sub(image_opts, r' \1="\2"', match.group(2) or ""),
+        ),
+        text,
+    )
 
     return text
 
 
 def generate_image_src(image_path, gallery_conf, target_dir):
-    if re.match(r'https?://', image_path):
+    if re.match(r"https?://", image_path):
         return image_path
 
-    if not gallery_conf['notebook_images']:
-        return "file://" + image_path.lstrip('/')
+    if not gallery_conf["notebook_images"]:
+        return "file://" + image_path.lstrip("/")
 
     # If absolute path from source directory given
-    if image_path.startswith('/'):
+    if image_path.startswith("/"):
         # Path should now be relative to source dir, not target dir
-        target_dir = mkdocs_conf['docs_dir']
-        image_path = image_path.lstrip('/')
-    full_path = os.path.join(target_dir, image_path.replace('/', os.sep))
+        target_dir = mkdocs_conf["docs_dir"]
+        image_path = image_path.lstrip("/")
+    full_path = os.path.join(target_dir, image_path.replace("/", os.sep))
 
-    if isinstance(gallery_conf['notebook_images'], str):
+    if isinstance(gallery_conf["notebook_images"], str):
         # Use as prefix e.g. URL
-        prefix = gallery_conf['notebook_images']
-        rel_path = os.path.relpath(full_path, mkdocs_conf['docs_dir'])
-        return prefix + rel_path.replace(os.sep, '/')
+        prefix = gallery_conf["notebook_images"]
+        rel_path = os.path.relpath(full_path, mkdocs_conf["docs_dir"])
+        return prefix + rel_path.replace(os.sep, "/")
     else:
         # True, but not string. Embed as data URI.
         try:
-            with open(full_path, 'rb') as image_file:
+            with open(full_path, "rb") as image_file:
                 data = base64.b64encode(image_file.read())
         except OSError:
-            raise ExtensionError(
-                'Unable to open {} to generate notebook data URI'
-                ''.format(full_path))
+            raise ExtensionError("Unable to open {} to generate notebook data URI" "".format(full_path))
         mime_type = mimetypes.guess_type(full_path)
-        return 'data:{};base64,{}'.format(mime_type[0], data.decode('ascii'))
+        return "data:{};base64,{}".format(mime_type[0], data.decode("ascii"))
 
 
 def jupyter_notebook(script: GalleryScript, script_blocks: List):
@@ -224,7 +218,7 @@ def add_code_cell(work_notebook, code):
         "execution_count": None,
         "metadata": {"collapsed": False},
         "outputs": [],
-        "source": [code.strip()]
+        "source": [code.strip()],
     }
     work_notebook["cells"].append(code_cell)
 
@@ -237,11 +231,7 @@ def add_markdown_cell(work_notebook, markdown):
     markdown : str
         Markdown cell content.
     """
-    markdown_cell = {
-        "cell_type": "markdown",
-        "metadata": {},
-        "source": [markdown]
-    }
+    markdown_cell = {"cell_type": "markdown", "metadata": {}, "source": [markdown]}
     work_notebook["cells"].append(markdown_cell)
 
 
@@ -258,7 +248,7 @@ def fill_notebook(work_notebook, script_blocks):
     # heading_level_counter = count(start=1)
     # heading_levels = defaultdict(lambda: next(heading_level_counter))
     for blabel, bcontent, _lineno in script_blocks:
-        if blabel == 'code':
+        if blabel == "code":
             add_code_cell(work_notebook, bcontent)
         else:
             # if gallery_conf["pypandoc"] is False:
@@ -270,18 +260,19 @@ def fill_notebook(work_notebook, script_blocks):
             #     markdown = pypandoc.convert_text(
             #         bcontent, to='md', format='rst', **gallery_conf["pypandoc"]
             #     )
-            markdown = bcontent + '\n'
+            markdown = bcontent + "\n"
             add_markdown_cell(work_notebook, markdown)
 
 
 def save_notebook(work_notebook: Dict, write_file: Path):
     """Saves the Jupyter work_notebook to write_file"""
-    with open(str(write_file), 'w') as out_nb:
+    with open(str(write_file), "w") as out_nb:
         json.dump(work_notebook, out_nb, indent=2)
 
 
 ###############################################################################
 # Notebook shell utility
+
 
 def python_to_jupyter_cli(args=None, namespace=None):
     """Exposes the jupyter notebook renderer to the command line
@@ -289,17 +280,18 @@ def python_to_jupyter_cli(args=None, namespace=None):
     Takes the same arguments as ArgumentParser.parse_args
     """
     from . import gen_gallery  # To avoid circular import
-    parser = argparse.ArgumentParser(
-        description='mkdocs-gallery Notebook converter')
-    parser.add_argument('python_src_file', nargs='+',
-                        help='Input Python file script to convert. '
-                        'Supports multiple files and shell wildcards'
-                        ' (e.g. *.py)')
+
+    parser = argparse.ArgumentParser(description="mkdocs-gallery Notebook converter")
+    parser.add_argument(
+        "python_src_file",
+        nargs="+",
+        help="Input Python file script to convert. " "Supports multiple files and shell wildcards" " (e.g. *.py)",
+    )
     args = parser.parse_args(args, namespace)
 
     for src_file in args.python_src_file:
         file_conf, blocks = split_code_and_text_blocks(src_file)
-        print('Converting {0}'.format(src_file))  # noqa  # this is a cli
+        print("Converting {0}".format(src_file))  # noqa  # this is a cli
         gallery_conf = copy.deepcopy(gen_gallery.DEFAULT_GALLERY_CONF)
         target_dir = os.path.dirname(src_file)
         example_nb = jupyter_notebook(blocks, gallery_conf, target_dir)

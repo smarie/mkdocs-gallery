@@ -15,40 +15,48 @@ images are injected as rst ``image-sg`` directives into the ``.md``
 file generated for each example script.
 """
 
-from typing import Dict, Optional, List
-
 import os
-import sys
 import re
-from distutils.version import LooseVersion
+import sys
+from packaging.version import parse as parse_version
+from pathlib import Path, PurePosixPath
 from textwrap import indent
-from pathlib import PurePosixPath, Path
+from typing import Dict, List, Optional
 from warnings import filterwarnings
 
 from .errors import ExtensionError
-
 from .gen_data_model import GalleryScript
-from .utils import rescale_image, optipng
+from .utils import optipng, rescale_image
 
-__all__ = ['save_figures', 'figure_md_or_html', 'clean_modules', 'matplotlib_scraper', 'mayavi_scraper']
+__all__ = [
+    "save_figures",
+    "figure_md_or_html",
+    "clean_modules",
+    "matplotlib_scraper",
+    "mayavi_scraper",
+]
 
 
 ###############################################################################
 # Scrapers
+
 
 def _import_matplotlib():
     """Import matplotlib safely."""
     # make sure that the Agg backend is set before importing any
     # matplotlib
     import matplotlib
-    matplotlib.use('agg')
+
+    matplotlib.use("agg")
     matplotlib_backend = matplotlib.get_backend().lower()
 
-    filterwarnings("ignore", category=UserWarning,
-                   message='Matplotlib is currently using agg, which is a'
-                           ' non-GUI backend, so cannot show the figure.')
+    filterwarnings(
+        "ignore",
+        category=UserWarning,
+        message="Matplotlib is currently using agg, which is a" " non-GUI backend, so cannot show the figure.",
+    )
 
-    if matplotlib_backend != 'agg':
+    if matplotlib_backend != "agg":
         raise ExtensionError(
             "mkdocs-gallery relies on the matplotlib 'agg' backend to "
             "render figures and write them to files. You are "
@@ -57,10 +65,11 @@ def _import_matplotlib():
             "not well supported by matplotlib. We advise you to move "
             "mkdocs_gallery imports before any matplotlib-dependent "
             "import. Moving mkdocs_gallery imports at the top of "
-            "your conf.py file should fix this issue"
-            .format(matplotlib_backend))
+            "your conf.py file should fix this issue".format(matplotlib_backend)
+        )
 
     import matplotlib.pyplot as plt
+
     return matplotlib, plt
 
 
@@ -71,13 +80,13 @@ def _matplotlib_fig_titles(fig):
     if suptitle is not None:
         titles.append(suptitle.get_text())
     # get titles from all axes, for all locs
-    title_locs = ['left', 'center', 'right']
+    title_locs = ["left", "center", "right"]
     for ax in fig.axes:
         for loc in title_locs:
             text = ax.get_title(loc=loc)
             if text:
                 titles.append(text)
-    fig_titles = ', '.join(titles)
+    fig_titles = ", ".join(titles)
     return fig_titles
 
 
@@ -127,10 +136,10 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
     image_mds = []
 
     # Check for srcset hidpi images
-    srcset = gallery_conf.get('image_srcset', [])
+    srcset = gallery_conf.get("image_srcset", [])
     srcset_mult_facs = [1]  # one is always supplied...
     for st in srcset:
-        if (len(st) > 0) and (st[-1] == 'x'):
+        if (len(st) > 0) and (st[-1] == "x"):
             # "2x" = "2.0"
             srcset_mult_facs += [float(st[:-1])]
         elif st == "":
@@ -138,12 +147,13 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
         else:
             raise ExtensionError(
                 f'Invalid value for image_srcset parameter: "{st}". '
-                'Must be a list of strings with the multiplicative '
-                'factor followed by an "x".  e.g. ["2.0x", "1.5x"]')
+                "Must be a list of strings with the multiplicative "
+                'factor followed by an "x".  e.g. ["2.0x", "1.5x"]'
+            )
 
     # Check for animations
     anims = list()
-    if gallery_conf.get('matplotlib_animations', False):
+    if gallery_conf.get("matplotlib_animations", False):
         for ani in script.run_vars.example_globals.values():
             if isinstance(ani, Animation):
                 anims.append(ani)
@@ -151,8 +161,8 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
     # Then standard images
     for fig_num, image_path in zip(plt.get_fignums(), script.run_vars.image_path_iterator):
         image_path = PurePosixPath(image_path)
-        if 'format' in kwargs:
-            image_path = image_path.with_suffix('.' + kwargs['format'])
+        if "format" in kwargs:
+            image_path = image_path.with_suffix("." + kwargs["format"])
 
         # Set the fig_num figure as the current figure as we can't save a figure that's not the current figure.
         fig = plt.figure(fig_num)
@@ -174,45 +184,44 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
         # shallow copy should be fine here, just want to avoid changing
         # "kwargs" for subsequent figures processed by the loop
         these_kwargs = kwargs.copy()
-        for attr in ['facecolor', 'edgecolor']:
-            fig_attr = getattr(fig, 'get_' + attr)()
-            default_attr = matplotlib.rcParams['figure.' + attr]
-            if to_rgba(fig_attr) != to_rgba(default_attr) and \
-                    attr not in kwargs:
+        for attr in ["facecolor", "edgecolor"]:
+            fig_attr = getattr(fig, "get_" + attr)()
+            default_attr = matplotlib.rcParams["figure." + attr]
+            if to_rgba(fig_attr) != to_rgba(default_attr) and attr not in kwargs:
                 these_kwargs[attr] = fig_attr
 
         # save the figures, and populate the srcsetpaths
         try:
             fig.savefig(image_path, **these_kwargs)
-            dpi0 = matplotlib.rcParams['savefig.dpi']
-            if dpi0 == 'figure':
+            dpi0 = matplotlib.rcParams["savefig.dpi"]
+            if dpi0 == "figure":
                 dpi0 = fig.dpi
-            dpi0 = these_kwargs.get('dpi', dpi0)
+            dpi0 = these_kwargs.get("dpi", dpi0)
             srcsetpaths = {0: image_path}
 
             # save other srcset paths, keyed by multiplication factor:
             for mult in srcset_mult_facs:
                 if not (mult == 1):
-                    multst = f'{mult}'.replace('.', '_')
+                    multst = f"{mult}".replace(".", "_")
                     name = f"{image_path.stem}_{multst}x{image_path.suffix}"
                     hipath = image_path.parent / PurePosixPath(name)
                     hikwargs = these_kwargs.copy()
-                    hikwargs['dpi'] = mult * dpi0
+                    hikwargs["dpi"] = mult * dpi0
                     fig.savefig(hipath, **hikwargs)
                     srcsetpaths[mult] = hipath
             srcsetpaths = [srcsetpaths]
         except Exception:
-            plt.close('all')
+            plt.close("all")
             raise
 
-        if 'images' in gallery_conf['compress_images']:
-            optipng(str(image_path), gallery_conf['compress_images_args'])
+        if "images" in gallery_conf["compress_images"]:
+            optipng(str(image_path), gallery_conf["compress_images_args"])
             for hipath in srcsetpaths[0].items():
-                optipng(str(hipath), gallery_conf['compress_images_args'])
+                optipng(str(hipath), gallery_conf["compress_images_args"])
 
         image_mds.append((image_path, fig_titles, srcsetpaths))
 
-    plt.close('all')
+    plt.close("all")
 
     # Create the markdown or html output
     # <li>
@@ -226,7 +235,7 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
     #      alt="Negative exponential function" class="sphx-glr-multi-img">
     # </li>
 
-    md = ''
+    md = ""
     if len(image_mds) == 1:
         if isinstance(image_mds[0], str):
             # an animation, see _anim_md
@@ -247,34 +256,33 @@ def matplotlib_scraper(block, script: GalleryScript, **kwargs):
         for image_path, fig_titles, srcsetpaths in image_mds:
             img_html = figure_md_or_html([image_path], script, fig_titles, srcsetpaths=srcsetpaths, raw_html=True)
             image_htmls.append(img_html)
-        md = HLIST_HEADER % (''.join(image_htmls))
+        md = HLIST_HEADER % ("".join(image_htmls))
     return md
 
 
 def _anim_md(anim, image_path, gallery_conf):
     import matplotlib
     from matplotlib.animation import FFMpegWriter, ImageMagickWriter
+
     # output the thumbnail as the image, as it will just be copied
     # if it's the file thumbnail
     fig = anim._fig
-    image_path = image_path.replace('.png', '.gif')
+    image_path = image_path.replace(".png", ".gif")
     fig_size = fig.get_size_inches()
-    thumb_size = gallery_conf['thumbnail_size']
-    use_dpi = round(
-        min(t_s / f_s for t_s, f_s in zip(thumb_size, fig_size)))
+    thumb_size = gallery_conf["thumbnail_size"]
+    use_dpi = round(min(t_s / f_s for t_s, f_s in zip(thumb_size, fig_size)))
     # FFmpeg is buggy for GIFs before Matplotlib 3.3.1
-    if LooseVersion(matplotlib.__version__) >= LooseVersion('3.3.1') and \
-            FFMpegWriter.isAvailable():
-        writer = 'ffmpeg'
+    if parse_version(matplotlib.__version__) >= parse_version("3.3.1") and FFMpegWriter.isAvailable():
+        writer = "ffmpeg"
     elif ImageMagickWriter.isAvailable():
-        writer = 'imagemagick'
+        writer = "imagemagick"
     else:
         writer = None
     anim.save(image_path, writer=writer, dpi=use_dpi)
     html = anim._repr_html_()
     if html is None:  # plt.rcParams['animation.html'] == 'none'
         html = anim.to_jshtml()
-    html = indent(html, '     ')
+    html = indent(html, "     ")
     return _ANIMATION_RST.format(html=html)
 
 
@@ -296,6 +304,7 @@ def mayavi_scraper(block, script: GalleryScript):
         the images. This is often produced by :func:`figure_md_or_html`.
     """
     from mayavi import mlab
+
     image_path_iterator = script.run_vars.image_path_iterator
     image_paths = list()
     e = mlab.get_engine()
@@ -307,8 +316,8 @@ def mayavi_scraper(block, script: GalleryScript):
             raise
         # make sure the image is not too large
         rescale_image(image_path, image_path, 850, 999)
-        if 'images' in script.gallery_conf['compress_images']:
-            optipng(image_path, script.gallery_conf['compress_images_args'])
+        if "images" in script.gallery_conf["compress_images"]:
+            optipng(image_path, script.gallery_conf["compress_images_args"])
         image_paths.append(image_path)
     mlab.close(all=True)
     return figure_md_or_html(image_paths, script)
@@ -321,7 +330,7 @@ _scraper_dict = dict(
 
 
 # For now, these are what we support
-_KNOWN_IMG_EXTS = ('.png', '.svg', '.jpg', '.gif')
+_KNOWN_IMG_EXTS = (".png", ".svg", ".jpg", ".gif")
 
 
 class ImageNotFoundError(FileNotFoundError):
@@ -344,7 +353,7 @@ def _find_image_ext(path: Path, raise_if_not_found: bool = True) -> Path:
             raise ImageNotFoundError(path)
 
         # None exists. Default to png.
-        ext = '.png'
+        ext = ".png"
         this_path = path.with_suffix(ext)
 
     return this_path, ext
@@ -367,9 +376,9 @@ def save_figures(block, script: GalleryScript):
         md code to embed the images in the document.
     """
     image_path_iterator = script.run_vars.image_path_iterator
-    all_md = u''
+    all_md = ""
     prev_count = len(image_path_iterator)
-    for scraper in script.gallery_conf['image_scrapers']:
+    for scraper in script.gallery_conf["image_scrapers"]:
         # Use the scraper to generate the md containing image(s) (may be several)
         md = scraper(block, script)
         if not isinstance(md, str):
@@ -393,9 +402,9 @@ PREFIX_LEN = len("mkd_glr_")
 def figure_md_or_html(
     figure_paths: List[Path],
     script: GalleryScript,
-    fig_titles: str = '',
+    fig_titles: str = "",
     srcsetpaths: List[Dict[float, Path]] = None,
-    raw_html=False
+    raw_html=False,
 ):
     """Generate md or raw html for a list of image filenames.
 
@@ -442,7 +451,7 @@ def figure_md_or_html(
     script_md_dir = script.gallery.generated_dir
 
     # Get alt text
-    alt = ''
+    alt = ""
     if fig_titles:
         alt = fig_titles
     elif figure_paths:
@@ -450,7 +459,7 @@ def figure_md_or_html(
         # remove ext & 'mkd_glr_' from start & n#'s from end
         file_name_noext = os.path.splitext(file_name)[0][PREFIX_LEN:-4]
         # replace - & _ with \s
-        file_name_final = re.sub(r'[-,_]', ' ', file_name_noext)
+        file_name_final = re.sub(r"[-,_]", " ", file_name_noext)
         alt = file_name_final
 
     alt = _single_line_sanitize(alt)
@@ -460,11 +469,13 @@ def figure_md_or_html(
         figure_path = figure_paths[0]
         hinames = srcsetpaths[0]
         srcset = _get_srcset_st(script_md_dir, hinames)
-        figure_path_rel_to_script_md_dir = figure_path.relative_to(script_md_dir).as_posix().lstrip('/')
+        figure_path_rel_to_script_md_dir = figure_path.relative_to(script_md_dir).as_posix().lstrip("/")
         if raw_html:
             # html version
-            images_md = f'<img alt="{alt}" src="../{figure_path_rel_to_script_md_dir}" srcset="{srcset}", ' \
-                        f'class="sphx-glr-single-img" />'
+            images_md = (
+                f'<img alt="{alt}" src="../{figure_path_rel_to_script_md_dir}" srcset="{srcset}", '
+                f'class="sphx-glr-single-img" />'
+            )
         else:
             # markdown version
             images_md = f'![{alt}](./{figure_path_rel_to_script_md_dir}){{: .mkd-glr-single-img srcset="{srcset}"}}'
@@ -474,8 +485,12 @@ def figure_md_or_html(
         for nn, figure_path in enumerate(figure_paths):
             hinames = srcsetpaths[nn]
             srcset = _get_srcset_st(script_md_dir, hinames)
-            figure_path_rel_to_script_md_dir = figure_path.relative_to(script_md_dir).as_posix().lstrip('/')
-            images_md += (HLIST_SG_TEMPLATE % (alt, figure_path_rel_to_script_md_dir, srcset))
+            figure_path_rel_to_script_md_dir = figure_path.relative_to(script_md_dir).as_posix().lstrip("/")
+            images_md += HLIST_SG_TEMPLATE % (
+                alt,
+                figure_path_rel_to_script_md_dir,
+                srcset,
+            )
 
     return images_md
 
@@ -491,17 +506,17 @@ def _get_srcset_st(sources_dir: Path, hinames: Dict[float, Path]):
     '/plot_types/basic/images/mkd_glr_pie_001.png,
     /plot_types/basic/images/mkd_glr_pie_001_2_0x.png 2.0x'
     """
-    srcst = ''
+    srcst = ""
     for k in hinames.keys():
-        path = hinames[k].relative_to(sources_dir).as_posix().lstrip('/')
-        srcst += '../' + path
+        path = hinames[k].relative_to(sources_dir).as_posix().lstrip("/")
+        srcst += "../" + path
         if k == 0:
-            srcst += ', '
+            srcst += ", "
         else:
-            srcst += f' {k:1.1f}x, '
-    if srcst[-2:] == ', ':
+            srcst += f" {k:1.1f}x, "
+    if srcst[-2:] == ", ":
         srcst = srcst[:-2]
-    srcst += ''
+    srcst += ""
 
     return srcst
 
@@ -510,7 +525,7 @@ def _single_line_sanitize(s):
     """Remove problematic newlines."""
     # For example, when setting a :alt: for an image, it shouldn't have \n
     # This is a function in case we end up finding other things to replace
-    return s.replace('\n', ' ')
+    return s.replace("\n", " ")
 
 
 # The following strings are used when we have several pictures: we use
@@ -555,13 +570,13 @@ def _reset_seaborn(gallery_conf, file: Path):
     # Python does not support unloading of modules
     # https://bugs.python.org/issue9072
     for module in list(sys.modules.keys()):
-        if 'seaborn' in module:
+        if "seaborn" in module:
             del sys.modules[module]
 
 
 _reset_dict = {
-    'matplotlib': _reset_matplotlib,
-    'seaborn': _reset_seaborn,
+    "matplotlib": _reset_matplotlib,
+    "seaborn": _reset_seaborn,
 }
 
 
@@ -580,5 +595,5 @@ def clean_modules(gallery_conf: Dict, file: Optional[Path]):
         The example being run. Will be None when this is called entering
         a directory of examples to be built.
     """
-    for reset_module in gallery_conf['reset_modules']:
+    for reset_module in gallery_conf["reset_modules"]:
         reset_module(gallery_conf, file)

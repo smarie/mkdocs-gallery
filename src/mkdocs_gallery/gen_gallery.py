@@ -7,39 +7,39 @@
 Generator for a whole gallery.
 """
 
-from __future__ import division, print_function, absolute_import
-
-from ast import literal_eval
-
-from importlib.util import spec_from_file_location, module_from_spec
-
-from typing import Dict, Iterable, Tuple, List, Set
+from __future__ import absolute_import, division, print_function
 
 import codecs
 import copy
-from datetime import timedelta, datetime
+import os
+import re
+from ast import literal_eval
+from datetime import datetime, timedelta
 from difflib import get_close_matches
 from importlib import import_module
-import re
-import os
+from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
-from xml.sax.saxutils import quoteattr, escape  # noqa  # indeed this is just quoting and escaping
+from typing import Dict, Iterable, List, Set, Tuple
+from xml.sax.saxutils import escape, quoteattr  # noqa  # indeed this is just quoting and escaping
 
-from .errors import ConfigError, ExtensionError
 from . import mkdocs_compatibility
-from .gen_data_model import AllInformation, GalleryScript, GalleryScriptResults, GalleryBase
-from .mkdocs_compatibility import red
-from .utils import _replace_by_new_if_needed, _has_optipng, _new_file, matches_filepath_pattern
 from .backreferences import _finalize_backreferences
-from .gen_single import MKD_GLR_SIG, _get_memory_base, generate
-from .scrapers import _scraper_dict, _reset_dict, _import_matplotlib
-from .downloads import generate_zipfiles
-from .sorting import NumberOfCodeLinesSortKey, str_to_sorting_method
 from .binder import check_binder_conf
+from .downloads import generate_zipfiles
+from .errors import ConfigError, ExtensionError
+from .gen_data_model import AllInformation, GalleryBase, GalleryScript, GalleryScriptResults
+from .gen_single import MKD_GLR_SIG, _get_memory_base, generate
+from .mkdocs_compatibility import red
+from .scrapers import _import_matplotlib, _reset_dict, _scraper_dict
+from .sorting import NumberOfCodeLinesSortKey, str_to_sorting_method
+from .utils import _has_optipng, _new_file, _replace_by_new_if_needed, matches_filepath_pattern
 
-
-_KNOWN_CSS = ('sg_gallery', 'sg_gallery-binder', 'sg_gallery-dataframe',
-              'sg_gallery-rendered-html')
+_KNOWN_CSS = (
+    "sg_gallery",
+    "sg_gallery-binder",
+    "sg_gallery-dataframe",
+    "sg_gallery-rendered-html",
+)
 
 
 class DefaultResetArgv:
@@ -51,56 +51,56 @@ class DefaultResetArgv:
 
 
 DEFAULT_GALLERY_CONF = {
-    'filename_pattern': re.escape(os.sep) + 'plot',
-    'ignore_pattern': r'__init__\.py',
-    'examples_dirs': os.path.join('..', 'examples'),
-    'reset_argv': DefaultResetArgv(),
-    'subsection_order': None,
-    'within_subsection_order': NumberOfCodeLinesSortKey,
-    'gallery_dirs': 'auto_examples',
-    'backreferences_dir': None,
-    'doc_module': (),
-    'reference_url': {},
-    'capture_repr': ('_repr_html_', '__repr__'),
-    'ignore_repr_types': r'',
+    "filename_pattern": re.escape(os.sep) + "plot",
+    "ignore_pattern": r"__init__\.py",
+    "examples_dirs": os.path.join("..", "examples"),
+    "reset_argv": DefaultResetArgv(),
+    "subsection_order": None,
+    "within_subsection_order": NumberOfCodeLinesSortKey,
+    "gallery_dirs": "auto_examples",
+    "backreferences_dir": None,
+    "doc_module": (),
+    "reference_url": {},
+    "capture_repr": ("_repr_html_", "__repr__"),
+    "ignore_repr_types": r"",
     # Build options
     # -------------
     # 'plot_gallery' also accepts strings that evaluate to a bool, e.g. "True",
     # "False", "1", "0" so that they can be easily set via command line
     # switches of sphinx-build
-    'plot_gallery': True,
-    'download_all_examples': True,
-    'abort_on_example_error': False,
-    'only_warn_on_example_error': False,
-    'failing_examples': {},  # type: Set[str]
-    'passing_examples': [],
-    'stale_examples': [],  # type: List[str]  # ones that did not need to be run due to md5sum
-    'run_stale_examples': False,
-    'expected_failing_examples': set(),  # type: Set[str]
-    'thumbnail_size': (400, 280),  # Default CSS does 0.4 scaling (160, 112)
-    'min_reported_time': 0,
-    'binder': {},
-    'image_scrapers': ('matplotlib',),
-    'compress_images': (),
-    'reset_modules': ('matplotlib', 'seaborn'),
-    'first_notebook_cell': '%matplotlib inline',
-    'last_notebook_cell': None,
-    'notebook_images': False,
+    "plot_gallery": True,
+    "download_all_examples": True,
+    "abort_on_example_error": False,
+    "only_warn_on_example_error": False,
+    "failing_examples": {},  # type: Set[str]
+    "passing_examples": [],
+    "stale_examples": [],  # type: List[str]  # ones that did not need to be run due to md5sum
+    "run_stale_examples": False,
+    "expected_failing_examples": set(),  # type: Set[str]
+    "thumbnail_size": (400, 280),  # Default CSS does 0.4 scaling (160, 112)
+    "min_reported_time": 0,
+    "binder": {},
+    "image_scrapers": ("matplotlib",),
+    "compress_images": (),
+    "reset_modules": ("matplotlib", "seaborn"),
+    "first_notebook_cell": "%matplotlib inline",
+    "last_notebook_cell": None,
+    "notebook_images": False,
     # 'pypandoc': False,
-    'remove_config_comments': False,
-    'show_memory': False,
-    'show_signature': True,
-    'junit': '',
-    'log_level': {'backreference_missing': 'warning'},
-    'inspect_global_variables': True,
-    'css': _KNOWN_CSS,
-    'matplotlib_animations': False,
-    'image_srcset': [],
-    'default_thumb_file': None,
-    'line_numbers': False,
+    "remove_config_comments": False,
+    "show_memory": False,
+    "show_signature": True,
+    "junit": "",
+    "log_level": {"backreference_missing": "warning"},
+    "inspect_global_variables": True,
+    "css": _KNOWN_CSS,
+    "matplotlib_animations": False,
+    "image_srcset": [],
+    "default_thumb_file": None,
+    "line_numbers": False,
 }
 
-logger = mkdocs_compatibility.getLogger('mkdocs-gallery')
+logger = mkdocs_compatibility.getLogger("mkdocs-gallery")
 
 
 def _bool_eval(x):
@@ -122,7 +122,7 @@ def parse_config(mkdocs_gallery_conf, mkdocs_conf, check_keys=True):
     # Merge configs
     for opt_name, opt_value in mkdocs_gallery_conf.items():
         # Did the user override the option in mkdocs.yml ? (for SubConfigswe do not receive None but {})
-        if opt_value is None or (opt_name in ('binder',) and len(opt_value) == 0):
+        if opt_value is None or (opt_name in ("binder",) and len(opt_value) == 0):
             continue  # Not user-specified, skip
 
         # User has overridden it. Use it
@@ -150,100 +150,113 @@ def load_base_conf(script: Path = None) -> Dict:
     try:
         return foo.conf
     except AttributeError as err_msg:
-        raise ExtensionError(f"Error loading base configuration from `base_conf_py` {script}, module does not contain "
-                             f"a `conf` variable.\n{err_msg}")
+        raise ExtensionError(
+            f"Error loading base configuration from `base_conf_py` {script}, module does not contain "
+            f"a `conf` variable.\n{err_msg}"
+        )
 
 
-def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
-                           builder_name='html', app=None, check_keys=True):
+def _complete_gallery_conf(
+    mkdocs_gallery_conf,
+    mkdocs_conf,
+    lang="python",
+    builder_name="html",
+    app=None,
+    check_keys=True,
+):
     gallery_conf = copy.deepcopy(DEFAULT_GALLERY_CONF)
     options = sorted(gallery_conf)
     extra_keys = sorted(set(mkdocs_gallery_conf) - set(options))
     if extra_keys and check_keys:
-        msg = 'Unknown key(s) in mkdocs_gallery_conf:\n'
+        msg = "Unknown key(s) in mkdocs_gallery_conf:\n"
         for key in extra_keys:
             options = get_close_matches(key, options, cutoff=0.66)
             msg += repr(key)
             if len(options) == 1:
-                msg += ', did you mean %r?' % (options[0],)
+                msg += ", did you mean %r?" % (options[0],)
             elif len(options) > 1:
-                msg += ', did you mean one of %r?' % (options,)
-            msg += '\n'
+                msg += ", did you mean one of %r?" % (options,)
+            msg += "\n"
         raise ConfigError(msg.strip())
     gallery_conf.update(mkdocs_gallery_conf)
-    if mkdocs_gallery_conf.get('find_mayavi_figures', False):
+    if mkdocs_gallery_conf.get("find_mayavi_figures", False):
         logger.warning(
             "Deprecated image scraping variable `find_mayavi_figures`\n"
             "detected, use `image_scrapers` instead as:\n\n"
             "   image_scrapers=('matplotlib', 'mayavi')",
-            type=DeprecationWarning)
-        gallery_conf['image_scrapers'] += ('mayavi',)
+            type=DeprecationWarning,
+        )
+        gallery_conf["image_scrapers"] += ("mayavi",)
 
     # Text to Class for sorting methods
-    _order = gallery_conf['subsection_order']
+    _order = gallery_conf["subsection_order"]
     if isinstance(_order, str):
         # the option was passed from the mkdocs.yml file
-        gallery_conf['subsection_order'] = str_to_sorting_method(_order)
+        gallery_conf["subsection_order"] = str_to_sorting_method(_order)
 
-    _order = gallery_conf['within_subsection_order']
+    _order = gallery_conf["within_subsection_order"]
     if isinstance(_order, str):
         # the option was passed from the mkdocs.yml file
-        gallery_conf['within_subsection_order'] = str_to_sorting_method(_order)
+        gallery_conf["within_subsection_order"] = str_to_sorting_method(_order)
 
     # XXX anything that can only be a bool (rather than str) should probably be
     # evaluated this way as it allows setting via -D on the command line
-    for key in ('run_stale_examples',):
+    for key in ("run_stale_examples",):
         gallery_conf[key] = _bool_eval(gallery_conf[key])
     # gallery_conf['src_dir'] = mkdocs_conf['docs_dir']
     # gallery_conf['app'] = app
 
     # Check capture_repr
-    capture_repr = gallery_conf['capture_repr']
-    supported_reprs = ['__repr__', '__str__', '_repr_html_']
+    capture_repr = gallery_conf["capture_repr"]
+    supported_reprs = ["__repr__", "__str__", "_repr_html_"]
+    if isinstance(capture_repr, list):
+        # Convert to tuple.
+        gallery_conf["capture_repr"] = capture_repr = tuple(capture_repr)
     if isinstance(capture_repr, tuple):
         for rep in capture_repr:
             if rep not in supported_reprs:
-                raise ConfigError("All entries in 'capture_repr' must be one "
-                                  "of %s, got: %s" % (supported_reprs, rep))
+                raise ConfigError(
+                    "All entries in 'capture_repr' must be one " "of %s, got: %s" % (supported_reprs, rep)
+                )
     else:
-        raise ConfigError("'capture_repr' must be a tuple, got: %s"
-                          % (type(capture_repr),))
+        raise ConfigError("'capture_repr' must be a tuple, got: %s" % (type(capture_repr),))
     # Check ignore_repr_types
-    if not isinstance(gallery_conf['ignore_repr_types'], str):
-        raise ConfigError("'ignore_repr_types' must be a string, got: %s"
-                          % (type(gallery_conf['ignore_repr_types']),))
+    if not isinstance(gallery_conf["ignore_repr_types"], str):
+        raise ConfigError("'ignore_repr_types' must be a string, got: %s" % (type(gallery_conf["ignore_repr_types"]),))
 
     # deal with show_memory
-    gallery_conf['memory_base'] = 0.
-    if gallery_conf['show_memory']:
-        if not callable(gallery_conf['show_memory']):  # True-like
+    gallery_conf["memory_base"] = 0.0
+    if gallery_conf["show_memory"]:
+        if not callable(gallery_conf["show_memory"]):  # True-like
             try:
                 from memory_profiler import memory_usage  # noqa
             except ImportError:
-                logger.warning("Please install 'memory_profiler' to enable "
-                               "peak memory measurements.")
-                gallery_conf['show_memory'] = False
+                logger.warning("Please install 'memory_profiler' to enable " "peak memory measurements.")
+                gallery_conf["show_memory"] = False
             else:
+
                 def call_memory(func):
-                    mem, out = memory_usage(func, max_usage=True, retval=True,
-                                            multiprocess=True)
+                    mem, out = memory_usage(func, max_usage=True, retval=True, multiprocess=True)
                     try:
                         mem = mem[0]  # old MP always returned a list
                     except TypeError:  # 'float' object is not subscriptable
                         pass
                     return mem, out
-                gallery_conf['call_memory'] = call_memory
-                gallery_conf['memory_base'] = _get_memory_base(gallery_conf)
+
+                gallery_conf["call_memory"] = call_memory
+                gallery_conf["memory_base"] = _get_memory_base(gallery_conf)
         else:
-            gallery_conf['call_memory'] = gallery_conf['show_memory']
-    if not gallery_conf['show_memory']:  # can be set to False above
+            gallery_conf["call_memory"] = gallery_conf["show_memory"]
+    if not gallery_conf["show_memory"]:  # can be set to False above
+
         def call_memory(func):
-            return 0., func()
-        gallery_conf['call_memory'] = call_memory
-    assert callable(gallery_conf['call_memory'])  # noqa
+            return 0.0, func()
+
+        gallery_conf["call_memory"] = call_memory
+    assert callable(gallery_conf["call_memory"])  # noqa
 
     # deal with scrapers
-    scrapers = gallery_conf['image_scrapers']
+    scrapers = gallery_conf["image_scrapers"]
     if not isinstance(scrapers, (tuple, list)):
         scrapers = [scrapers]
     scrapers = list(scrapers)
@@ -258,12 +271,11 @@ def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
                     scraper = scraper._get_sg_image_scraper
                     scraper = scraper()
                 except Exception as exp:
-                    raise ConfigError('Unknown image scraper %r, got:\n%s'
-                                      % (orig_scraper, exp))
+                    raise ConfigError("Unknown image scraper %r, got:\n%s" % (orig_scraper, exp))
             scrapers[si] = scraper
         if not callable(scraper):
-            raise ConfigError('Scraper %r was not callable' % (scraper,))
-    gallery_conf['image_scrapers'] = tuple(scrapers)
+            raise ConfigError("Scraper %r was not callable" % (scraper,))
+    gallery_conf["image_scrapers"] = tuple(scrapers)
     del scrapers
     # Here we try to set up matplotlib but don't raise an error,
     # we will raise an error later when we actually try to use it
@@ -280,62 +292,61 @@ def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
         pass
 
     # compress_images
-    compress_images = gallery_conf['compress_images']
+    compress_images = gallery_conf["compress_images"]
     if isinstance(compress_images, str):
         compress_images = [compress_images]
     elif not isinstance(compress_images, (tuple, list)):
-        raise ConfigError('compress_images must be a tuple, list, or str, '
-                          'got %s' % (type(compress_images),))
+        raise ConfigError("compress_images must be a tuple, list, or str, " "got %s" % (type(compress_images),))
     compress_images = list(compress_images)
-    allowed_values = ('images', 'thumbnails')
+    allowed_values = ("images", "thumbnails")
     pops = list()
     for ki, kind in enumerate(compress_images):
         if kind not in allowed_values:
-            if kind.startswith('-'):
+            if kind.startswith("-"):
                 pops.append(ki)
                 continue
-            raise ConfigError('All entries in compress_images must be one of '
-                              '%s or a command-line switch starting with "-", '
-                              'got %r' % (allowed_values, kind))
+            raise ConfigError(
+                "All entries in compress_images must be one of "
+                '%s or a command-line switch starting with "-", '
+                "got %r" % (allowed_values, kind)
+            )
     compress_images_args = [compress_images.pop(p) for p in pops[::-1]]
     if len(compress_images) and not _has_optipng():
-        logger.warning(
-            'optipng binaries not found, PNG %s will not be optimized'
-            % (' and '.join(compress_images),))
+        logger.warning("optipng binaries not found, PNG %s will not be optimized" % (" and ".join(compress_images),))
         compress_images = ()
-    gallery_conf['compress_images'] = compress_images
-    gallery_conf['compress_images_args'] = compress_images_args
+    gallery_conf["compress_images"] = compress_images
+    gallery_conf["compress_images_args"] = compress_images_args
 
     # deal with resetters
-    resetters = gallery_conf['reset_modules']
+    resetters = gallery_conf["reset_modules"]
     if not isinstance(resetters, (tuple, list)):
         resetters = [resetters]
     resetters = list(resetters)
     for ri, resetter in enumerate(resetters):
         if isinstance(resetter, str):
             if resetter not in _reset_dict:
-                raise ConfigError('Unknown module resetter named %r'
-                                  % (resetter,))
+                raise ConfigError("Unknown module resetter named %r" % (resetter,))
             resetters[ri] = _reset_dict[resetter]
         elif not callable(resetter):
-            raise ConfigError('Module resetter %r was not callable'
-                              % (resetter,))
-    gallery_conf['reset_modules'] = tuple(resetters)
+            raise ConfigError("Module resetter %r was not callable" % (resetter,))
+    gallery_conf["reset_modules"] = tuple(resetters)
 
-    lang = lang if lang in ('python', 'python3', 'default') else 'python'
-    gallery_conf['lang'] = lang
+    lang = lang if lang in ("python", "python3", "default") else "python"
+    gallery_conf["lang"] = lang
     del resetters
 
     # Ensure the first cell text is a string if we have it
     first_cell = gallery_conf.get("first_notebook_cell")
     if (not isinstance(first_cell, str)) and (first_cell is not None):
-        raise ConfigError("The 'first_notebook_cell' parameter must be type "
-                          "str or None, found type %s" % type(first_cell))
+        raise ConfigError(
+            "The 'first_notebook_cell' parameter must be type " "str or None, found type %s" % type(first_cell)
+        )
     # Ensure the last cell text is a string if we have it
     last_cell = gallery_conf.get("last_notebook_cell")
     if (not isinstance(last_cell, str)) and (last_cell is not None):
-        raise ConfigError("The 'last_notebook_cell' parameter must be type str"
-                          " or None, found type %s" % type(last_cell))
+        raise ConfigError(
+            "The 'last_notebook_cell' parameter must be type str" " or None, found type %s" % type(last_cell)
+        )
     # Check pypandoc
     # pypandoc = gallery_conf['pypandoc']
     # if not isinstance(pypandoc, (dict, bool)):
@@ -366,23 +377,21 @@ def _complete_gallery_conf(mkdocs_gallery_conf, mkdocs_conf, lang='python',
     # gallery_conf['titles'] = {}
 
     # Ensure 'backreferences_dir' is str, Path or None
-    backref = gallery_conf['backreferences_dir']
-    if (not isinstance(backref, (str, Path))) and \
-            (backref is not None):
-        raise ConfigError("The 'backreferences_dir' parameter must be of type "
-                          "str, Path or None, "
-                          "found type %s" % type(backref))
+    backref = gallery_conf["backreferences_dir"]
+    if (not isinstance(backref, (str, Path))) and (backref is not None):
+        raise ConfigError(
+            "The 'backreferences_dir' parameter must be of type " "str, Path or None, " "found type %s" % type(backref)
+        )
     # if 'backreferences_dir' is str, make Path
     # NO: we need it to remain a str so that plugin.py works (it uses it to exclude the dir in serve mode)
     # if isinstance(backref, str):
     #     gallery_conf['backreferences_dir'] = Path(backref)
 
     # binder
-    gallery_conf['binder'] = check_binder_conf(gallery_conf['binder'])
+    gallery_conf["binder"] = check_binder_conf(gallery_conf["binder"])
 
-    if not isinstance(gallery_conf['css'], (list, tuple)):
-        raise ConfigError('gallery_conf["css"] must be list or tuple, got %r'
-                          % (gallery_conf['css'],))
+    if not isinstance(gallery_conf["css"], (list, tuple)):
+        raise ConfigError('gallery_conf["css"] must be list or tuple, got %r' % (gallery_conf["css"],))
     # for css in gallery_conf['css']:
     #     if css not in _KNOWN_CSS:
     #         raise ConfigError('Unknown css %r, must be one of %r'
@@ -407,7 +416,7 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
     md_to_src_file : Dict[str, Path]
         A map of posix absolute file path to generated markdown example -> Path of the src file relative to project root
     """
-    logger.info('generating gallery...')  # , color='white')
+    logger.info("generating gallery...")  # , color='white')
     # gallery_conf = parse_config(app)  already done
 
     seen_backrefs = set()
@@ -453,7 +462,7 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
 
         # Create an index.md with all examples
         index_md_new = _new_file(gallery.index_md)
-        with codecs.open(str(index_md_new), 'w', encoding='utf-8') as fhindex:
+        with codecs.open(str(index_md_new), "w", encoding="utf-8") as fhindex:
             # Write the README and thumbnails for the root-level examples
             fhindex.write(index_md)
 
@@ -482,35 +491,35 @@ def generate_gallery_md(gallery_conf, mkdocs_conf) -> Dict[Path, Tuple[str, Dict
                 fhindex.write(sub_index_md)
 
             # Finally generate the download buttons
-            if gallery_conf['download_all_examples']:
+            if gallery_conf["download_all_examples"]:
                 download_fhindex = generate_zipfiles(gallery)
                 fhindex.write(download_fhindex)
 
             # And the "generated by..." signature
-            if gallery_conf['show_signature']:
+            if gallery_conf["show_signature"]:
                 fhindex.write(MKD_GLR_SIG)
 
         # Remove the .new suffix and update the md5
-        index_md = _replace_by_new_if_needed(index_md_new, md5_mode='t')
+        index_md = _replace_by_new_if_needed(index_md_new, md5_mode="t")
 
     _finalize_backreferences(seen_backrefs, all_info)
 
-    if gallery_conf['plot_gallery']:
+    if gallery_conf["plot_gallery"]:
         logger.info("computation time summary:")  # , color='white')
-        lines, lens = _format_for_writing(all_results, kind='console')
+        lines, lens = _format_for_writing(all_results, kind="console")
         for name, t, m in lines:
-            text = ('    - %s:   ' % (name,)).ljust(lens[0] + 10)
+            text = ("    - %s:   " % (name,)).ljust(lens[0] + 10)
             if t is None:
-                text += '(not run)'
+                text += "(not run)"
                 logger.info(text)
             else:
                 t_float = float(t.split()[0])
-                if t_float >= gallery_conf['min_reported_time']:
-                    text += t.rjust(lens[1]) + '   ' + m.rjust(lens[2])
+                if t_float >= gallery_conf["min_reported_time"]:
+                    text += t.rjust(lens[1]) + "   " + m.rjust(lens[2])
                     logger.info(text)
 
         # Also create a junit.xml file if needed for rep
-        if gallery_conf['junit'] and gallery_conf['plot_gallery']:
+        if gallery_conf["junit"] and gallery_conf["plot_gallery"]:
             write_junit_xml(all_info, all_results)
 
     return md_files_toc, md_to_src_file
@@ -607,8 +616,9 @@ def fill_mkdocs_nav(mkdocs_config: Dict, galleries_tocs: Dict[Path, Tuple[str, D
                 return {toc_name: _replace_element(toc_elt)}
 
         else:
-            raise TypeError(f"Unsupported nav item type: f{type(toc_elt)}. Please report this issue to "
-                            f"mkdocs-gallery.")
+            raise TypeError(
+                f"Unsupported nav item type: f{type(toc_elt)}. Please report this issue to " f"mkdocs-gallery."
+            )
 
     modded_nav = _replace_element(mkdocs_config["nav"])
     return modded_nav
@@ -621,9 +631,7 @@ def _sec_to_readable(t):
     # there aren't many > 99 minute scripts, but occasionally some
     # > 9 minute ones
     t = datetime(1, 1, 1) + timedelta(seconds=t)
-    t = '{0:02d}:{1:02d}.{2:03d}'.format(
-        t.hour * 60 + t.minute, t.second,
-        int(round(t.microsecond / 1000.)))
+    t = "{0:02d}:{1:02d}.{2:03d}".format(t.hour * 60 + t.minute, t.second, int(round(t.microsecond / 1000.0)))
     return t
 
 
@@ -632,13 +640,15 @@ def cost_name_key(result: GalleryScriptResults):
     return (-result.exec_time, -result.memory, result.script.src_py_file_rel_project)
 
 
-def _format_for_writing(results: GalleryScriptResults, kind='md'):
+def _format_for_writing(results: GalleryScriptResults, kind="md"):
     """Format (name, time, memory) for a single row in the mg_execution_times.md table."""
     lines = list()
     for result in sorted(results, key=cost_name_key):
-        if kind == 'md':  # like in mg_execution_times
-            text = f"[{result.script.script_stem}](./{result.script.md_file.name}) " \
-                   f"({result.script.src_py_file_rel_project.as_posix()})"
+        if kind == "md":  # like in mg_execution_times
+            text = (
+                f"[{result.script.script_stem}](./{result.script.md_file.name}) "
+                f"({result.script.src_py_file_rel_project.as_posix()})"
+            )
             t = _sec_to_readable(result.exec_time)
         else:  # like in generate_gallery
             assert kind == "console"  # noqa
@@ -663,28 +673,30 @@ def write_computation_times(gallery: GalleryBase, results: List[GalleryScriptRes
         return
 
     target_dir = gallery.generated_dir_rel_site_root
-    target_dir_clean = target_dir.as_posix().replace("/", '_')
+    target_dir_clean = target_dir.as_posix().replace("/", "_")
     # new_ref = 'mkd_glr_%s_mg_execution_times' % target_dir_clean
-    with codecs.open(str(gallery.exec_times_md_file), 'w', encoding='utf-8') as fid:
+    with codecs.open(str(gallery.exec_times_md_file), "w", encoding="utf-8") as fid:
         # Write the header
-        fid.write(f"""
+        fid.write(
+            f"""
 
 # Computation times
 
 **{_sec_to_readable(total_time)}** total execution time for **{target_dir_clean}** files:
 
-""")
+"""
+        )
 
         # Write the table of execution times in markdown
         lines, lens = _format_for_writing(results)
 
         # Create the markdown table.
         # First line of the table  +--------------+
-        hline = "".join(('+' + '-' * (length + 2)) for length in lens) + '+\n'
+        hline = "".join(("+" + "-" * (length + 2)) for length in lens) + "+\n"
         fid.write(hline)
 
         # Table rows
-        format_str = ''.join('| {%s} ' % (ii,) for ii in range(len(lines[0]))) + '|\n'
+        format_str = "".join("| {%s} " % (ii,) for ii in range(len(lines[0]))) + "|\n"
         for line in lines:
             line = [ll.ljust(len_) for ll, len_ in zip(line, lens)]
             text = format_str.format(*line)
@@ -711,19 +723,24 @@ def write_junit_xml(all_info: AllInformation, all_results: List[GalleryScriptRes
     n_tests = 0
     n_failures = 0
     n_skips = 0
-    elapsed = 0.
+    elapsed = 0.0
     src_dir = all_info.mkdocs_docs_dir
     target_dir = all_info.mkdocs_site_dir
-    output = ''
+    output = ""
     for result in all_results:
         t = result.exec_time
         fname = result.script.src_py_file_rel_project
-        if not any(fname in x for x in (gallery_conf['passing_examples'],
-                                        failing_unexpectedly,
-                                        failing_as_expected,
-                                        passing_unexpectedly)):
+        if not any(
+            fname in x
+            for x in (
+                gallery_conf["passing_examples"],
+                failing_unexpectedly,
+                failing_as_expected,
+                passing_unexpectedly,
+            )
+        ):
             continue  # not subselected by our regex
-        title = gallery_conf['titles'][fname]  # use gallery.title
+        title = gallery_conf["titles"][fname]  # use gallery.title
 
         _cls_name = quoteattr(os.path.splitext(os.path.basename(fname))[0])
         _file = quoteattr(os.path.relpath(fname, src_dir))
@@ -735,13 +752,13 @@ def write_junit_xml(all_info: AllInformation, all_results: List[GalleryScriptRes
             n_skips += 1
         elif fname in failing_unexpectedly or fname in passing_unexpectedly:
             if fname in failing_unexpectedly:
-                traceback = gallery_conf['failing_examples'][fname]
+                traceback = gallery_conf["failing_examples"][fname]
             else:  # fname in passing_unexpectedly
-                traceback = 'Passed even though it was marked to fail'
+                traceback = "Passed even though it was marked to fail"
             n_failures += 1
             _msg = quoteattr(traceback.splitlines()[-1].strip())
             _tb = escape(traceback)
-            output += f'<failure message={_msg!s}>{_tb!s}</failure>'
+            output += f"<failure message={_msg!s}>{_tb!s}</failure>"
         output += "</testcase>"
         n_tests += 1
         elapsed += t
@@ -754,13 +771,13 @@ def write_junit_xml(all_info: AllInformation, all_results: List[GalleryScriptRes
 """  # noqa
 
     # Actually write it at desired file location
-    fname = os.path.normpath(os.path.join(target_dir, gallery_conf['junit']))
+    fname = os.path.normpath(os.path.join(target_dir, gallery_conf["junit"]))
     junit_dir = os.path.dirname(fname)
     # Make the dirs if needed
     if not os.path.isdir(junit_dir):
         os.makedirs(junit_dir)
 
-    with codecs.open(fname, 'w', encoding='utf-8') as fid:
+    with codecs.open(fname, "w", encoding="utf-8") as fid:
         fid.write(output)
 
 
@@ -787,13 +804,12 @@ def touch_empty_backreferences(mkdocs_conf, what, name, obj, options, lines):
 
 def _expected_failing_examples(gallery_conf: Dict, mkdocs_conf: Dict) -> Set[Path]:
     """The set of expected failing examples"""
-    return set((Path(mkdocs_conf['docs_dir']) / path)
-               for path in gallery_conf['expected_failing_examples'])
+    return set((Path(mkdocs_conf["docs_dir"]) / path) for path in gallery_conf["expected_failing_examples"])
 
 
 def _parse_failures(gallery_conf: Dict, mkdocs_conf: Dict):
     """Split the failures."""
-    failing_examples = set(gallery_conf['failing_examples'].keys())
+    failing_examples = set(gallery_conf["failing_examples"].keys())
     expected_failing_examples = _expected_failing_examples(gallery_conf=gallery_conf, mkdocs_conf=mkdocs_conf)
 
     failing_as_expected = failing_examples.intersection(expected_failing_examples)
@@ -802,8 +818,10 @@ def _parse_failures(gallery_conf: Dict, mkdocs_conf: Dict):
 
     # filter from examples actually run
     passing_unexpectedly = [
-        src_file for src_file in passing_unexpectedly
-        if matches_filepath_pattern(src_file, gallery_conf.get('filename_pattern'))]
+        src_file
+        for src_file in passing_unexpectedly
+        if matches_filepath_pattern(src_file, gallery_conf.get("filename_pattern"))
+    ]
 
     return failing_as_expected, failing_unexpectedly, passing_unexpectedly
 
@@ -817,54 +835,65 @@ def summarize_failing_examples(gallery_conf: Dict, mkdocs_conf: Dict):
     #     return
 
     # Under no-plot Examples are not run so nothing to summarize
-    if not gallery_conf['plot_gallery']:
-        logger.info('mkdocs-gallery gallery_conf["plot_gallery"] was '
-                    'False, so no examples were executed.')  # , color='brown')
+    if not gallery_conf["plot_gallery"]:
+        logger.info(
+            'mkdocs-gallery gallery_conf["plot_gallery"] was ' "False, so no examples were executed."
+        )  # , color='brown')
         return
 
-    failing_as_expected, failing_unexpectedly, passing_unexpectedly = \
-        _parse_failures(gallery_conf=gallery_conf, mkdocs_conf=mkdocs_conf)
+    failing_as_expected, failing_unexpectedly, passing_unexpectedly = _parse_failures(
+        gallery_conf=gallery_conf, mkdocs_conf=mkdocs_conf
+    )
 
     if failing_as_expected:
         logger.info("Examples failing as expected:")  # , color='brown')
         for fail_example in failing_as_expected:
-            logger.info('%s failed leaving traceback:', fail_example)   # color='brown')
-            logger.info(gallery_conf['failing_examples'][fail_example])  # color='brown')
+            logger.info("%s failed leaving traceback:", fail_example)  # color='brown')
+            logger.info(gallery_conf["failing_examples"][fail_example])  # color='brown')
 
     fail_msgs = []
     if failing_unexpectedly:
         fail_msgs.append(red("Unexpected failing examples:"))
         for fail_example in failing_unexpectedly:
-            fail_msgs.append(f"{fail_example} failed leaving traceback:\n"
-                             f"{gallery_conf['failing_examples'][fail_example]}\n")
+            fail_msgs.append(
+                f"{fail_example} failed leaving traceback:\n" f"{gallery_conf['failing_examples'][fail_example]}\n"
+            )
 
     if passing_unexpectedly:
-        fail_msgs.append(red("Examples expected to fail, but not failing:\n") +
-                         "\n".join(map(str, passing_unexpectedly)) +
-                         "\nPlease remove these examples from 'expected_failing_examples' in your mkdocs.yml file."
-                         )
+        fail_msgs.append(
+            red("Examples expected to fail, but not failing:\n")
+            + "\n".join(map(str, passing_unexpectedly))
+            + "\nPlease remove these examples from 'expected_failing_examples' in your mkdocs.yml file."
+        )
 
     # standard message
-    n_good = len(gallery_conf['passing_examples'])
-    n_tot = len(gallery_conf['failing_examples']) + n_good
-    n_stale = len(gallery_conf['stale_examples'])
-    logger.info('\nmkdocs-gallery successfully executed %d out of %d '
-                'file%s subselected by:\n\n'
-                '    gallery_conf["filename_pattern"] = %r\n'
-                '    gallery_conf["ignore_pattern"]   = %r\n'
-                '\nafter excluding %d file%s that had previously been run '
-                '(based on MD5).\n'
-                % (n_good, n_tot, 's' if n_tot != 1 else '',
-                   gallery_conf['filename_pattern'],
-                   gallery_conf['ignore_pattern'],
-                   n_stale, 's' if n_stale != 1 else '',
-                   ))  # color='brown')
+    n_good = len(gallery_conf["passing_examples"])
+    n_tot = len(gallery_conf["failing_examples"]) + n_good
+    n_stale = len(gallery_conf["stale_examples"])
+    logger.info(
+        "\nmkdocs-gallery successfully executed %d out of %d "
+        "file%s subselected by:\n\n"
+        '    gallery_conf["filename_pattern"] = %r\n'
+        '    gallery_conf["ignore_pattern"]   = %r\n'
+        "\nafter excluding %d file%s that had previously been run "
+        "(based on MD5).\n"
+        % (
+            n_good,
+            n_tot,
+            "s" if n_tot != 1 else "",
+            gallery_conf["filename_pattern"],
+            gallery_conf["ignore_pattern"],
+            n_stale,
+            "s" if n_stale != 1 else "",
+        )
+    )  # color='brown')
 
     if fail_msgs:
-        fail_message = ("Here is a summary of the problems encountered "
-                        "when running the examples\n\n" +
-                        "\n".join(fail_msgs) + "\n" + "-" * 79)
-        if gallery_conf['only_warn_on_example_error']:
+        fail_message = (
+            "Here is a summary of the problems encountered "
+            "when running the examples\n\n" + "\n".join(fail_msgs) + "\n" + "-" * 79
+        )
+        if gallery_conf["only_warn_on_example_error"]:
             logger.warning(fail_message)
         else:
             raise ExtensionError(fail_message)
@@ -885,23 +914,30 @@ def check_duplicate_filenames(files: Iterable[Path]):
 
     if len(dup_names) > 0:
         logger.warning(
-            'Duplicate example file name(s) found. Having duplicate file '
-            'names will break some links. '
-            'List of files: {}'.format(sorted(dup_names),))
+            "Duplicate example file name(s) found. Having duplicate file "
+            "names will break some links. "
+            "List of files: {}".format(
+                sorted(dup_names),
+            )
+        )
 
 
 def check_spaces_in_filenames(files: Iterable[Path]):
     """Check for spaces in filenames across example directories."""
-    regex = re.compile(r'[\s]')
+    regex = re.compile(r"[\s]")
     files_with_space = list(filter(regex.search, (str(f) for f in files)))
     if files_with_space:
         logger.warning(
-            'Example file name(s) with space(s) found. Having space(s) in '
-            'file names will break some links. '
-            'List of files: {}'.format(sorted(files_with_space),))
+            "Example file name(s) with space(s) found. Having space(s) in "
+            "file names will break some links. "
+            "List of files: {}".format(
+                sorted(files_with_space),
+            )
+        )
 
 
 def get_default_config_value(key):
     def default_getter(conf):
-        return conf['mkdocs_gallery_conf'].get(key, DEFAULT_GALLERY_CONF[key])
+        return conf["mkdocs_gallery_conf"].get(key, DEFAULT_GALLERY_CONF[key])
+
     return default_getter

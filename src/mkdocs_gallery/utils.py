@@ -10,20 +10,20 @@ Utilities
 Miscellaneous utilities.
 """
 
-from __future__ import division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import hashlib
 import os
 import re
-from pathlib import Path
-from shutil import move, copyfile
 import subprocess
+from pathlib import Path
+from shutil import copyfile, move
 from typing import Tuple
 
 from . import mkdocs_compatibility
 from .errors import ExtensionError
 
-logger = mkdocs_compatibility.getLogger('mkdocs-gallery')
+logger = mkdocs_compatibility.getLogger("mkdocs-gallery")
 
 
 def _get_image():
@@ -34,15 +34,15 @@ def _get_image():
             import Image
         except ImportError:
             raise ExtensionError(
-                'Could not import pillow, which is required '
-                'to rescale images (e.g., for thumbnails): %s' % (exc,))
+                "Could not import pillow, which is required " "to rescale images (e.g., for thumbnails): %s" % (exc,)
+            )
     return Image
 
 
 def rescale_image(in_file: Path, out_file: Path, max_width, max_height):
     """Scales an image with the same aspect ratio centered in an
-       image box with the given max_width and max_height
-       if in_file == out_file the image can only be scaled down
+    image box with the given max_width and max_height
+    if in_file == out_file the image can only be scaled down
     """
     # local import to avoid testing dependency on PIL:
     Image = _get_image()
@@ -72,7 +72,7 @@ def rescale_image(in_file: Path, out_file: Path, max_width, max_height):
     # width_sc, height_sc = img.size  # necessary if using thumbnail
 
     # insert centered
-    thumb = Image.new('RGBA', (max_width, max_height), (255, 255, 255, 0))
+    thumb = Image.new("RGBA", (max_width, max_height), (255, 255, 255, 0))
     pos_insert = ((max_width - width_sc) // 2, (max_height - height_sc) // 2)
     thumb.paste(img, pos_insert)
 
@@ -80,7 +80,7 @@ def rescale_image(in_file: Path, out_file: Path, max_width, max_height):
         thumb.save(out_file)
     except IOError:
         # try again, without the alpha channel (e.g., for JPEG)
-        thumb.convert('RGB').save(out_file)
+        thumb.convert("RGB").save(out_file)
 
 
 def optipng(file: Path, args=()):
@@ -95,15 +95,16 @@ def optipng(file: Path, args=()):
     args : tuple
         Extra command-line arguments, such as ``['-o7']``.
     """
-    if file.suffix == '.png':
+    if file.suffix == ".png":
         # -o7 because this is what CPython used
         # https://github.com/python/cpython/pull/8032
         fname = file.as_posix()
         try:
             subprocess.check_call(
-                ['optipng'] + list(args) + [fname],
+                ["optipng"] + list(args) + [fname],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
+                stderr=subprocess.PIPE,
+            )
         except (subprocess.CalledProcessError, IOError):  # FileNotFoundError
             pass
     else:
@@ -112,9 +113,7 @@ def optipng(file: Path, args=()):
 
 def _has_optipng():
     try:
-        subprocess.check_call(['optipng', '--version'],
-                              stdout=subprocess.PIPE,
-                              stderr=subprocess.PIPE)
+        subprocess.check_call(["optipng", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except IOError:  # FileNotFoundError
         return False
     else:
@@ -148,7 +147,7 @@ def replace_ext(file: Path, new_ext: str, expected_ext: str = None) -> Path:
     return file.with_suffix(new_ext)
 
 
-def get_md5sum(src_file: Path, mode='b'):
+def get_md5sum(src_file: Path, mode="b"):
     """Returns md5sum of file
 
     Parameters
@@ -159,26 +158,26 @@ def get_md5sum(src_file: Path, mode='b'):
         File mode to open file with. When in text mode, universal line endings
         are used to ensure consitency in hashes between platforms.
     """
-    errors = 'surrogateescape' if mode == 't' else None
-    with open(str(src_file), 'r' + mode, errors=errors) as src_data:
+    errors = "surrogateescape" if mode == "t" else None
+    with open(str(src_file), "r" + mode, errors=errors) as src_data:
         src_content = src_data.read()
-        if mode == 't':
+        if mode == "t":
             src_content = src_content.encode(errors=errors)
         return hashlib.md5(src_content).hexdigest()
 
 
 def _get_old_file(new_file: Path) -> Path:
     """Return the same file without the .new suffix"""
-    assert new_file.name.endswith('.new')  # noqa
+    assert new_file.name.endswith(".new")  # noqa
     return new_file.with_name(new_file.stem)  # this removes the .new suffix
 
 
-def _have_same_md5(file_a, file_b, mode: str = 'b') -> bool:
+def _have_same_md5(file_a, file_b, mode: str = "b") -> bool:
     """Return `True` if both files have the same md5, computed using `mode`."""
     return get_md5sum(file_a, mode) == get_md5sum(file_b, mode)
 
 
-def _smart_move_md5(src_file: Path, dst_file: Path, md5_mode: str = 'b'):
+def _smart_move_md5(src_file: Path, dst_file: Path, md5_mode: str = "b"):
     """Move `src_file` to `dst_file`, overwriting `dst_file` only if md5 has changed.
 
     Parameters
@@ -211,7 +210,7 @@ def _new_file(file: Path) -> Path:
     return file.with_suffix(f"{file.suffix}.new")
 
 
-def _replace_by_new_if_needed(file_new: Path, md5_mode: str = 'b'):
+def _replace_by_new_if_needed(file_new: Path, md5_mode: str = "b"):
     """Use `file_new` (suffix .new) instead of the old file (same path but no suffix).
 
     If the new file is identical to the old one, the old one will not be touched.
@@ -227,7 +226,7 @@ def _replace_by_new_if_needed(file_new: Path, md5_mode: str = 'b'):
     _smart_move_md5(src_file=file_new, dst_file=_get_old_file(file_new), md5_mode=md5_mode)
 
 
-def _smart_copy_md5(src_file: Path, dst_file: Path, src_md5: str = None, md5_mode: str = 'b') -> Tuple[Path, str]:
+def _smart_copy_md5(src_file: Path, dst_file: Path, src_md5: str = None, md5_mode: str = "b") -> Tuple[Path, str]:
     """Copy `src_file` to `dst_file`, overwriting `dst_file`, only if md5 has changed.
 
     Parameters
@@ -316,6 +315,7 @@ def _has_pypandoc():
     """Check if pypandoc package available."""
     try:
         import pypandoc  # noqa
+
         # Import error raised only when function called
         version = pypandoc.get_pandoc_version()
     except (ImportError, OSError):

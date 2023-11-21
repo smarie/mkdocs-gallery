@@ -22,7 +22,7 @@ from nox.sessions import Session
 nox_logger = logging.getLogger("nox")
 
 
-PY27, PY35, PY36, PY37, PY38, PY39, PY310 = "2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10"
+PY27, PY35, PY36, PY37, PY38, PY39, PY310, PY311 = "2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11"
 DONT_INSTALL = "dont_install"
 
 
@@ -322,7 +322,10 @@ def read_pyproject_toml():
         nox_logger.debug("\nA `pyproject.toml` file exists. Loading it.")
         pyproject = toml.load("pyproject.toml")
         requires = pyproject['build-system']['requires']
-        conda_pkgs = pyproject['tool']['conda']['conda_packages']
+        try:
+            conda_pkgs = pyproject['tool']['conda']['conda_packages']
+        except KeyError:
+            conda_pkgs = ()
         return requires, conda_pkgs
     else:
         raise FileNotFoundError("No `pyproject.toml` file exists. No dependency will be installed ...")
