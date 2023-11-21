@@ -80,7 +80,7 @@
                class="code sev- "><tt><i>21</i> <span class="kn">from</span> <span class="nn">packaging.version</span> <span class="kn">import</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">parse_version</span></tt>
             </div>
             <div id="l22"
-               class="code sev- "><tt><i>22</i> <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span><span class="p">,</span> <span class="n">PurePosixPath</span></tt>
+               class="code sev- "><tt><i>22</i> <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span></tt>
             </div>
             <div id="l23"
                class="code sev- "><tt><i>23</i> <span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">indent</span></tt>
@@ -503,7 +503,7 @@
                class="code sev- "><tt><i>162</i>     <span class="k">for</span> <span class="n">fig_num</span><span class="p">,</span> <span class="n">image_path</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">get_fignums</span><span class="p">(),</span> <span class="n">script</span><span class="o">.</span><span class="n">run_vars</span><span class="o">.</span><span class="n">image_path_iterator</span><span class="p">):</span></tt>
             </div>
             <div id="l163"
-               class="code sev- "><tt><i>163</i>         <span class="n">image_path</span> <span class="o">=</span> <span class="n">PurePosixPath</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>163</i>         <span class="n">image_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span></tt>
             </div>
             <div id="l164"
                class="code sev- "><tt><i>164</i>         <span class="k">if</span> <span class="s2">&quot;format&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span></tt>
@@ -635,7 +635,7 @@
                class="code sev- "><tt><i>206</i>                     <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">image_path</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">multst</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">image_path</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span></tt>
             </div>
             <div id="l207"
-               class="code sev- "><tt><i>207</i>                     <span class="n">hipath</span> <span class="o">=</span> <span class="n">image_path</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">PurePosixPath</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>207</i>                     <span class="n">hipath</span> <span class="o">=</span> <span class="n">image_path</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></tt>
             </div>
             <div id="l208"
                class="code sev- "><tt><i>208</i>                     <span class="n">hikwargs</span> <span class="o">=</span> <span class="n">these_kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></tt>
@@ -668,13 +668,13 @@
                class="code sev- "><tt><i>217</i>         <span class="k">if</span> <span class="s2">&quot;images&quot;</span> <span class="ow">in</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s2">&quot;compress_images&quot;</span><span class="p">]:</span></tt>
             </div>
             <div id="l218"
-               class="code sev- "><tt><i>218</i>             <span class="n">optipng</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">image_path</span><span class="p">),</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s2">&quot;compress_images_args&quot;</span><span class="p">])</span></tt>
+               class="code sev- "><tt><i>218</i>             <span class="n">optipng</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s2">&quot;compress_images_args&quot;</span><span class="p">])</span></tt>
             </div>
             <div id="l219"
-               class="code sev- "><tt><i>219</i>             <span class="k">for</span> <span class="n">hipath</span> <span class="ow">in</span> <span class="n">srcsetpaths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span></tt>
+               class="code sev- "><tt><i>219</i>             <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">hipath</span> <span class="ow">in</span> <span class="n">srcsetpaths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span></tt>
             </div>
             <div id="l220"
-               class="code sev- "><tt><i>220</i>                 <span class="n">optipng</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">hipath</span><span class="p">),</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s2">&quot;compress_images_args&quot;</span><span class="p">])</span></tt>
+               class="code sev- "><tt><i>220</i>                 <span class="n">optipng</span><span class="p">(</span><span class="n">hipath</span><span class="p">,</span> <span class="n">gallery_conf</span><span class="p">[</span><span class="s2">&quot;compress_images_args&quot;</span><span class="p">])</span></tt>
             </div>
             <div id="l221"
                class="code sev- "><tt><i>221</i> &nbsp;</tt>
