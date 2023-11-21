@@ -31,6 +31,9 @@ jobs:
           python-version: 3.9
           architecture: x64
 
+      # Setup Qt libraries for mayavi pyqt backend used in demo example
+      - uses: tlambert03/setup-qt-libs@v1
+
       - name: Install noxfile requirements
         run: pip install -r noxfile-requirements.txt
 
