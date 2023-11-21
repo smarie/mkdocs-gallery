@@ -144,15 +144,15 @@ def load_base_conf(script: Path = None) -> Dict:
         spec = spec_from_file_location("__mkdocs_gallery_conf", script)
         foo = module_from_spec(spec)
         spec.loader.exec_module(foo)
-    except ImportError:
-        raise ExtensionError(f"Error importing base configuration from `base_conf_py` {script}")
+    except ImportError as err_msg:
+        raise ExtensionError(f"Error importing base configuration from `base_conf_py` {script}\n{err_msg}")
 
     try:
         return foo.conf
-    except AttributeError:
+    except AttributeError as err_msg:
         raise ExtensionError(
             f"Error loading base configuration from `base_conf_py` {script}, module does not contain "
-            f"a `conf` variable."
+            f"a `conf` variable.\n{err_msg}"
         )
 
 
