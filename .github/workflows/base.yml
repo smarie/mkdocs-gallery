@@ -41,7 +41,7 @@ jobs:
         id: set-matrix
         uses: aganders3/headless-gui@v1
         with:
-          run: echo "::set-output name=matrix::$(nox -s gha_list -- -s tests -v)"
+          run: echo "matrix=$(nox -s gha_list -- -s tests -v)" >> $GITHUB_OUTPUT
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}  # save nox sessions list to outputs
