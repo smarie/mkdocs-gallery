@@ -1,7 +1,9 @@
 # Changelog
 
-### 0.7.9 - (In Progress)
+### 0.7.9 - `optipng` and better error messages
 
+ - Fixed `AttributeError` when `optipng` is installed and used through the `compress_images` option. PR [#77]
+   (https://github.com/smarie/mkdocs-gallery/pull/77) by [Samreay](https://github.com/Samreay)
  - Swapped from deprecated `disutils.version` to `packaging.version`. PR [#79](https://github.com/smarie/mkdocs-gallery/pull/79) by [Samreay](https://github.com/Samreay)
  - Re-raise errors for better ExtensionError messages, so users have full details about the original problem. PR [#58](https://github.com/smarie/mkdocs-gallery/pull/58) by [GenevieveBuckley](https://github.com/GenevieveBuckley)
 
