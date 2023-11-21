@@ -22,7 +22,7 @@ from packaging.version import parse as parse_version
 from pathlib import Path, PurePosixPath
 from textwrap import indent
 from typing import Dict, List, Optional
-from warnings import filterwarnings
+from warnings import filterwarnings, warn
 
 from .errors import ExtensionError
 from .gen_data_model import GalleryScript
@@ -303,7 +303,11 @@ def mayavi_scraper(block, script: GalleryScript):
         The ReSTructuredText that will be rendered to HTML containing
         the images. This is often produced by :func:`figure_md_or_html`.
     """
-    from mayavi import mlab
+    try:
+        from mayavi import mlab
+    except ModuleNotFoundError:
+        warn("No module named 'mayavi', skipping mayavi image scraper.")
+        return  # skip scraper function
 
     image_path_iterator = script.run_vars.image_path_iterator
     image_paths = list()
