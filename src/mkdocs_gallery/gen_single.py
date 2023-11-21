@@ -22,6 +22,7 @@ import subprocess
 import sys
 import traceback
 import warnings
+from copy import deepcopy
 from functools import partial
 from io import StringIO
 from pathlib import Path
@@ -891,6 +892,9 @@ def parse_and_execute(script: GalleryScript, script_blocks):
     # Remember the original argv so that we can put them back after run
     argv_orig = sys.argv[:]
 
+    # Remember the original sys.path so that we can reset it after run
+    sys_path_orig = deepcopy(sys.path)
+
     # Python file is the original one (not the copy for download)
     sys.argv[0] = script.src_py_file.as_posix()
 
@@ -919,6 +923,9 @@ def parse_and_execute(script: GalleryScript, script_blocks):
 
     # Set back the sys argv
     sys.argv = argv_orig
+
+    # Set back the sys path
+    sys.path = sys_path_orig
 
     # Write md5 checksum if the example was meant to run (no-plot shall not cache md5sum) and has built correctly
     script.write_final_md5_file()
