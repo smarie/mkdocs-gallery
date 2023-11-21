@@ -55,10 +55,10 @@
             </div>
         </aside>
         <h2>
-            <span class="text">429 statements &nbsp;</span>
+            <span class="text">431 statements &nbsp;</span>
             <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">304<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">125<span class="text"> missing</span></button>
-            <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">5<span class="text"> excluded</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">127<span class="text"> missing</span></button>
+            <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">3<span class="text"> excluded</span></button>
             <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Toggle lines partially run">42<span class="text"> partial</span></button>
         </h2>
         <p class="text">
@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="d_c494cfb98e882f3d_gen_single_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.3.2">coverage.py v7.3.2</a>,
-            created at 2023-11-08 15:02 +0000
+            created at 2023-11-21 10:15 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -228,15 +228,15 @@
     <p class="run"><span class="n"><a id="t144" href="#t144">144</a></span><span class="t">        <span class="nam">spec</span> <span class="op">=</span> <span class="nam">spec_from_file_location</span><span class="op">(</span><span class="str">"__mkdocs_gallery_conf"</span><span class="op">,</span> <span class="nam">script</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t145" href="#t145">145</a></span><span class="t">        <span class="nam">foo</span> <span class="op">=</span> <span class="nam">module_from_spec</span><span class="op">(</span><span class="nam">spec</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t146" href="#t146">146</a></span><span class="t">        <span class="nam">spec</span><span class="op">.</span><span class="nam">loader</span><span class="op">.</span><span class="nam">exec_module</span><span class="op">(</span><span class="nam">foo</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="exc show_exc"><span class="n"><a id="t147" href="#t147">147</a></span><span class="t">    <span class="key">except</span> <span class="nam">ImportError</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="exc show_exc"><span class="n"><a id="t148" href="#t148">148</a></span><span class="t">        <span class="key">raise</span> <span class="nam">ExtensionError</span><span class="op">(</span><span class="str">f"Error importing base configuration from `base_conf_py` {script}"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t147" href="#t147">147</a></span><span class="t">    <span class="key">except</span> <span class="nam">ImportError</span> <span class="key">as</span> <span class="nam">err_msg</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t148" href="#t148">148</a></span><span class="t">        <span class="key">raise</span> <span class="nam">ExtensionError</span><span class="op">(</span><span class="str">f"Error importing base configuration from `base_conf_py` {script}\n{err_msg}"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t149" href="#t149">149</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t150" href="#t150">150</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t151" href="#t151">151</a></span><span class="t">        <span class="key">return</span> <span class="nam">foo</span><span class="op">.</span><span class="nam">conf</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t152" href="#t152">152</a></span><span class="t">    <span class="key">except</span> <span class="nam">AttributeError</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t152" href="#t152">152</a></span><span class="t">    <span class="key">except</span> <span class="nam">AttributeError</span> <span class="key">as</span> <span class="nam">err_msg</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t153" href="#t153">153</a></span><span class="t">        <span class="key">raise</span> <span class="nam">ExtensionError</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t154" href="#t154">154</a></span><span class="t">            <span class="str">f"Error loading base configuration from `base_conf_py` {script}, module does not contain "</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t155" href="#t155">155</a></span><span class="t">            <span class="str">f"a `conf` variable."</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t155" href="#t155">155</a></span><span class="t">            <span class="str">f"a `conf` variable.\n{err_msg}"</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t156" href="#t156">156</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t157" href="#t157">157</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t158" href="#t158">158</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -1034,7 +1034,7 @@
             <a id="nextFileLink" class="nav" href="d_c494cfb98e882f3d_gen_single_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.3.2">coverage.py v7.3.2</a>,
-            created at 2023-11-08 15:02 +0000
+            created at 2023-11-21 10:15 +0000
         </p>
     </div>
 </footer>
