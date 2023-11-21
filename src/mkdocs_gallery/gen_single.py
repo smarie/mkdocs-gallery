@@ -22,6 +22,7 @@ import subprocess
 import sys
 import traceback
 import warnings
+from copy import deepcopy
 from functools import partial
 from io import StringIO
 from pathlib import Path
@@ -728,10 +729,11 @@ def _get_code_output(is_last_expr, script: GalleryScript, logging_tee, images_md
     return code_output
 
 
-def _reset_cwd_syspath(cwd, sys_path):
-    """Reset cwd and sys.path."""
+def _reset_cwd_syspath(cwd, path_to_remove):
+    """Reset current working directory to `cwd` and remove `path_to_remove` from `sys.path`."""
+    if path_to_remove in sys.path:
+        sys.path.remove(path_to_remove)
     os.chdir(cwd)
-    sys.path = sys_path
 
 
 def execute_code_block(compiler, block, script: GalleryScript):
@@ -773,8 +775,9 @@ def execute_code_block(compiler, block, script: GalleryScript):
     # created by the example get created in this directory
     os.chdir(src_file.parent)
 
-    sys_path = copy.deepcopy(sys.path)
-    sys.path.append(os.getcwd())
+    # Add the example dir to the path temporarily (will be removed after execution)
+    new_path = os.getcwd()
+    sys.path.append(new_path)
 
     # Save figures unless there is a `mkdocs_gallery_defer_figures` flag
     match = re.search(r"^[\ \t]*#\s*mkdocs_gallery_defer_figures[\ \t]*\n?", bcontent, re.MULTILINE)
@@ -818,11 +821,11 @@ def execute_code_block(compiler, block, script: GalleryScript):
         if need_save_figures:
             save_figures(block, script)
     else:
-        _reset_cwd_syspath(cwd, sys_path)
+        _reset_cwd_syspath(cwd, new_path)
 
         code_output = _get_code_output(is_last_expr, script, logging_tee, images_md)
     finally:
-        _reset_cwd_syspath(cwd, sys_path)
+        _reset_cwd_syspath(cwd, new_path)
         logging_tee.restore_std()
 
     # Sanitize ANSI escape characters from MD output
@@ -889,6 +892,9 @@ def parse_and_execute(script: GalleryScript, script_blocks):
     # Remember the original argv so that we can put them back after run
     argv_orig = sys.argv[:]
 
+    # Remember the original sys.path so that we can reset it after run
+    sys_path_orig = deepcopy(sys.path)
+
     # Python file is the original one (not the copy for download)
     sys.argv[0] = script.src_py_file.as_posix()
 
@@ -917,6 +923,9 @@ def parse_and_execute(script: GalleryScript, script_blocks):
 
     # Set back the sys argv
     sys.argv = argv_orig
+
+    # Set back the sys path
+    sys.path = sys_path_orig
 
     # Write md5 checksum if the example was meant to run (no-plot shall not cache md5sum) and has built correctly
     script.write_final_md5_file()
