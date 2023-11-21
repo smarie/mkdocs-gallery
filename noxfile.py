@@ -10,7 +10,7 @@ import sys
 # add parent folder to python path so that we can import noxfile_utils.py
 # note that you need to "pip install -r noxfile-requiterements.txt" for this file to work.
 sys.path.append(str(Path(__file__).parent / "ci_tools"))
-from nox_utils import PY27, PY37, PY36, PY35, PY38, PY39, PY310, PY311, power_session, rm_folder, rm_file, PowerSession  # noqa
+from nox_utils import PY37, PY38, PY39, PY310, PY311, power_session, rm_folder, rm_file, PowerSession  # noqa
 
 
 pkg_name = "mkdocs_gallery"
@@ -88,6 +88,10 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # install all requirements
     session.install_reqs(setup=True, install=True, tests=True, versions_dct=pkg_specs)
 
+    if sys.platform is "linux" and session.python >=3.8:
+        MKDOCS_GALLERY_EXAMPLES_REQS = MKDOCS_GALLERY_EXAMPLES_BASE_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS
+    else:
+        MKDOCS_GALLERY_EXAMPLES_REQS = MKDOCS_GALLERY_EXAMPLES_BASE_REQS
     # Since our tests are currently limited, use our own doc generation as a test
     session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
 
@@ -173,15 +177,16 @@ def flake8(session: PowerSession):
     rm_file(Folders.flake8_intermediate_file)
 
 
-MKDOCS_GALLERY_EXAMPLES_REQS = [
+MKDOCS_GALLERY_EXAMPLES_BASE_REQS = [
     "matplotlib",
     "seaborn",
     "statsmodels",
     "plotly",
     # "memory_profiler",
     "pillow",  # PIL, required for image rescaling
+]
+MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS = [
     "PyQt5",  # PyQt is required for the mayavi backend
-    "PyOpenGL",  # PyOpenGL is required for mayavi backend on Windows OS
     "git+https://github.com/enthought/mayavi.git",  # we want mayavi>=4.7.4 when available due to https://github.com/enthought/mayavi/pull/1272
 ]
 
@@ -190,6 +195,10 @@ MKDOCS_GALLERY_EXAMPLES_REQS = [
 def docs(session: PowerSession):
     """Generates the doc and serves it on a local http server. Pass '-- build' to build statically instead."""
 
+    if sys.platform is "linux" and session.python >=3.8:
+        MKDOCS_GALLERY_EXAMPLES_REQS = MKDOCS_GALLERY_EXAMPLES_BASE_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS
+    else:
+        MKDOCS_GALLERY_EXAMPLES_REQS = MKDOCS_GALLERY_EXAMPLES_BASE_REQS
     session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS)
 
     # Install the plugin
