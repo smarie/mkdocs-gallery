@@ -179,7 +179,8 @@ MKDOCS_GALLERY_EXAMPLES_REQS = [
     "statsmodels",
     "plotly",
     # "memory_profiler",
-    "pillow"  # PIL, required for image rescaling
+    "pillow",  # PIL, required for image rescaling
+    "mayavi",
 ]
 
 
