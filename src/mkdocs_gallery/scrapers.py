@@ -307,7 +307,7 @@ def mayavi_scraper(block, script: GalleryScript):
         from mayavi import mlab
     except ModuleNotFoundError:
         warn("No module named 'mayavi', skipping mayavi image scraper.")
-        return  # skip scraper function
+        return "" # skip scraper function
 
     image_path_iterator = script.run_vars.image_path_iterator
     image_paths = list()
