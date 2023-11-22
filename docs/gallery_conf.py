@@ -4,6 +4,10 @@ import sys
 import plotly.io as pio
 pio.renderers.default = 'sphinx_gallery'
 
+import pyvista
+pyvista.BUILDING_GALLERY = True
+pyvista.OFF_SCREEN = True
+
 from mkdocs_gallery.gen_gallery import DefaultResetArgv
 
 min_reported_time = 0
@@ -15,4 +19,5 @@ if 'SOURCE_DATE_EPOCH' in os.environ:
 conf = {
     'reset_argv': DefaultResetArgv(),
     'min_reported_time': min_reported_time,
+    'image_scrapers': ('matplotlib', 'pyvista'),
 }
