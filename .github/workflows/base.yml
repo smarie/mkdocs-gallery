@@ -25,6 +25,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+        # https://github.com/pyvista/setup-headless-display-action
+      - name: Setup headless display
+        uses: pyvista/setup-headless-display-action@v2
+
       - name: Install python 3.9
         uses: actions/setup-python@v4
         with:
