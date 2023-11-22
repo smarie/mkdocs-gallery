@@ -178,6 +178,7 @@ MKDOCS_GALLERY_EXAMPLES_REQS = [
     "seaborn",
     "statsmodels",
     "plotly",
+    "pyvista",
     # "memory_profiler",
     "pillow"  # PIL, required for image rescaling
 ]
