@@ -4,6 +4,7 @@ from json import dumps
 import logging
 
 import nox  # noqa
+from packaging import version
 from pathlib import Path  # noqa
 import sys
 
@@ -91,7 +92,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # Since our tests are currently limited, use our own doc generation as a test
     print("sys.platform", sys.platform)
     print("session.python", session.python)
-    if sys.platform is "linux" and session.python >=3.8:
+    if sys.platform == "linux" and (version.parse(session.python) >= version.parse(PY38)):
         session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
     else:
         session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
@@ -196,8 +197,10 @@ MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS = [
 @power_session(python=[PY39])
 def docs(session: PowerSession):
     """Generates the doc and serves it on a local http server. Pass '-- build' to build statically instead."""
-
-    session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS)
+    if sys.platform == "linux" and (version.parse(session.python) >= version.parse(PY38)):
+        session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
+    else:
+        session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS)
 
     # Install the plugin
     session.install2('.')
@@ -212,11 +215,10 @@ def docs(session: PowerSession):
 @power_session(python=[PY39])
 def publish(session: PowerSession):
     """Deploy the docs+reports on github pages. Note: this rebuilds the docs"""
-
-    session.install_reqs(
-        phase="mkdocs",
-        phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS
-    )
+    if sys.platform == "linux" and (version.parse(session.python) >= version.parse(PY38)):
+        session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
+    else:
+        session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS)
 
     # Install the plugin
     session.install2('.')
