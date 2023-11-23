@@ -131,14 +131,14 @@ def tests(session: PowerSession, coverage, pkg_specs):
 
         # since our tests are too limited, we use our own mkdocs build as additional test for now.
         if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
-            session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
-        else:
             session.run2("python -m mkdocs build -f mkdocs.yml")
+        else:
+            session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
         # -- add a second build so that we can go through the caching/md5 side
         if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
-            session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
-        else:
             session.run2("python -m mkdocs build -f mkdocs.yml")
+        else:
+            session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
         # Cleanup
         os.remove("mkdocs-no-mayavi.yml")
     else:
@@ -157,17 +157,17 @@ def tests(session: PowerSession, coverage, pkg_specs):
 
         # -- use the doc generation for coverage
         if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
                          "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
         else:
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
                          "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
         # -- add a second build so that we can go through the caching/md5 side
         if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
                          "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
         else:
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
                          "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         session.run2("coverage report")
@@ -231,7 +231,7 @@ def docs(session: PowerSession):
         # use posargs instead of "serve"
         session.run2("mkdocs %s" % " ".join(session.posargs))
     else:
-        session.run2("mkdocs serve")
+        session.run2("mkdocs serve -f mkdocs.yml")
 
 
 @power_session(python=[PY39])
@@ -250,7 +250,7 @@ def publish(session: PowerSession):
         raise ValueError("Test reports have not been built yet. Please run 'nox -s tests-3.7' first")
 
     # publish the docs
-    session.run2("mkdocs gh-deploy")
+    session.run2("mkdocs gh-deploy -f mkdocs.yml")
 
     # publish the coverage - now in github actions only
     # session.install_reqs(phase="codecov", phase_reqs=["codecov", "keyring"])
