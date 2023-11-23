@@ -2,11 +2,12 @@ import argparse
 from itertools import product
 from json import dumps
 import logging
+import os
+import sys
 
 import nox  # noqa
 from packaging import version
 from pathlib import Path  # noqa
-import sys
 
 # add parent folder to python path so that we can import noxfile_utils.py
 # note that you need to "pip install -r noxfile-requiterements.txt" for this file to work.
@@ -100,17 +101,10 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # Ignore failing mayavi example where mayavi is not installed
     if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
         # Add plot_10_mayavi.py to the list of expected failures
-        with open("mkdocs.yml", "w") as f:
+        with open("mkdocs-no-mayavi.yml", "w") as f:
             for line in mkdocs_config:
                 if line == "      expected_failing_examples:\n":
                     line = line + "         - docs/examples/plot_10_mayavi.py\n"
-                f.write(line)
-    else:
-        # Make sure plot_10_mayavi.py is not ignored when the mayavi dependency is available
-        with open("mkdocs.yml", "w") as f:
-            for line in mkdocs_config:
-                if line == "         - docs/examples/plot_10_mayavi.py\n":
-                    line = ""
                 f.write(line)
 
     # install CI-only dependencies
@@ -136,9 +130,17 @@ def tests(session: PowerSession, coverage, pkg_specs):
         session.run2("python -m pytest --cache-clear -v tests/")
 
         # since our tests are too limited, we use our own mkdocs build as additional test for now.
-        session.run2("python -m mkdocs build")
+        if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
+            session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
+        else:
+            session.run2("python -m mkdocs build")
         # -- add a second build so that we can go through the caching/md5 side
-        session.run2("python -m mkdocs build")
+        if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
+            session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
+        else:
+            session.run2("python -m mkdocs build")
+        # Cleanup
+        os.remove("mkdocs-no-mayavi.yml")
     else:
         # install self in "develop" mode so that coverage can be measured
         session.install2('-e', '.', '--no-deps')
