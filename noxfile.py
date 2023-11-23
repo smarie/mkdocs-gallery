@@ -88,15 +88,30 @@ def tests(session: PowerSession, coverage, pkg_specs):
 
     # install all requirements
     session.install_reqs(setup=True, install=True, tests=True, versions_dct=pkg_specs)
-
     # Since our tests are currently limited, use our own doc generation as a test
-    print("sys.platform", sys.platform)
-    print("session.python", session.python)
     if sys.platform == "linux" and (version.parse(session.python) >= version.parse(PY38)):
         session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
     else:
         session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
 
+    # Edit mkdocs config file
+    with open("mkdocs.yml", "r") as f:
+        mkdocs_config = f.readlines()
+    # Ignore failing mayavi example where mayavi is not installed
+    if sys.platform == "linux" and (version.parse(session.python) >= version.parse(PY38)):
+        # Add plot_10_mayavi.py to the list of expected failures
+        with open("mkdocs.yml", "w") as f:
+            for line in mkdocs_config:
+                if line == "      expected_failing_examples:\n":
+                    line = line + "         - docs/examples/no_output/plot_10_mayavi.py\n"
+                f.write(line)
+    else:
+        # Make sure plot_10_mayavi.py is not ignored when the mayavi dependency is available
+        with open("mkdocs.yml", "w") as f:
+            for line in mkdocs_config:
+                if line == "         - docs/examples/no_output/plot_10_mayavi.py\n"
+                    line = ""
+                f.write(line)
 
     # install CI-only dependencies
     # if install_ci_deps:
