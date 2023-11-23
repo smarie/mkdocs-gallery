@@ -139,9 +139,6 @@ def tests(session: PowerSession, coverage, pkg_specs):
             session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
         else:
             session.run2("python -m mkdocs build -f mkdocs.yml")
-        # Cleanup
-        if os.path.exists("mkdocs-no-mayavi.yml"):
-            os.remove("mkdocs-no-mayavi.yml")
     else:
         # install self in "develop" mode so that coverage can be measured
         session.install2('-e', '.', '--no-deps')
@@ -182,6 +179,9 @@ def tests(session: PowerSession, coverage, pkg_specs):
         # Use our own package to generate the badge
         session.run2("genbadge tests -i '%s' -o '%s' -t 100" % (Folders.test_xml, Folders.test_badge))
         session.run2("genbadge coverage -i '%s' -o '%s'" % (Folders.coverage_xml, Folders.coverage_badge))
+        # Cleanup
+        if os.path.exists("mkdocs-no-mayavi.yml"):
+            os.remove("mkdocs-no-mayavi.yml")
 
 
 @power_session(python=PY39, logsdir=Folders.runlogs)
