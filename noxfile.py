@@ -99,7 +99,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
     with open("mkdocs.yml", "r") as f:
         mkdocs_config = f.readlines()
     # Ignore failing mayavi example where mayavi is not installed
-    if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
+    if sys.platform == "win32" or (version.parse(session.python) >= version.parse(PY38)):
         # Add plot_10_mayavi.py to the list of expected failures
         with open("mkdocs-no-mayavi.yml", "w") as f:
             for line in mkdocs_config:
