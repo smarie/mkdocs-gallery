@@ -89,11 +89,12 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # install all requirements
     session.install_reqs(setup=True, install=True, tests=True, versions_dct=pkg_specs)
     # Since our tests are currently limited, use our own doc generation as a test
-    if sys.platform != "win32" or (version.parse(session.python) < version.parse(PY38)):
-        session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS+MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
-    else:
+    if sys.platform == "win32" or (version.parse(session.python) < version.parse(PY38)):
         # We are having OpenGL issues installing mayavi on Windows, skip it
         session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
+    else:
+        # We are having OpenGL issues installing mayavi on Windows, skip it
+        session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS+MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
 
     # Edit mkdocs config file
     with open("mkdocs.yml", "r") as f:
