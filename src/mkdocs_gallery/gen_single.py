@@ -228,6 +228,9 @@ def extract_readme_title(file: Path, contents: str) -> str:
     title : str
         The readme title
     """
+    # Remove html comments.
+    contents = re.sub("(<!--.*?-->)", "", contents, flags=re.DOTALL)
+
     match = FIRST_NON_MARKER_WITHOUT_HASH.search(contents)
     if match is None:
         raise ExtensionError(f"Could not find a title in readme file: {file}")
@@ -431,8 +434,6 @@ def generate(gallery: GalleryBase, seen_backrefs: Set) -> Tuple[str, str, str, L
     """
     # Read the gallery readme and add it to the index
     readme_contents = gallery.readme_file.read_text(encoding="utf-8")
-    # Remove html comments.
-    readme_contents = re.sub("(<!--.*?-->)", "", readme_contents, flags=re.DOTALL)
     readme_title = extract_readme_title(gallery.readme_file, readme_contents)
     if gallery.has_subsections():
         # parse and try to also extract the last subtitle
