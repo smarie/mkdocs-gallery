@@ -154,18 +154,18 @@ def tests(session: PowerSession, coverage, pkg_specs):
                      "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         # -- use the doc generation for coverage
-        if sys.platform != "win32" and (version.parse(session.python) < version.parse(PY38)):
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
+        if sys.platform == "win32" or (version.parse(session.python) < version.parse(PY38)):
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
                          "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
         else:
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
                          "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
         # -- add a second build so that we can go through the caching/md5 side
-        if sys.platform != "win32" and (version.parse(session.python) < version.parse(PY38)):
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
+        if sys.platform == "win32" or (version.parse(session.python) < version.parse(PY38)):
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
                          "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
         else:
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
                          "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         session.run2("coverage report")
