@@ -27,7 +27,6 @@ ENVS = {
     PY38: {"coverage": True, "pkg_specs": {"pip": ">19"}},
 }
 
-
 # set the default activated sessions, minimal for CI
 nox.options.sessions = ["tests", "flake8", "docs"]  # , "docs", "gh_pages"
 nox.options.error_on_missing_interpreters = True
@@ -89,21 +88,22 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # install all requirements
     session.install_reqs(setup=True, install=True, tests=True, versions_dct=pkg_specs)
     # Since our tests are currently limited, use our own doc generation as a test
-    if sys.platform == "linux" and (version.parse(session.python) >= version.parse(PY38)):
-        session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
+    if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
+        session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS+MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
     else:
+        # We are having OpenGL issues installing mayavi on Windows, skip it
         session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
 
     # Edit mkdocs config file
     with open("mkdocs.yml", "r") as f:
         mkdocs_config = f.readlines()
     # Ignore failing mayavi example where mayavi is not installed
-    if sys.platform == "linux" and (version.parse(session.python) >= version.parse(PY38)):
+    if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
         # Add plot_10_mayavi.py to the list of expected failures
         with open("mkdocs.yml", "w") as f:
             for line in mkdocs_config:
                 if line == "      expected_failing_examples:\n":
-                    line = line + "         - docs/examples/no_output/plot_10_mayavi.py\n"
+                    line = line + "         - docs/examples/plot_10_mayavi.py\n"
                 f.write(line)
     else:
         # Make sure plot_10_mayavi.py is not ignored when the mayavi dependency is available
@@ -212,10 +212,7 @@ MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS = [
 @power_session(python=[PY39])
 def docs(session: PowerSession):
     """Generates the doc and serves it on a local http server. Pass '-- build' to build statically instead."""
-    if sys.platform == "linux" and (version.parse(session.python) >= version.parse(PY38)):
-        session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
-    else:
-        session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS)
+    session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
 
     # Install the plugin
     session.install2('.')
@@ -230,10 +227,7 @@ def docs(session: PowerSession):
 @power_session(python=[PY39])
 def publish(session: PowerSession):
     """Deploy the docs+reports on github pages. Note: this rebuilds the docs"""
-    if sys.platform == "linux" and (version.parse(session.python) >= version.parse(PY38)):
-        session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
-    else:
-        session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS)
+    session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
 
     # Install the plugin
     session.install2('.')
