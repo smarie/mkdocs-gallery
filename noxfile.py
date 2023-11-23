@@ -100,7 +100,6 @@ def tests(session: PowerSession, coverage, pkg_specs):
         mkdocs_config = f.readlines()
     # Ignore failing mayavi example where mayavi is not installed
     if sys.platform == "win32" or (version.parse(session.python) >= version.parse(PY38)):
-        # Add plot_10_mayavi.py to the list of expected failures
         with open("mkdocs-no-mayavi.yml", "w") as f:
             for line in mkdocs_config:
                 if line == "      expected_failing_examples:\n":
@@ -130,17 +129,18 @@ def tests(session: PowerSession, coverage, pkg_specs):
         session.run2("python -m pytest --cache-clear -v tests/")
 
         # since our tests are too limited, we use our own mkdocs build as additional test for now.
-        if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
-            session.run2("python -m mkdocs build -f mkdocs.yml")
-        else:
+        if sys.platform == "win32" or (version.parse(session.python) >= version.parse(PY38)):
             session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
+        else:
+            session.run2("python -m mkdocs build -f mkdocs.yml")
         # -- add a second build so that we can go through the caching/md5 side
-        if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
-            session.run2("python -m mkdocs build -f mkdocs.yml")
-        else:
+        if sys.platform == "win32" or (version.parse(session.python) >= version.parse(PY38)):
             session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
+        else:
+            session.run2("python -m mkdocs build -f mkdocs.yml")
         # Cleanup
-        os.remove("mkdocs-no-mayavi.yml")
+        if os.path.exists("mkdocs-no-mayavi.yml"):
+            os.remove("mkdocs-no-mayavi.yml")
     else:
         # install self in "develop" mode so that coverage can be measured
         session.install2('-e', '.', '--no-deps')
