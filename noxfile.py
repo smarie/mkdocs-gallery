@@ -133,12 +133,12 @@ def tests(session: PowerSession, coverage, pkg_specs):
         if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
             session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
         else:
-            session.run2("python -m mkdocs build")
+            session.run2("python -m mkdocs build -f mkdocs.yml")
         # -- add a second build so that we can go through the caching/md5 side
         if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
             session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
         else:
-            session.run2("python -m mkdocs build")
+            session.run2("python -m mkdocs build -f mkdocs.yml")
         # Cleanup
         os.remove("mkdocs-no-mayavi.yml")
     else:
@@ -156,11 +156,19 @@ def tests(session: PowerSession, coverage, pkg_specs):
                      "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         # -- use the doc generation for coverage
-        session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build"
-                     "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+        if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
+                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+        else:
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
+                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
         # -- add a second build so that we can go through the caching/md5 side
-        session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build"
-                     "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+        if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
+                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+        else:
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
+                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         session.run2("coverage report")
         session.run2("coverage xml -o '{covxml}'".format(covxml=Folders.coverage_xml))
@@ -235,7 +243,7 @@ def publish(session: PowerSession):
     session.install2('.')
 
     # possibly rebuild the docs in a static way (mkdocs serve does not build locally)
-    session.run2("mkdocs build")
+    session.run2("mkdocs build -f mkdocs.yml")
 
     # check that the doc has been generated with coverage
     if not Folders.site_reports.exists():
