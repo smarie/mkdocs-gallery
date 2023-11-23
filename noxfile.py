@@ -109,7 +109,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
         # Make sure plot_10_mayavi.py is not ignored when the mayavi dependency is available
         with open("mkdocs.yml", "w") as f:
             for line in mkdocs_config:
-                if line == "         - docs/examples/no_output/plot_10_mayavi.py\n"
+                if line == "         - docs/examples/no_output/plot_10_mayavi.py\n":
                     line = ""
                 f.write(line)
 
