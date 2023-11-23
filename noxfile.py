@@ -89,7 +89,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # install all requirements
     session.install_reqs(setup=True, install=True, tests=True, versions_dct=pkg_specs)
     # Since our tests are currently limited, use our own doc generation as a test
-    if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
+    if sys.platform != "win32" and (version.parse(session.python) < version.parse(PY38)):
         session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS+MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
     else:
         # We are having OpenGL issues installing mayavi on Windows, skip it
@@ -99,7 +99,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
     with open("mkdocs.yml", "r") as f:
         mkdocs_config = f.readlines()
     # Ignore failing mayavi example where mayavi is not installed
-    if sys.platform == "win32" or (version.parse(session.python) >= version.parse(PY38)):
+    if sys.platform == "win32" or (version.parse(session.python) < version.parse(PY38)):
         with open("mkdocs-no-mayavi.yml", "w") as f:
             for line in mkdocs_config:
                 if line == "      expected_failing_examples:\n":
@@ -129,12 +129,12 @@ def tests(session: PowerSession, coverage, pkg_specs):
         session.run2("python -m pytest --cache-clear -v tests/")
 
         # since our tests are too limited, we use our own mkdocs build as additional test for now.
-        if sys.platform == "win32" or (version.parse(session.python) >= version.parse(PY38)):
+        if sys.platform == "win32" or (version.parse(session.python) < version.parse(PY38)):
             session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
         else:
             session.run2("python -m mkdocs build -f mkdocs.yml")
         # -- add a second build so that we can go through the caching/md5 side
-        if sys.platform == "win32" or (version.parse(session.python) >= version.parse(PY38)):
+        if sys.platform == "win32" or (version.parse(session.python) < version.parse(PY38)):
             session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
         else:
             session.run2("python -m mkdocs build -f mkdocs.yml")
@@ -156,14 +156,14 @@ def tests(session: PowerSession, coverage, pkg_specs):
                      "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         # -- use the doc generation for coverage
-        if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
+        if sys.platform != "win32" and (version.parse(session.python) < version.parse(PY38)):
             session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
                          "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
         else:
             session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
                          "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
         # -- add a second build so that we can go through the caching/md5 side
-        if sys.platform != "win32" and (version.parse(session.python) >= version.parse(PY38)):
+        if sys.platform != "win32" and (version.parse(session.python) < version.parse(PY38)):
             session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
                          "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
         else:
