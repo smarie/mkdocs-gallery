@@ -228,6 +228,9 @@ def extract_readme_title(file: Path, contents: str) -> str:
     title : str
         The readme title
     """
+    # Remove html comments.
+    contents = re.sub("(<!--.*?-->)", "", contents, flags=re.DOTALL)
+
     match = FIRST_NON_MARKER_WITHOUT_HASH.search(contents)
     if match is None:
         raise ExtensionError(f"Could not find a title in readme file: {file}")

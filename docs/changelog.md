@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.7.11 - (in progress)
+
+ - Fixed for `README.md` that contains `html` comments. Fixes [#85](https://github.com/smarie/mkdocs-gallery/issues/85). PR [#86](https://github.com/smarie/mkdocs-gallery/pull/86) by [AntoineD](https://github.com/AntoineD).
+ 
 ### 0.7.10 - `sys.path` is not reset between code blocks
 
  - `sys.path` modifications now persist across blocks of an example. `sys.path` is still reset after each example. PR [#82](https://github.com/smarie/mkdocs-gallery/pull/82) by [Louis-Pujol](https://github.com/Louis-Pujol).
