@@ -91,10 +91,8 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # Since our tests are currently limited, use our own doc generation as a test
     cannot_run_mayavi = version.parse(session.python) < version.parse(PY38)
     if cannot_run_mayavi:
-        # We are having OpenGL issues installing mayavi on Windows, skip it
         session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
     else:
-        # We are having OpenGL issues installing mayavi on Windows, skip it
         session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS+MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
 
     # Edit mkdocs config file
