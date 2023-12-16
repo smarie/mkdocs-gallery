@@ -914,6 +914,27 @@ def parse_and_execute(script: GalleryScript, script_blocks):
     t_start = time()
     compiler = codeop.Compile()
 
+    if script.script_stem.startswith("plot_10"):
+        fixed_script_blocks = []
+        for script_block in script_blocks:
+            label, content, line_number = script_block
+            if label == "code":
+                *lines, last_line = [line for line in content.splitlines() if line]
+                start = next(idx for idx, c in enumerate(last_line) if c != " ")
+                lines.append(f"{last_line[:start]}return {last_line[start:]}")
+                content = "\n".join(
+                    [
+                        "async def __async_wrapper__():",
+                        *[f"    {line}" for line in lines],
+                        "import asyncio",
+                        "asyncio.run(__async_wrapper__())",
+                    ]
+                )
+                script_block = (label, content, line_number)
+
+            fixed_script_blocks.append(script_block)
+        script_blocks = fixed_script_blocks
+
     # Execute block by block
     output_blocks = list()
     with _LoggingTee(script.src_py_file) as logging_tee:
