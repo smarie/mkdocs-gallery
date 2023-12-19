@@ -128,6 +128,11 @@ jobs:
           python-version: 3.9
           architecture: x64
 
+      - name: Setup headless display
+        uses: pyvista/setup-headless-display-action@v2
+        with:
+          qt: true
+
       # 1) retrieve the reports generated previously
       - name: Retrieve reports
         uses: actions/download-artifact@master
