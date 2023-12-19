@@ -5,10 +5,10 @@ Examples using ``numpy.average``
 
 <div class="mkd-glr-thumbcontainer" tooltip="Mkdocs-Gallery supports examples made with the [plotly library](https://plotly.com/python/). Mk...">
     <!--div class="figure align-default" id="id1"-->
-        <img alt="Example with the plotly graphing library" src="images/thumb/mkd_glr_plot_9_plotly_thumb.png" />
+        <img alt="Example with the plotly graphing library" src="images/thumb/mkd_glr_plot_09_plotly_thumb.png" />
         <p class="caption">
             <span class="caption-text">
-                <a class="reference internal" href="plot_9_plotly">
+                <a class="reference internal" href="plot_09_plotly">
                     <span class="std std-ref">Example with the plotly graphing library</span>
                 </a>
             </span>

@@ -5,10 +5,10 @@ Examples using ``numpy.random.randn``
 
 <div class="mkd-glr-thumbcontainer" tooltip="This example demonstrates how to include non-ASCII characters, mostly emoji 🎉 to stress test th...">
     <!--div class="figure align-default" id="id1"-->
-        <img alt="Using Unicode everywhere 🤗" src="images/thumb/mkd_glr_plot_5_unicode_everywhere_thumb.png" />
+        <img alt="Using Unicode everywhere 🤗" src="images/thumb/mkd_glr_plot_05_unicode_everywhere_thumb.png" />
         <p class="caption">
             <span class="caption-text">
-                <a class="reference internal" href="plot_5_unicode_everywhere">
+                <a class="reference internal" href="plot_05_unicode_everywhere">
                     <span class="std std-ref">Using Unicode everywhere 🤗</span>
                 </a>
             </span>
