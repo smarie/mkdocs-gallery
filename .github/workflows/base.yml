@@ -69,6 +69,11 @@ jobs:
           python-version: 3.9
           architecture: x64
 
+      - name: Setup headless display
+        uses: pyvista/setup-headless-display-action@v2
+        with:
+          qt: true
+
       - name: Install noxfile requirements
         run: pip install -r noxfile-requirements.txt
 

@@ -2,15 +2,17 @@ import argparse
 from itertools import product
 from json import dumps
 import logging
+import os
+import sys
 
 import nox  # noqa
+from packaging import version
 from pathlib import Path  # noqa
-import sys
 
 # add parent folder to python path so that we can import noxfile_utils.py
 # note that you need to "pip install -r noxfile-requiterements.txt" for this file to work.
 sys.path.append(str(Path(__file__).parent / "ci_tools"))
-from nox_utils import PY27, PY37, PY36, PY35, PY38, PY39, PY310, PY311, power_session, rm_folder, rm_file, PowerSession  # noqa
+from nox_utils import PY37, PY38, PY39, PY310, PY311, power_session, rm_folder, rm_file, PowerSession  # noqa
 
 
 pkg_name = "mkdocs_gallery"
@@ -25,7 +27,6 @@ ENVS = {
     # IMPORTANT: this should be last so that the folder docs/reports is not deleted afterwards
     PY38: {"coverage": True, "pkg_specs": {"pip": ">19"}},
 }
-
 
 # set the default activated sessions, minimal for CI
 nox.options.sessions = ["tests", "flake8", "docs"]  # , "docs", "gh_pages"
@@ -87,9 +88,23 @@ def tests(session: PowerSession, coverage, pkg_specs):
 
     # install all requirements
     session.install_reqs(setup=True, install=True, tests=True, versions_dct=pkg_specs)
-
     # Since our tests are currently limited, use our own doc generation as a test
-    session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
+    cannot_run_mayavi = version.parse(session.python) < version.parse(PY38)
+    if cannot_run_mayavi:
+        session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
+    else:
+        session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS+MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
+
+    # Edit mkdocs config file
+    with open("mkdocs.yml", "r") as f:
+        mkdocs_config = f.readlines()
+    # Ignore failing mayavi example where mayavi is not installed
+    if cannot_run_mayavi:
+        with open("mkdocs-no-mayavi.yml", "w") as f:
+            for line in mkdocs_config:
+                if line == "      expected_failing_examples:\n":
+                    line = line + "         - docs/examples/plot_10_mayavi.py\n"
+                f.write(line)
 
     # install CI-only dependencies
     # if install_ci_deps:
@@ -114,9 +129,15 @@ def tests(session: PowerSession, coverage, pkg_specs):
         session.run2("python -m pytest --cache-clear -v tests/")
 
         # since our tests are too limited, we use our own mkdocs build as additional test for now.
-        session.run2("python -m mkdocs build")
+        if cannot_run_mayavi:
+            session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
+        else:
+            session.run2("python -m mkdocs build -f mkdocs.yml")
         # -- add a second build so that we can go through the caching/md5 side
-        session.run2("python -m mkdocs build")
+        if cannot_run_mayavi:
+            session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
+        else:
+            session.run2("python -m mkdocs build -f mkdocs.yml")
     else:
         # install self in "develop" mode so that coverage can be measured
         session.install2('-e', '.', '--no-deps')
@@ -132,11 +153,19 @@ def tests(session: PowerSession, coverage, pkg_specs):
                      "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         # -- use the doc generation for coverage
-        session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build"
-                     "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+        if cannot_run_mayavi:
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
+                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+        else:
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
+                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
         # -- add a second build so that we can go through the caching/md5 side
-        session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build"
-                     "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+        if cannot_run_mayavi:
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
+                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+        else:
+            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
+                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
 
         session.run2("coverage report")
         session.run2("coverage xml -o '{covxml}'".format(covxml=Folders.coverage_xml))
@@ -149,6 +178,9 @@ def tests(session: PowerSession, coverage, pkg_specs):
         # Use our own package to generate the badge
         session.run2("genbadge tests -i '%s' -o '%s' -t 100" % (Folders.test_xml, Folders.test_badge))
         session.run2("genbadge coverage -i '%s' -o '%s'" % (Folders.coverage_xml, Folders.coverage_badge))
+    # Cleanup
+    if os.path.exists("mkdocs-no-mayavi.yml"):
+        os.remove("mkdocs-no-mayavi.yml")
 
 
 @power_session(python=PY39, logsdir=Folders.runlogs)
@@ -179,15 +211,18 @@ MKDOCS_GALLERY_EXAMPLES_REQS = [
     "statsmodels",
     "plotly",
     # "memory_profiler",
-    "pillow"  # PIL, required for image rescaling
+    "pillow",  # PIL, required for image rescaling
+]
+MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS = [
+    "PyQt5",  # PyQt is required for the mayavi backend
+    "git+https://github.com/enthought/mayavi.git",  # we want mayavi>=4.7.4 when available due to https://github.com/enthought/mayavi/pull/1272
 ]
 
 
 @power_session(python=[PY39])
 def docs(session: PowerSession):
     """Generates the doc and serves it on a local http server. Pass '-- build' to build statically instead."""
-
-    session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS)
+    session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
 
     # Install the plugin
     session.install2('.')
@@ -196,30 +231,26 @@ def docs(session: PowerSession):
         # use posargs instead of "serve"
         session.run2("mkdocs %s" % " ".join(session.posargs))
     else:
-        session.run2("mkdocs serve")
+        session.run2("mkdocs serve -f mkdocs.yml")
 
 
 @power_session(python=[PY39])
 def publish(session: PowerSession):
     """Deploy the docs+reports on github pages. Note: this rebuilds the docs"""
-
-    session.install_reqs(
-        phase="mkdocs",
-        phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS
-    )
+    session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
 
     # Install the plugin
     session.install2('.')
 
     # possibly rebuild the docs in a static way (mkdocs serve does not build locally)
-    session.run2("mkdocs build")
+    session.run2("mkdocs build -f mkdocs.yml")
 
     # check that the doc has been generated with coverage
     if not Folders.site_reports.exists():
         raise ValueError("Test reports have not been built yet. Please run 'nox -s tests-3.7' first")
 
     # publish the docs
-    session.run2("mkdocs gh-deploy")
+    session.run2("mkdocs gh-deploy -f mkdocs.yml")
 
     # publish the coverage - now in github actions only
     # session.install_reqs(phase="codecov", phase_reqs=["codecov", "keyring"])
