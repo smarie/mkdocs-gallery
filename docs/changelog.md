@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.9.0 - Pyvista
+
+- Pyvista can now be used in gallery examples as in `sphinx-gallery`. PR [#91](hhttps://github.com/smarie/mkdocs-gallery/pull/91) by [Louis-Pujol](https://github.com/Louis-Pujol)
+
 ### 0.8.0 - Mayavi
 
  - Mayavi can now be used in gallery examples just as in `sphinx-gallery`. PR [#69](https://github.com/smarie/mkdocs-gallery/pull/69) by [GenevieveBuckley](https://github.com/GenevieveBuckley)
