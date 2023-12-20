@@ -24,16 +24,20 @@ plugins:
       examples_dirs:
         - docs/examples          # path to your example scripts, relative to mkdocs.yml
         - docs/tutorials
-        # TODO mayavi_examples
       gallery_dirs:
         - docs/generated/gallery  # where to save gallery generated output. Note that you may or may not include them in
         - docs/generated/tutorials
-        # TODO tutorials and mayavi_examples
 
       backreferences_dir: docs/generated/backreferences  # where to generate the back references summary
       doc_module: ['mkdocs_gallery', 'numpy']
       # reference_url: {sphinx_gallery: None},
+<<<<<<< HEAD
       # image_scrapers: ['matplotlib', 'pyvista']
+=======
+      image_scrapers:
+        - matplotlib
+        - mayavi
+>>>>>>> c9543b6606b503ca9fe4217bdc37bda1103bdb42
       compress_images: ['images', 'thumbnails']
       # specify the order of examples to be according to filename
       within_subsection_order: FileNameSortKey

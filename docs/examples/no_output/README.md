@@ -1,3 +1,6 @@
+<!--
+  Header here.
+-->
 ## No image output examples
 
 This section gathers examples which don't produce any figures. Some examples
