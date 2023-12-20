@@ -351,11 +351,16 @@ def pyvista_scraper(block, script: GalleryScript):
     if not pv.BUILDING_GALLERY:
         raise RuntimeError(pv.BUILDING_GALLERY_ERROR_MSG)
     if not pv.OFF_SCREEN:
-        raise RuntimeError("PyVista must be built with off-screen support to use this feature.")
+        raise RuntimeError("set pyvista.OFF_SCREEN=True to use the pyvista image scraper.")
 
     image_path_iterator = script.run_vars.image_path_iterator
     image_paths = list()
-    figures = pv_plt.plotter._ALL_PLOTTERS
+    try:
+        # pyvista >= 0.40
+        figures = pv_plt.plotter._ALL_PLOTTERS
+    except AttributeError:
+        # pyvista < 0.40
+        figures = pv_plt._ALL_PLOTTERS
     for _, plotter in figures.items():
         fname = next(image_path_iterator)
         if hasattr(plotter, "_gif_filename"):
