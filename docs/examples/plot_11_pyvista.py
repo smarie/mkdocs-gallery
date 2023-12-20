@@ -23,7 +23,7 @@ conf = {
 import pyvista as pv
 
 # %%
-# make a gif of a sphere rotating
+# You can display an animation as a gif
 
 sphere = pv.Sphere()
 pl = pv.Plotter()
