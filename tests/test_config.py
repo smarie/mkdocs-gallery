@@ -68,7 +68,7 @@ def test_full_conf(basic_mkdocs_config, monkeypatch):
     full_config = yaml_load("""
 conf_script: docs/gallery_conf.py
 examples_dirs:
-  - docs/examples
+  - examples
   - docs/tutorials
   # TODO mayavi_examples
 gallery_dirs:

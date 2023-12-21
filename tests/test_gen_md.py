@@ -50,7 +50,7 @@ CONTENT = [
 
 TESTS_ROOT = Path(__file__).parent
 DOCS_ROOT = TESTS_ROOT / "../docs"
-EXAMPLES_DIR = DOCS_ROOT / "examples"
+EXAMPLES_DIR = TESTS_ROOT / "../examples"
 TUTORIALS_DIR = DOCS_ROOT / "tutorials"
 
 
