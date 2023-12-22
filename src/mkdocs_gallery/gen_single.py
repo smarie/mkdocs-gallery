@@ -753,8 +753,7 @@ def _needs_async_handling(bcontent, src_file, *, compiler_flags) -> bool:
         # mkdocs-gallery supports top-level async code similar to jupyter notebooks.
         # Without handling, this will raise a SyntaxError. In such a case, we apply a
         # minimal async handling and try again. If the error persists, we bubble it up
-        # and let the caller handle it. If the error goes away, we continue with proper
-        # async handling below.
+        # and let the caller handle it.
         try:
             compile(
                 f"async def __async_wrapper__():\n{indent(bcontent, ' ' * 4)}",
