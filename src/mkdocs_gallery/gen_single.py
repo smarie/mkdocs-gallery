@@ -741,21 +741,34 @@ def _reset_cwd_syspath(cwd, path_to_remove):
 
 def _parse_code(bcontent, src_file, *, compiler_flags):
     code_ast = compile(bcontent, src_file, "exec", compiler_flags | ast.PyCF_ONLY_AST, dont_inherit=1)
-    if _needs_async_handling(bcontent, compiler_flags=compiler_flags):
+    if _needs_async_handling(bcontent, src_file, compiler_flags=compiler_flags):
         code_ast = _apply_async_handling(code_ast, compiler_flags=compiler_flags)
     return code_ast
 
 
-def _needs_async_handling(bcontent, *, compiler_flags) -> bool:
+def _needs_async_handling(bcontent, src_file, *, compiler_flags) -> bool:
     try:
-        compile(bcontent, "<_needs_async_handling()>", "exec", compiler_flags, dont_inherit=1)
+        compile(bcontent, src_file, "exec", compiler_flags, dont_inherit=1)
     except SyntaxError as error:
-        # FIXME
-        #  bool(re.match(r"'(await|async for|async with)' outside( async)? function", str(error)))
-        #  asynchronous comprehension outside of an asynchronous function
-        return "async" in str(error)
-    except Exception:
-        return False
+        # mkdocs-gallery supports top-level async code similar to jupyter notebooks.
+        # Without handling, this will raise a SyntaxError. In such a case, we apply a
+        # minimal async handling and try again. If the error persists, we bubble it up
+        # and let the caller handle it. If the error goes away, we continue with proper
+        # async handling below.
+        try:
+            compile(
+                f"async def __async_wrapper__():\n{indent(bcontent, ' ' * 4)}",
+                src_file,
+                "exec",
+                compiler_flags,
+                dont_inherit=1,
+            )
+        except SyntaxError:
+            # Raise the original error to avoid leaking the internal async handling to
+            # generated output.
+            raise error from None
+        else:
+            return True
     else:
         return False
 
@@ -953,7 +966,7 @@ def parse_and_execute(script: GalleryScript, script_blocks):
     # Remember the original argv so that we can put them back after run
     argv_orig = sys.argv[:]
 
-    # Remember the original sys.path so that we can reset it after run
+    # Remember the original sys.path so that we can reset it after run
     sys_path_orig = deepcopy(sys.path)
 
     # Python file is the original one (not the copy for download)
