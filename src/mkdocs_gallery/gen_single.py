@@ -959,7 +959,7 @@ def parse_and_execute(script: GalleryScript, script_blocks):
     # Remember the original argv so that we can put them back after run
     argv_orig = sys.argv[:]
 
-    # Remember the original sys.path so that we can reset it after run
+    # Remember the original sys.path so that we can reset it after run
     sys_path_orig = deepcopy(sys.path)
 
     # Python file is the original one (not the copy for download)
