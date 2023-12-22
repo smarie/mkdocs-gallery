@@ -794,15 +794,9 @@ def _apply_async_handling(code_ast, *, compiler_flags):
 
     *original_body, last_node = code_ast.body
     if isinstance(last_node, ast.Expr):
-        # FIXME
-        #  ast.Assign(targets=[ast.Name(id="__async_wrapper_result__", ctx=ast.Store())], value=last_node)
-        last_node = compile(
-            f"__async_wrapper_result__ = ({ast.unparse(last_node)})",
-            "<_apply_async_handling()>",
-            "exec",
-            compiler_flags | ast.PyCF_ONLY_AST,
-            dont_inherit=1,
-        ).body[0]
+        last_node = ast.Assign(
+            targets=[ast.Name(id="__async_wrapper_result__", ctx=ast.Store())], value=last_node.value
+        )
     original_body.append(last_node)
 
     async_wrapper = async_handling.body[0]
