@@ -22,7 +22,7 @@ from packaging.version import parse as parse_version
 from pathlib import Path
 from textwrap import indent
 from typing import Dict, List, Optional
-from warnings import filterwarnings
+from warnings import filterwarnings, warn
 
 from .errors import ExtensionError
 from .gen_data_model import GalleryScript
@@ -34,6 +34,7 @@ __all__ = [
     "clean_modules",
     "matplotlib_scraper",
     "mayavi_scraper",
+    "pyvista_scraper",
 ]
 
 
@@ -303,14 +304,18 @@ def mayavi_scraper(block, script: GalleryScript):
         The ReSTructuredText that will be rendered to HTML containing
         the images. This is often produced by :func:`figure_md_or_html`.
     """
-    from mayavi import mlab
+    try:
+        from mayavi import mlab
+    except ModuleNotFoundError:
+        warn("No module named 'mayavi', skipping mayavi image scraper.")
+        return "" # skip scraper function
 
     image_path_iterator = script.run_vars.image_path_iterator
     image_paths = list()
     e = mlab.get_engine()
     for scene, image_path in zip(e.scenes, image_path_iterator):
         try:
-            mlab.savefig(image_path, figure=scene)
+            mlab.savefig(str(image_path), figure=scene)
         except Exception:
             mlab.close(all=True)
             raise
@@ -322,10 +327,57 @@ def mayavi_scraper(block, script: GalleryScript):
     mlab.close(all=True)
     return figure_md_or_html(image_paths, script)
 
+def pyvista_scraper(block, script: GalleryScript):
+    """Scrape PyVista images.
+
+    Parameters
+    ----------
+    block : tuple
+        A tuple containing the (label, content, line_number) of the block.
+
+    script : GalleryScript
+        Script being run
+
+    Returns
+    -------
+    md : str
+        The ReSTructuredText that will be rendered to HTML containing
+        the images. This is often produced by :func:`figure_md_or_html`.
+    """
+    import pyvista as pv
+    import pyvista.plotting as pv_plt
+    import shutil
+
+    if not pv.BUILDING_GALLERY:
+        raise RuntimeError(pv.BUILDING_GALLERY_ERROR_MSG)
+    if not pv.OFF_SCREEN:
+        raise RuntimeError("set pyvista.OFF_SCREEN=True to use the pyvista image scraper.")
+
+    image_path_iterator = script.run_vars.image_path_iterator
+    image_paths = list()
+    try:
+        # pyvista >= 0.40
+        figures = pv_plt.plotter._ALL_PLOTTERS
+    except AttributeError:
+        # pyvista < 0.40
+        figures = pv_plt._ALL_PLOTTERS
+    for _, plotter in figures.items():
+        fname = next(image_path_iterator)
+        if hasattr(plotter, "_gif_filename"):
+            # move gif to fname
+            fname = fname.with_suffix('').with_suffix(".gif")
+            shutil.move(plotter._gif_filename, fname)
+        else:
+            plotter.screenshot(fname)
+        image_paths.append(fname)
+    pv.close_all()  # close and clear all plotters
+    return figure_md_or_html(image_paths, script)
+
 
 _scraper_dict = dict(
     matplotlib=matplotlib_scraper,
     mayavi=mayavi_scraper,
+    pyvista=pyvista_scraper,
 )
 
 

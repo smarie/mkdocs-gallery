@@ -69,6 +69,11 @@ jobs:
           python-version: 3.9
           architecture: x64
 
+      - name: Setup headless display
+        uses: pyvista/setup-headless-display-action@v2
+        with:
+          qt: true
+
       - name: Install noxfile requirements
         run: pip install -r noxfile-requirements.txt
 
@@ -77,7 +82,7 @@ jobs:
 
       # Share ./docs/reports so that they can be deployed with doc in next job
       - name: Share reports with other jobs
-        # if: matrix.nox_session == '...': not needed, if empty wont be shared
+        if: runner.os == 'Linux'
         uses: actions/upload-artifact@master
         with:
           name: reports_dir
@@ -122,6 +127,11 @@ jobs:
         with:
           python-version: 3.9
           architecture: x64
+
+      - name: Setup headless display
+        uses: pyvista/setup-headless-display-action@v2
+        with:
+          qt: true
 
       # 1) retrieve the reports generated previously
       - name: Retrieve reports
