@@ -11,12 +11,11 @@ figure `demo.png` in the folder `_static` to be used for the thumbnail.
 """
 import numpy as np
 import matplotlib.pyplot as plt
-
 # mkdocs_gallery_thumbnail_path = '_static/demo.png'
 
 # %%
 
-x = np.linspace(0, 4 * np.pi, 301)
+x = np.linspace(0, 4*np.pi, 301)
 y1 = np.sin(x)
 y2 = np.cos(x)
 
@@ -25,8 +24,8 @@ y2 = np.cos(x)
 # ------
 
 plt.figure()
-plt.plot(x, y1, label="sin")
-plt.plot(x, y2, label="cos")
+plt.plot(x, y1, label='sin')
+plt.plot(x, y2, label='cos')
 plt.legend()
 plt.show()
 
@@ -35,9 +34,10 @@ plt.show()
 # ------
 
 plt.figure()
-plt.plot(x, y1, label="sin")
-plt.plot(x, y2, label="cos")
+plt.plot(x, y1, label='sin')
+plt.plot(x, y2, label='cos')
 plt.legend()
-plt.xscale("log")
-plt.yscale("log")
+plt.xscale('log')
+plt.yscale('log')
 plt.show()
+
