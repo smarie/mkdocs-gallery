@@ -18,10 +18,10 @@ import matplotlib.pyplot as plt
 from mkdocs_gallery.backreferences import identify_names
 from mkdocs_gallery.py_source_parser import split_code_and_text_blocks
 
-filename = os.__file__.replace('.pyc', '.py')
+filename = os.__file__.replace(".pyc", ".py")
 _, script_blocks = split_code_and_text_blocks(filename)
 names = identify_names(script_blocks)
-figheight = len(names) + .5
+figheight = len(names) + 0.5
 
 fontsize = 12.5
 
@@ -40,17 +40,23 @@ fontsize = 12.5
 fig = plt.figure(figsize=(7.5, 8))
 
 for i, (name, obj) in enumerate(names.items()):
-    fig.text(0.55, (float(len(names)) - 0.5 - i) / figheight,
-             name,
-             ha="right",
-             size=fontsize,
-             transform=fig.transFigure,
-             bbox=dict(boxstyle='square', fc="w", ec="k"))
-    fig.text(0.6, (float(len(names)) - 0.5 - i) / figheight,
-             obj[0]["module"],
-             ha="left",
-             size=fontsize,
-             transform=fig.transFigure,
-             bbox=dict(boxstyle='larrow,pad=0.1', fc="w", ec="k"))
+    fig.text(
+        0.55,
+        (float(len(names)) - 0.5 - i) / figheight,
+        name,
+        ha="right",
+        size=fontsize,
+        transform=fig.transFigure,
+        bbox=dict(boxstyle="square", fc="w", ec="k"),
+    )
+    fig.text(
+        0.6,
+        (float(len(names)) - 0.5 - i) / figheight,
+        obj[0]["module"],
+        ha="left",
+        size=fontsize,
+        transform=fig.transFigure,
+        bbox=dict(boxstyle="larrow,pad=0.1", fc="w", ec="k"),
+    )
 
 plt.draw()
