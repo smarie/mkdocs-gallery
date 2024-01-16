@@ -3,17 +3,16 @@
 
 [PEP 429](https://peps.python.org/pep-0492), which was first implemented in
 [Python 3.5](https://docs.python.org/3/whatsnew/3.5.html#whatsnew-pep-492), added initial syntax for asynchronous
-programming in Python: `async` and `await`. While this improved UX for asynchronous programming quite a bit, one major
-downside is that it "poisons" your code base. If you want to `await` a coroutine, you have to be inside a `async def`
+programming in Python: `async` and `await`. 
+
+While this was a major improvement in particular for UX development, one major
+downside is that it "poisons" the caller's code base. If you want to `await` a coroutine, you have to be inside a `async def`
 context. Doing so turns the function into a coroutine function and thus forces the caller to also `await` its results.
 Rinse and repeat until you reach the beginning of the stack.
 
-While this might be acceptable or not even an issue for applications, e.g. a web frameworks, for scripts it is usually
-a nuisance. [`jupyter` notebooks](https://jupyter.org/), or rather the [`IPython` kernel](https://ipython.org/) running
-the code inside of them, have some
+Since version `0.10.0`, `mkdocs-gallery` is now able to automatically detect code blocks using async programming, and to handle them nicely so that you don't have to wrap them. This feature is enabled by default and does not require any configuration option. Generated notebooks remain consistent with [`jupyter` notebooks](https://jupyter.org/), or rather the [`IPython` kernel](https://ipython.org/) running
+the code inside of them, that is equipped with 
 [background handling to allow top-level asynchronous code](https://ipython.readthedocs.io/en/stable/interactive/autoawait.html).
-
-And so does `mkdocs-gallery` to keep examples that require asynchronous code nice and clean.
 """
 
 import asyncio
