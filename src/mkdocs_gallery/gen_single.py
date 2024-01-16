@@ -27,7 +27,7 @@ from functools import partial
 from io import StringIO
 from pathlib import Path
 from shutil import copyfile
-from textwrap import indent
+from textwrap import indent, dedent
 from time import time
 from typing import List, Set, Tuple
 
@@ -739,6 +739,72 @@ def _reset_cwd_syspath(cwd, path_to_remove):
     os.chdir(cwd)
 
 
+def _parse_code(bcontent, src_file, *, compiler_flags):
+    code_ast = compile(bcontent, src_file, "exec", compiler_flags | ast.PyCF_ONLY_AST, dont_inherit=1)
+    if _needs_async_handling(bcontent, src_file, compiler_flags=compiler_flags):
+        code_ast = _apply_async_handling(code_ast, compiler_flags=compiler_flags)
+    return code_ast
+
+
+def _needs_async_handling(bcontent, src_file, *, compiler_flags) -> bool:
+    try:
+        compile(bcontent, src_file, "exec", compiler_flags, dont_inherit=1)
+    except SyntaxError as error:
+        # mkdocs-gallery supports top-level async code similar to jupyter notebooks.
+        # Without handling, this will raise a SyntaxError. In such a case, we apply a
+        # minimal async handling and try again. If the error persists, we bubble it up
+        # and let the caller handle it.
+        try:
+            compile(
+                f"async def __async_wrapper__():\n{indent(bcontent, ' ' * 4)}",
+                src_file,
+                "exec",
+                compiler_flags,
+                dont_inherit=1,
+            )
+        except SyntaxError:
+            # Raise the original error to avoid leaking the internal async handling to
+            # generated output.
+            raise error from None
+        else:
+            return True
+    else:
+        return False
+
+
+def _apply_async_handling(code_ast, *, compiler_flags):
+    async_handling = compile(
+        dedent(
+            """
+                async def __async_wrapper__():
+                    # original AST goes here
+                    return locals()
+                import asyncio as __asyncio__
+                __async_wrapper_locals__ = __asyncio__.run(__async_wrapper__())
+                __async_wrapper_result__ = __async_wrapper_locals__.pop("__async_wrapper_result__", None)
+                globals().update(__async_wrapper_locals__)
+                __async_wrapper_result__
+                """
+        ),
+        "<_apply_async_handling()>",
+        "exec",
+        compiler_flags | ast.PyCF_ONLY_AST,
+        dont_inherit=1,
+    )
+
+    *original_body, last_node = code_ast.body
+    if isinstance(last_node, ast.Expr):
+        last_node = ast.Assign(
+            targets=[ast.Name(id="__async_wrapper_result__", ctx=ast.Store())], value=last_node.value
+        )
+    original_body.append(last_node)
+
+    async_wrapper = async_handling.body[0]
+    async_wrapper.body = [*original_body, *async_wrapper.body]
+
+    return ast.fix_missing_locations(async_handling)
+
+
 def execute_code_block(compiler, block, script: GalleryScript):
     """Execute the code block of the example file.
 
@@ -788,9 +854,7 @@ def execute_code_block(compiler, block, script: GalleryScript):
 
     try:
         ast_Module = _ast_module()
-        code_ast = ast_Module([bcontent])
-        flags = ast.PyCF_ONLY_AST | compiler.flags
-        code_ast = compile(bcontent, src_file, "exec", flags, dont_inherit=1)
+        code_ast = _parse_code(bcontent, src_file, compiler_flags=compiler.flags)
         ast.increment_lineno(code_ast, lineno - 1)
 
         is_last_expr, mem_max = _exec_and_get_memory(compiler, ast_Module, code_ast, script=script)

@@ -1,8 +1,8 @@
 # Changelog
 
-### 0.9.1 - Examples folder outside of docs
+### 0.10.0 - Support for asynchronous code
 
-- `examples` folder is not required to be in a subfolder of `docs` anymore. Fixes [#54](https://github.com/smarie/mkdocs-gallery/issues/54). PR [#92](https://github.com/smarie/mkdocs-gallery/pull/92) by [Louis-Pujol](https://github.com/Louis-Pujol). 
+- Gallery scripts now support top-level asynchronous code. PR [#90](https://github.com/smarie/mkdocs-gallery/pull/90) by [pmeier](https://github.com/pmeier)
 
 ### 0.9.0 - Pyvista
 
