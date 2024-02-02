@@ -2,19 +2,24 @@ import ast
 import codeop
 import sys
 from textwrap import dedent
-
+import asyncio
 import pytest
 
 from mkdocs_gallery.gen_single import _needs_async_handling, _parse_code
+from mkdocs_gallery.utils import get_asyncio_loop
 
 SRC_FILE = __file__
 COMPILER = codeop.Compile()
-COMPILER_FLAGS = codeop.Compile().flags
+COMPILER_FLAGS = COMPILER.flags
 
 
 needs_ast_unparse = pytest.mark.skipif(
     sys.version_info < (3, 9), reason="ast.unparse is only available for Python >= 3.9"
 )
+
+
+def make_globals():
+    return {"__get_asyncio_loop__": get_asyncio_loop}
 
 
 def test_non_async_syntax_error():
@@ -108,7 +113,7 @@ def test_async_handling(code, needs):
     if needs:
         assert not _needs_async_handling(code_unparsed, src_file=SRC_FILE, compiler_flags=COMPILER_FLAGS)
 
-    exec(COMPILER(code_unparsed, SRC_FILE, "exec"), {})
+    exec(COMPILER(code_unparsed, SRC_FILE, "exec"), make_globals())
 
 
 @needs_ast_unparse
@@ -128,10 +133,10 @@ def test_async_handling_locals():
     )
     code_unparsed = ast.unparse(_parse_code(code, src_file=SRC_FILE, compiler_flags=COMPILER_FLAGS))
 
-    locals = {}
-    exec(COMPILER(code_unparsed, SRC_FILE, "exec"), locals)
+    globals_ = make_globals()
+    exec(COMPILER(code_unparsed, SRC_FILE, "exec"), globals_)
 
-    assert "sentinel" in locals and locals["sentinel"] == sentinel
+    assert "sentinel" in globals_ and globals_["sentinel"] == sentinel
 
 
 @needs_ast_unparse
@@ -153,6 +158,23 @@ def test_async_handling_last_expression():
     last = code_unparsed_ast.body[-1]
     assert isinstance(last, ast.Expr)
 
-    locals = {}
-    exec(COMPILER(code_unparsed, SRC_FILE, "exec"), locals)
-    assert eval(ast.unparse(last.value), locals)
+    globals_ = make_globals()
+    exec(COMPILER(code_unparsed, SRC_FILE, "exec"), globals_)
+    assert eval(ast.unparse(last.value), globals_)
+
+
+def test_get_event_loop_after_async_handling():
+    # Non-regression test for https://github.com/smarie/mkdocs-gallery/issues/93
+    code = dedent(
+        """
+        async def afn():
+            return True
+        
+        assert await afn()
+        """
+    )
+
+    code_unparsed = ast.unparse(_parse_code(code, src_file=SRC_FILE, compiler_flags=COMPILER_FLAGS))
+    exec(COMPILER(code_unparsed, SRC_FILE, "exec"), make_globals())
+
+    asyncio.get_event_loop()
