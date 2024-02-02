@@ -376,3 +376,25 @@ def is_relative_to(parentpath: Path, subpath: Path) -> bool:
 
     except ValueError:
         return False
+
+
+import asyncio
+
+_asyncio_event_loop = None
+
+
+def get_asyncio_loop():
+    try:
+        return asyncio.get_running_loop()
+    except RuntimeError:
+        # not inside a coroutine,
+        # track our own global
+        pass
+
+    # not thread-local like asyncio's,
+    # because we only track one event loop to run for IPython itself,
+    # always in the main thread.
+    global _asyncio_event_loop
+    if _asyncio_event_loop is None or _asyncio_event_loop.is_closed():
+        _asyncio_event_loop = asyncio.new_event_loop()
+    return _asyncio_event_loop

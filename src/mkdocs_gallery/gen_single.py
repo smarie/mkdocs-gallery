@@ -779,8 +779,7 @@ def _apply_async_handling(code_ast, *, compiler_flags):
                 async def __async_wrapper__():
                     # original AST goes here
                     return locals()
-                import asyncio as __asyncio__
-                __async_wrapper_locals__ = __asyncio__.run(__async_wrapper__())
+                __async_wrapper_locals__ = __get_asyncio_loop__().run_until_complete(__async_wrapper__())
                 __async_wrapper_result__ = __async_wrapper_locals__.pop("__async_wrapper_result__", None)
                 globals().update(__async_wrapper_locals__)
                 __async_wrapper_result__
@@ -936,6 +935,8 @@ def parse_and_execute(script: GalleryScript, script_blocks):
     fake_main = importlib.util.module_from_spec(importlib.util.spec_from_loader("__main__", None))
     script.run_vars.fake_main = fake_main
 
+    from .utils import get_asyncio_loop
+
     example_globals = fake_main.__dict__
     example_globals.update(
         {
@@ -949,6 +950,7 @@ def parse_and_execute(script: GalleryScript, script_blocks):
             # Don't ever support __file__: Issues #166 #212
             # Don't let them use input()
             "input": _check_input,
+            "__get_asyncio_loop__": get_asyncio_loop,
         }
     )
     script.run_vars.example_globals = example_globals
@@ -959,7 +961,7 @@ def parse_and_execute(script: GalleryScript, script_blocks):
     # Remember the original argv so that we can put them back after run
     argv_orig = sys.argv[:]
 
-    # Remember the original sys.path so that we can reset it after run
+    # Remember the original sys.path so that we can reset it after run
     sys_path_orig = deepcopy(sys.path)
 
     # Python file is the original one (not the copy for download)
