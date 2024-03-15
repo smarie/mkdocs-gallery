@@ -103,7 +103,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
         with open("mkdocs-no-mayavi.yml", "w") as f:
             for line in mkdocs_config:
                 if line == "      expected_failing_examples:\n":
-                    line = line + "         - docs/examples/plot_10_mayavi.py\n"
+                    line = line + "         - examples/plot_10_mayavi.py\n"
                 f.write(line)
 
     # install CI-only dependencies
