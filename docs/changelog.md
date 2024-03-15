@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.10.1
+### 0.10.1 - More flexible gallery folders
 
 - `examples` folder is not required to be in a subfolder of `docs` anymore. Fixes [#54](https://github.com/smarie/mkdocs-gallery/issues/54). PR [#92](https://github.com/smarie/mkdocs-gallery/pull/92) by [Louis-Pujol](https://github.com/Louis-Pujol).
 
