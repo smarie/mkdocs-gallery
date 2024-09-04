@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.10.2 - Bugfixes
+
+- Fixed dead link at the bottom of the generated gallery examples. Fixes [#97](https://github.com/smarie/mkdocs-gallery/issues/97).
+- Fixed compliance issue with `mkdocs-material`'s [metadata declaration feature](https://squidfunk.github.io/mkdocs-material/reference/#usage). Fixes [#96](https://github.com/smarie/mkdocs-gallery/issues/96).
+
 ### 0.10.1 - More flexible gallery folders
 
 - `examples` folder is not required to be in a subfolder of `docs` anymore. Fixes [#54](https://github.com/smarie/mkdocs-gallery/issues/54). PR [#92](https://github.com/smarie/mkdocs-gallery/pull/92) by [Louis-Pujol](https://github.com/Louis-Pujol).

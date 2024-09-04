@@ -1,3 +1,7 @@
+---
+title: Custom page title, see mkdocs-material reference
+---
+
 # Gallery of Examples
 
 This page consists of the 'General example' gallery and a sub-gallery,
