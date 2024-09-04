@@ -1320,6 +1320,7 @@
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
 <h3 id="0102-bugfixes">0.10.2 - Bugfixes<a class="headerlink" href="#0102-bugfixes" title="Permanent link">&para;</a></h3>
 <ul>
+<li><strong>SECURITY</strong> removed insecure polyfill extra javascript from example. Fixes <a href="https://github.com/smarie/mkdocs-gallery/issues/99">#99</a>.</li>
 <li>Fixed dead link at the bottom of the generated gallery examples. Fixes <a href="https://github.com/smarie/mkdocs-gallery/issues/97">#97</a>.</li>
 <li>Fixed compliance issue with <code>mkdocs-material</code>'s <a href="https://squidfunk.github.io/mkdocs-material/reference/#usage">metadata declaration feature</a>. Fixes <a href="https://github.com/smarie/mkdocs-gallery/issues/96">#96</a>.</li>
 </ul>
@@ -1481,8 +1482,6 @@
       <script src="../assets/javascripts/bundle.56dfad97.min.js"></script>
       
         <script src="../javascripts/mathjax.js"></script>
-      
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
