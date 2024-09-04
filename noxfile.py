@@ -163,15 +163,17 @@ def tests(session, coverage, pkg_specs):
                     "-v", "tests/")
 
         # -- use the doc generation for coverage
+        coverage_args = ("coverage", "run", "--append", "--source", f"src/{pkg_name}", "-m", "mkdocs", "build")
         if cannot_run_mayavi:
-            session.run2(f"coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml")
+            session.run(*coverage_args, "-f", "mkdocs-no-mayavi.yml")
         else:
-            session.run2(f"coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml")
-        # -- add a second build so that we can go through the caching/md5 side
+            session.run(*coverage_args, "-f", "mkdocs.yml")
+
+        # -- add a second build so that we can go through the caching/md5 code
         if cannot_run_mayavi:
-            session.run2(f"coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml")
+            session.run(*coverage_args, "-f", "mkdocs-no-mayavi.yml")
         else:
-            session.run2(f"coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml")
+            session.run(*coverage_args, "-f", "mkdocs.yml")
 
         session.run("coverage", "report")
         session.run("coverage", "xml", "-o", f"{Folders.coverage_xml}")
