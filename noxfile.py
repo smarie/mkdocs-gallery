@@ -96,9 +96,9 @@ def tests(session, coverage, pkg_specs):
     # Since our tests are currently limited, use our own doc generation as a test
     cannot_run_mayavi = version.parse(session.python) < version.parse(PY38)
     if cannot_run_mayavi:
-        session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
+        install_reqs(session, phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
     else:
-        session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS+MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
+        install_reqs(session, phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS+MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
 
     # Edit mkdocs config file
     with open("mkdocs.yml", "r") as f:
