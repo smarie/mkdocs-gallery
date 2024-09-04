@@ -2,6 +2,7 @@
 
 ### 0.10.2 - Bugfixes
 
+- **SECURITY** removed insecure polyfill extra javascript from example. Fixes [#99](https://github.com/smarie/mkdocs-gallery/issues/99).
 - Fixed dead link at the bottom of the generated gallery examples. Fixes [#97](https://github.com/smarie/mkdocs-gallery/issues/97).
 - Fixed compliance issue with `mkdocs-material`'s [metadata declaration feature](https://squidfunk.github.io/mkdocs-material/reference/#usage). Fixes [#96](https://github.com/smarie/mkdocs-gallery/issues/96).
 
