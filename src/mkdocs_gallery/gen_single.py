@@ -458,13 +458,12 @@ def generate(gallery: GalleryBase, seen_backrefs: Set) -> Tuple[str, str, str, L
         all_thumbnail_entries.append(thumb_div)
 
     # Write the gallery summary index.md
-    index_md = f"""<!-- {str(gallery.generated_dir_rel_project).replace(os.path.sep, '_')} -->
-
-{readme_contents}
+    index_md = f"""{readme_contents}
 
 {"".join(all_thumbnail_entries)}
 <div class="mkd-glr-clear"></div>
 
+<!-- {str(gallery.generated_dir_rel_project).replace(os.path.sep, '_')} -->
 
 """
     # Note: the "clear" is to disable floating elements again, now that the gallery section is over.
