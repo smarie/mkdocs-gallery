@@ -227,6 +227,7 @@ MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS = [
     # Note: installing Mayavi from PyPi does not seem to work on GHA CI.
     #"git+https://github.com/enthought/mayavi.git",  # we want mayavi>=4.7.4 when available due to https://github.com/enthought/mayavi/pull/1272
     "configobj",
+    "numpy<2",
     "mayavi"
 ]
 
@@ -238,7 +239,7 @@ def docs(session):
     install_reqs(session, phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
 
     # Install the plugin
-    session.install2('.')
+    session.install('.')
 
     if session.posargs:
         # use posargs instead of "build"
