@@ -458,6 +458,8 @@ def generate(gallery: GalleryBase, seen_backrefs: Set) -> Tuple[str, str, str, L
         all_thumbnail_entries.append(thumb_div)
 
     # Write the gallery summary index.md
+    # Note: we write the HTML comment at the bottom instead of the top because having it at the top prevents html
+    # page metadata from mkdocs-material to be processed correctly. See GH#96
     index_md = f"""{readme_contents}
 
 {"".join(all_thumbnail_entries)}

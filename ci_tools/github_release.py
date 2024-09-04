@@ -114,11 +114,11 @@ def create_or_update_release(user, pwd, secret, repo_slug, changelog_file, doc_u
         # #
         # release.id           # 13928525
         # release.etag         # 'W/"dfab7a13086d1b44fe290d5d04125124"'
-        # release.url          # 'https://api.github.com/repos/smarie/python-odsclient/releases/13928525'
-        # release.html_url     # 'https://github.com/smarie/python-odsclient/releases/tag/0.5.0'
-        # release.tarball_url  # 'https://api.github.com/repos/smarie/python-odsclient/tarball/0.5.0'
-        # release.zipball_url  # 'https://api.github.com/repos/smarie/python-odsclient/zipball/0.5.0'
-        # release.upload_url   # 'https://uploads.github.com/repos/smarie/python-odsclient/releases/13928525/assets{?name,label}'
+        # release.url          # 'https://api.github.com/repos/smarie/python-mkdocs-gallery/releases/13928525'
+        # release.html_url     # 'https://github.com/smarie/python-mkdocs-gallery/releases/tag/0.5.0'
+        # release.tarball_url  # 'https://api.github.com/repos/smarie/python-mkdocs-gallery/tarball/0.5.0'
+        # release.zipball_url  # 'https://api.github.com/repos/smarie/python-mkdocs-gallery/zipball/0.5.0'
+        # release.upload_url   # 'https://uploads.github.com/repos/smarie/python-mkdocs-gallery/releases/13928525/assets{?name,label}'
 
 
 if __name__ == '__main__':

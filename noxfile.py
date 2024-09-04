@@ -2,12 +2,12 @@ import argparse
 from itertools import product
 from json import dumps
 import logging
-import os
-import sys
 
 import nox  # noqa
+import os
 from packaging import version
 from pathlib import Path  # noqa
+import sys
 
 # add parent folder to python path so that we can import noxfile_utils.py
 # note that you need to "pip install -r noxfile-requiterements.txt" for this file to work.
@@ -118,7 +118,11 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # session.run2("conda list", env={"CONDA_PREFIX": str(conda_prefix), "CONDA_DEFAULT_ENV": session.get_session_id()})
 
     # Fail if the assumed python version is not the actual one
-    session.run2("python ci_tools/check_python_version.py %s" % session.python)
+    session.run2(f"python ci_tools/check_python_version.py {session.python}")
+
+    # check that it can be imported even from a different folder
+    # Important: do not surround the command into double quotes as in the shell !
+    # session.run('python', '-c', 'import os; os.chdir(\'./docs/\'); import %s' % pkg_name)
 
     # finally run all tests
     if not coverage:
@@ -148,36 +152,33 @@ def tests(session: PowerSession, coverage, pkg_specs):
                              versions_dct=pkg_specs)
 
         # --coverage + junit html reports
-        session.run2("coverage run --source src/{pkg_name} "
-                     "-m pytest --cache-clear --junitxml='{test_xml}' --html='{test_html}' -v tests/"
-                     "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+        session.run2(f"coverage run --source src/{pkg_name} "
+                     f"-m pytest --cache-clear "
+                     f'--junitxml="{Folders.test_xml}" --html="{Folders.test_html}" '
+                     f"-v tests/")
 
         # -- use the doc generation for coverage
         if cannot_run_mayavi:
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
-                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+            session.run2(f"coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml")
         else:
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
-                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+            session.run2(f"coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml")
         # -- add a second build so that we can go through the caching/md5 side
         if cannot_run_mayavi:
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
-                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+            session.run2(f"coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml")
         else:
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
-                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+            session.run2(f"coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml")
 
         session.run2("coverage report")
-        session.run2("coverage xml -o '{covxml}'".format(covxml=Folders.coverage_xml))
-        session.run2("coverage html -d '{dst}'".format(dst=Folders.coverage_reports))
+        session.run2(f'coverage xml -o "{Folders.coverage_xml}"')
+        session.run2(f'coverage html -d "{Folders.coverage_reports}"')
         # delete this intermediate file, it is not needed anymore
         rm_file(Folders.coverage_intermediate_file)
 
         # --generates the badge for the test results and fail build if less than x% tests pass
         nox_logger.info("Generating badge for tests coverage")
         # Use our own package to generate the badge
-        session.run2("genbadge tests -i '%s' -o '%s' -t 100" % (Folders.test_xml, Folders.test_badge))
-        session.run2("genbadge coverage -i '%s' -o '%s'" % (Folders.coverage_xml, Folders.coverage_badge))
+        session.run2(f'genbadge tests -i "{Folders.test_xml}" -o "{Folders.test_badge}" -t 100')
+        session.run2(f'genbadge coverage -i "{Folders.coverage_xml}" -o "{Folders.coverage_badge}"')
     # Cleanup
     if os.path.exists("mkdocs-no-mayavi.yml"):
         os.remove("mkdocs-no-mayavi.yml")
@@ -188,7 +189,6 @@ def flake8(session: PowerSession):
     """Launch flake8 qualimetry."""
 
     session.install("-r", str(Folders.ci_tools / "flake8-requirements.txt"))
-    session.install("genbadge[flake8]")
     session.install2('.')
 
     rm_folder(Folders.flake8_reports)
@@ -201,7 +201,7 @@ def flake8(session: PowerSession):
     session.run("flake8", pkg_name, "--exit-zero", "--format=html", "--htmldir", str(Folders.flake8_reports),
                 "--statistics", "--tee", "--output-file", str(Folders.flake8_intermediate_file))
     # generate our badge
-    session.run2("genbadge flake8 -i '%s' -o '%s'" % (Folders.flake8_intermediate_file, Folders.flake8_badge))
+    session.run2(f'genbadge flake8 -i "{Folders.flake8_intermediate_file}" -o "{Folders.flake8_badge}"')
     rm_file(Folders.flake8_intermediate_file)
 
 
@@ -231,10 +231,10 @@ def docs(session: PowerSession):
     session.install2('.')
 
     if session.posargs:
-        # use posargs instead of "serve"
+        # use posargs instead of "build"
         session.run2("mkdocs %s" % " ".join(session.posargs))
     else:
-        session.run2("mkdocs serve -f mkdocs.yml")
+        session.run2("mkdocs build -f mkdocs.yml")
 
 
 @power_session(python=[PY39])
@@ -313,10 +313,9 @@ def release(session: PowerSession):
 
     # create the github release
     session.install_reqs(phase="release", phase_reqs=["click", "PyGithub"])
-    session.run2("python ci_tools/github_release.py -s {gh_token} "
-                 "--repo-slug {gh_org}/{gh_repo} -cf ./docs/changelog.md "
-                 "-d https://{gh_org}.github.io/{gh_repo}/changelog {tag}"
-                 "".format(gh_token=gh_token, gh_org=gh_org, gh_repo=gh_repo, tag=current_tag))
+    session.run2(f"python ci_tools/github_release.py -s {gh_token} "
+                 f"--repo-slug {gh_org}/{gh_repo} -cf ./docs/changelog.md "
+                 f"-d https://{gh_org}.github.io/{gh_repo}/changelog {current_tag}")
 
 
 @nox.session(python=False)
@@ -345,15 +344,18 @@ def gha_list(session):
         session_func.parametrize
     except AttributeError:
         if additional_args.with_version:
-            sessions_list = [{"python": py, "session": "%s-%s" % (session_func.__name__, py)} for py in session_func.python]
+            sessions_list = [{"python": py, "session": f"{session_func.__name__}-{py}"} for py in session_func.python]
         else:
-            sessions_list = ["%s-%s" % (session_func.__name__, py) for py in session_func.python]
+            sessions_list = [f"{session_func.__name__}-{py}" for py in session_func.python]
     else:
         if additional_args.with_version:
-            sessions_list = [{"python": py, "session": "%s-%s(%s)" % (session_func.__name__, py, param)}
-                             for py, param in product(session_func.python, session_func.parametrize)]
+            # sessions_list = [{"python": py, "session": f"{session_func.__name__}-{py}({param})"}
+            #                  for py, param in product(session_func.python, session_func.parametrize)]
+            # Hack to return the valid ones only, in order  # TODO remove this hack when ENV is removed
+            sessions_list = [{"python": py, "session": f"{session_func.__name__}-{py}(env='{env}')"}
+                             for py, env in ENVS.keys()]
         else:
-            sessions_list = ["%s-%s(%s)" % (session_func.__name__, py, param)
+            sessions_list = [f"{session_func.__name__}-{py}({param})"
                              for py, param in product(session_func.python, session_func.parametrize)]
 
     # print the list so that it can be caught by GHA.
