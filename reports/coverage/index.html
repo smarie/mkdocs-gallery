@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Coverage report</title>
-    <link rel="icon" sizes="32x32" href="favicon_32.png">
-    <link rel="stylesheet" href="style.css" type="text/css">
-    <script type="text/javascript" src="coverage_html.js" defer></script>
+    <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
+    <link rel="stylesheet" href="style_cb_8e611ae1.css" type="text/css">
+    <script src="coverage_html_cb_6fb7b396.js" defer></script>
 </head>
 <body class="indexfile">
 <header>
@@ -16,13 +16,13 @@
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
             <label for="help_panel_state">
-                <img id="keyboard_icon" src="keybd_closed.png" alt="Show/hide keyboard shortcuts" />
+                <img id="keyboard_icon" src="keybd_closed_cb_ce680311.png" alt="Show/hide keyboard shortcuts">
             </label>
             <div id="help_panel">
                 <p class="legend">Shortcuts on this page</p>
                 <div class="keyhelp">
                     <p>
-                        <kbd>n</kbd>
+                        <kbd>f</kbd>
                         <kbd>s</kbd>
                         <kbd>m</kbd>
                         <kbd>x</kbd>
@@ -43,11 +43,20 @@
             </div>
         </aside>
         <form id="filter_container">
-            <input id="filter" type="text" value="" placeholder="filter..." />
+            <input id="filter" type="text" value="" placeholder="filter...">
+            <div>
+                <input id="hide100" type="checkbox" >
+                <label for="hide100">hide covered</label>
+            </div>
         </form>
+        <h2>
+                <a class="button current">Files</a>
+                <a class="button" href="function_index.html">Functions</a>
+                <a class="button" href="class_index.html">Classes</a>
+        </h2>
         <p class="text">
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.4.4">coverage.py v7.4.4</a>,
-            created at 2024-03-15 17:10 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.1">coverage.py v7.6.1</a>,
+            created at 2024-09-04 13:43 +0000
         </p>
     </div>
 </header>
@@ -55,18 +64,18 @@
     <table class="index" data-sortable>
         <thead>
             <tr class="tablehead" title="Click to sort">
-                <th class="name left" aria-sort="none" data-shortcut="n">Module</th>
-                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="s">statements</th>
-                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="m">missing</th>
-                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="x">excluded</th>
-                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="b">branches</th>
-                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="p">partial</th>
-                <th class="right" aria-sort="none" data-shortcut="c">coverage</th>
+                <th id="file" class="name left" aria-sort="none" data-shortcut="f">File<span class="arrows"></span></th>
+                <th id="statements" aria-sort="none" data-default-sort-order="descending" data-shortcut="s">statements<span class="arrows"></span></th>
+                <th id="missing" aria-sort="none" data-default-sort-order="descending" data-shortcut="m">missing<span class="arrows"></span></th>
+                <th id="excluded" aria-sort="none" data-default-sort-order="descending" data-shortcut="x">excluded<span class="arrows"></span></th>
+                <th id="branches" aria-sort="none" data-default-sort-order="descending" data-shortcut="b">branches<span class="arrows"></span></th>
+                <th id="partial" aria-sort="none" data-default-sort-order="descending" data-shortcut="p">partial<span class="arrows"></span></th>
+                <th id="coverage" class="right" aria-sort="none" data-shortcut="c">coverage<span class="arrows"></span></th>
             </tr>
         </thead>
         <tbody>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d___init___py.html">src/mkdocs_gallery/__init__.py</a></td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d___init___py.html">src/mkdocs_gallery/__init__.py</a></td>
                 <td>7</td>
                 <td>0</td>
                 <td>4</td>
@@ -74,8 +83,8 @@
                 <td>0</td>
                 <td class="right" data-ratio="7 7">100%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d__version_py.html">src/mkdocs_gallery/_version.py</a></td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d__version_py.html">src/mkdocs_gallery/_version.py</a></td>
                 <td>11</td>
                 <td>2</td>
                 <td>0</td>
@@ -83,26 +92,26 @@
                 <td>1</td>
                 <td class="right" data-ratio="10 13">77%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_backreferences_py.html">src/mkdocs_gallery/backreferences.py</a></td>
-                <td>186</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_backreferences_py.html">src/mkdocs_gallery/backreferences.py</a></td>
+                <td>185</td>
                 <td>10</td>
                 <td>0</td>
                 <td>74</td>
                 <td>4</td>
-                <td class="right" data-ratio="246 260">95%</td>
+                <td class="right" data-ratio="245 259">95%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_binder_py.html">src/mkdocs_gallery/binder.py</a></td>
-                <td>99</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_binder_py.html">src/mkdocs_gallery/binder.py</a></td>
+                <td>98</td>
                 <td>14</td>
                 <td>0</td>
                 <td>52</td>
                 <td>15</td>
-                <td class="right" data-ratio="122 151">81%</td>
+                <td class="right" data-ratio="121 150">81%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_docs_resolv_py.html">src/mkdocs_gallery/docs_resolv.py</a></td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_docs_resolv_py.html">src/mkdocs_gallery/docs_resolv.py</a></td>
                 <td>0</td>
                 <td>0</td>
                 <td>0</td>
@@ -110,124 +119,124 @@
                 <td>0</td>
                 <td class="right" data-ratio="0 0">100%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_downloads_py.html">src/mkdocs_gallery/downloads.py</a></td>
-                <td>23</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_downloads_py.html">src/mkdocs_gallery/downloads.py</a></td>
+                <td>22</td>
                 <td>0</td>
                 <td>0</td>
                 <td>2</td>
                 <td>0</td>
-                <td class="right" data-ratio="25 25">100%</td>
+                <td class="right" data-ratio="24 24">100%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_errors_py.html">src/mkdocs_gallery/errors.py</a></td>
-                <td>7</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_errors_py.html">src/mkdocs_gallery/errors.py</a></td>
+                <td>6</td>
                 <td>0</td>
                 <td>0</td>
                 <td>0</td>
                 <td>0</td>
-                <td class="right" data-ratio="7 7">100%</td>
+                <td class="right" data-ratio="6 6">100%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_gen_data_model_py.html">src/mkdocs_gallery/gen_data_model.py</a></td>
-                <td>433</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_gen_data_model_py.html">src/mkdocs_gallery/gen_data_model.py</a></td>
+                <td>432</td>
                 <td>20</td>
                 <td>0</td>
                 <td>88</td>
                 <td>17</td>
-                <td class="right" data-ratio="478 521">92%</td>
+                <td class="right" data-ratio="477 520">92%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_gen_gallery_py.html">src/mkdocs_gallery/gen_gallery.py</a></td>
-                <td>431</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_gen_gallery_py.html">src/mkdocs_gallery/gen_gallery.py</a></td>
+                <td>430</td>
                 <td>127</td>
                 <td>3</td>
                 <td>199</td>
                 <td>42</td>
-                <td class="right" data-ratio="434 630">69%</td>
+                <td class="right" data-ratio="433 629">69%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_gen_single_py.html">src/mkdocs_gallery/gen_single.py</a></td>
-                <td>522</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_gen_single_py.html">src/mkdocs_gallery/gen_single.py</a></td>
+                <td>521</td>
                 <td>69</td>
                 <td>0</td>
                 <td>166</td>
                 <td>37</td>
-                <td class="right" data-ratio="566 688">82%</td>
+                <td class="right" data-ratio="565 687">82%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_mkdocs_compatibility_py.html">src/mkdocs_gallery/mkdocs_compatibility.py</a></td>
-                <td>10</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_mkdocs_compatibility_py.html">src/mkdocs_gallery/mkdocs_compatibility.py</a></td>
+                <td>9</td>
                 <td>1</td>
                 <td>0</td>
                 <td>0</td>
                 <td>0</td>
-                <td class="right" data-ratio="9 10">90%</td>
+                <td class="right" data-ratio="8 9">89%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_notebook_py.html">src/mkdocs_gallery/notebook.py</a></td>
-                <td>104</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_notebook_py.html">src/mkdocs_gallery/notebook.py</a></td>
+                <td>103</td>
                 <td>54</td>
                 <td>0</td>
                 <td>26</td>
                 <td>2</td>
-                <td class="right" data-ratio="56 130">43%</td>
+                <td class="right" data-ratio="55 129">43%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_plugin_py.html">src/mkdocs_gallery/plugin.py</a></td>
-                <td>183</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_plugin_py.html">src/mkdocs_gallery/plugin.py</a></td>
+                <td>182</td>
                 <td>41</td>
                 <td>0</td>
                 <td>80</td>
                 <td>14</td>
-                <td class="right" data-ratio="188 263">71%</td>
+                <td class="right" data-ratio="187 262">71%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_py_source_parser_py.html">src/mkdocs_gallery/py_source_parser.py</a></td>
-                <td>92</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_py_source_parser_py.html">src/mkdocs_gallery/py_source_parser.py</a></td>
+                <td>91</td>
                 <td>11</td>
                 <td>0</td>
                 <td>28</td>
                 <td>5</td>
-                <td class="right" data-ratio="104 120">87%</td>
+                <td class="right" data-ratio="103 119">87%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_scrapers_py.html">src/mkdocs_gallery/scrapers.py</a></td>
-                <td>272</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_scrapers_py.html">src/mkdocs_gallery/scrapers.py</a></td>
+                <td>271</td>
                 <td>37</td>
                 <td>4</td>
                 <td>116</td>
                 <td>20</td>
-                <td class="right" data-ratio="325 388">84%</td>
+                <td class="right" data-ratio="324 387">84%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_sorting_py.html">src/mkdocs_gallery/sorting.py</a></td>
-                <td>59</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_sorting_py.html">src/mkdocs_gallery/sorting.py</a></td>
+                <td>58</td>
                 <td>19</td>
                 <td>0</td>
                 <td>10</td>
                 <td>0</td>
-                <td class="right" data-ratio="40 69">58%</td>
+                <td class="right" data-ratio="39 68">57%</td>
             </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_c494cfb98e882f3d_utils_py.html">src/mkdocs_gallery/utils.py</a></td>
-                <td>117</td>
+            <tr class="region">
+                <td class="name left"><a href="z_c494cfb98e882f3d_utils_py.html">src/mkdocs_gallery/utils.py</a></td>
+                <td>116</td>
                 <td>25</td>
                 <td>2</td>
                 <td>20</td>
                 <td>2</td>
-                <td class="right" data-ratio="106 137">77%</td>
+                <td class="right" data-ratio="105 136">77%</td>
             </tr>
         </tbody>
         <tfoot>
             <tr class="total">
                 <td class="name left">Total</td>
-                <td>2556</td>
+                <td>2542</td>
                 <td>430</td>
                 <td>13</td>
                 <td>863</td>
                 <td>159</td>
-                <td class="right" data-ratio="2723 3419">80%</td>
+                <td class="right" data-ratio="2709 3405">80%</td>
             </tr>
         </tfoot>
     </table>
@@ -238,16 +247,16 @@
 <footer>
     <div class="content">
         <p>
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.4.4">coverage.py v7.4.4</a>,
-            created at 2024-03-15 17:10 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.1">coverage.py v7.6.1</a>,
+            created at 2024-09-04 13:43 +0000
         </p>
     </div>
     <aside class="hidden">
-        <a id="prevFileLink" class="nav" href="d_c494cfb98e882f3d_utils_py.html"/>
-        <a id="nextFileLink" class="nav" href="d_c494cfb98e882f3d___init___py.html"/>
-        <button type="button" class="button_prev_file" data-shortcut="["/>
-        <button type="button" class="button_next_file" data-shortcut="]"/>
-        <button type="button" class="button_show_hide_help" data-shortcut="?"/>
+        <a id="prevFileLink" class="nav" href="z_c494cfb98e882f3d_utils_py.html"></a>
+        <a id="nextFileLink" class="nav" href="z_c494cfb98e882f3d___init___py.html"></a>
+        <button type="button" class="button_prev_file" data-shortcut="["></button>
+        <button type="button" class="button_next_file" data-shortcut="]"></button>
+        <button type="button" class="button_show_hide_help" data-shortcut="?"></button>
     </aside>
 </footer>
 </body>
