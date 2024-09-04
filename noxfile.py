@@ -223,7 +223,8 @@ MKDOCS_GALLERY_EXAMPLES_REQS = [
 MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS = [
     "PyQt5",  # PyQt is required for the mayavi backend
     # Note: installing Mayavi from PyPi does not seem to work on GHA CI.
-    "git+https://github.com/enthought/mayavi.git",  # we want mayavi>=4.7.4 when available due to https://github.com/enthought/mayavi/pull/1272
+    #"git+https://github.com/enthought/mayavi.git",  # we want mayavi>=4.7.4 when available due to https://github.com/enthought/mayavi/pull/1272
+    "mayavi"
 ]
 
 
