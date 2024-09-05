@@ -12,6 +12,8 @@ Miscellaneous utilities.
 
 from __future__ import absolute_import, division, print_function
 
+import asyncio
+import contextlib
 import hashlib
 import os
 import re
@@ -378,23 +380,13 @@ def is_relative_to(parentpath: Path, subpath: Path) -> bool:
         return False
 
 
-import asyncio
-
-_asyncio_event_loop = None
-
-
-def get_asyncio_loop():
+def run_async(coro):
     try:
-        return asyncio.get_running_loop()
+        loop = asyncio.get_running_loop()
     except RuntimeError:
-        # not inside a coroutine,
-        # track our own global
-        pass
+        loop = asyncio.new_event_loop()
 
-    # not thread-local like asyncio's,
-    # because we only track one event loop to run for IPython itself,
-    # always in the main thread.
-    global _asyncio_event_loop
-    if _asyncio_event_loop is None or _asyncio_event_loop.is_closed():
-        _asyncio_event_loop = asyncio.new_event_loop()
-    return _asyncio_event_loop
+    try:
+        return loop.run_until_complete(coro)
+    finally:
+        loop.close()

@@ -6,7 +6,7 @@ import asyncio
 import pytest
 
 from mkdocs_gallery.gen_single import _needs_async_handling, _parse_code
-from mkdocs_gallery.utils import get_asyncio_loop
+from mkdocs_gallery.utils import run_async
 
 SRC_FILE = __file__
 COMPILER = codeop.Compile()
@@ -19,7 +19,7 @@ needs_ast_unparse = pytest.mark.skipif(
 
 
 def make_globals():
-    return {"__get_asyncio_loop__": get_asyncio_loop}
+    return {"__run_async__": run_async}
 
 
 def test_non_async_syntax_error():
@@ -164,4 +164,4 @@ def test_get_event_loop_after_async_handling():
     code_unparsed = ast.unparse(_parse_code(code, src_file=SRC_FILE, compiler_flags=COMPILER_FLAGS))
     exec(COMPILER(code_unparsed, SRC_FILE, "exec"), make_globals())
 
-    asyncio.get_event_loop()
+    asyncio.events.get_event_loop()
