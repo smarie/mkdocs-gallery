@@ -151,6 +151,7 @@ def test_async_handling_last_expression():
     assert eval(ast.unparse(last.value), globals_)
 
 
+@needs_ast_unparse
 def test_get_event_loop_after_async_handling():
     # Non-regression test for https://github.com/smarie/mkdocs-gallery/issues/93
     code = dedent(
