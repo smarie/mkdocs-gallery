@@ -68,7 +68,7 @@ def test_full_conf(basic_mkdocs_config, monkeypatch):
     full_config = yaml_load("""
 conf_script: docs/gallery_conf.py
 examples_dirs:
-  - docs/examples
+  - examples
   - docs/tutorials
   # TODO mayavi_examples
 gallery_dirs:
@@ -83,8 +83,8 @@ image_scrapers: matplotlib
 compress_images: ['images', 'thumbnails']
 within_subsection_order: FileNameSortKey
 expected_failing_examples:
-   - docs/examples/no_output/plot_raise.py
-   - docs/examples/no_output/plot_syntaxerror.py
+   - examples/no_output/plot_raise.py
+   - examples/no_output/plot_syntaxerror.py
 
 # min_reported_time: min_reported_time,  in conf file
 

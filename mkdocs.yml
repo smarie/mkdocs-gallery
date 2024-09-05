@@ -22,7 +22,7 @@ plugins:
   - gallery:
       conf_script: docs/gallery_conf.py  # Base conf. Possibly modified by items below
       examples_dirs:
-        - docs/examples          # path to your example scripts, relative to mkdocs.yml
+        - examples          # path to your example scripts, relative to mkdocs.yml
         - docs/tutorials
       gallery_dirs:
         - docs/generated/gallery  # where to save gallery generated output. Note that you may or may not include them in
@@ -39,8 +39,8 @@ plugins:
       # specify the order of examples to be according to filename
       within_subsection_order: FileNameSortKey
       expected_failing_examples:
-         - docs/examples/no_output/plot_raise.py
-         - docs/examples/no_output/plot_syntaxerror.py
+         - examples/no_output/plot_raise.py
+         - examples/no_output/plot_syntaxerror.py
 
 #      min_reported_time: min_reported_time,  in conf file
       binder:
@@ -71,5 +71,4 @@ markdown_extensions:
 
 extra_javascript:
   - javascripts/mathjax.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js

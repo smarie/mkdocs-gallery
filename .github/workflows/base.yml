@@ -23,10 +23,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.1
 
       - name: Install python 3.9
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5.0.0
         with:
           python-version: 3.9
           architecture: x64
@@ -36,7 +36,7 @@ jobs:
 
       - name: List 'tests' nox sessions and required python versions
         id: set-matrix
-        run: echo "matrix=$(nox -s gha_list -- -s tests -v)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(nox --json -l -s tests -v)" >> $GITHUB_OUTPUT
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}  # save nox sessions list to outputs
@@ -46,6 +46,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # see https://github.com/actions/setup-python/issues/544
+        # os: [ ubuntu-20.04 ]
         os: [ ubuntu-latest, windows-latest ]  # , macos-latest, windows-latest]
         # all nox sessions: manually > dynamically from previous job
         # nox_session: ["tests-2.7", "tests-3.7"]
@@ -55,19 +57,40 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.1
 
       - name: Install python ${{ matrix.nox_session.python }} for tests
-        uses: actions/setup-python@v4
+        if: ${{ ! contains(fromJson('["3.13"]'), matrix.nox_session.python ) }}
+        uses: MatteoH2O1999/setup-python@v3.2.1  # actions/setup-python@v5.0.0
+        id: set-py
         with:
           python-version: ${{ matrix.nox_session.python }}
           architecture: x64
+          allow-build: info
+          cache-build: true
 
-      - name: Install python 3.9 for nox
-        uses: actions/setup-python@v4
+      - name: Install python ${{ matrix.nox_session.python }} for tests (3.13)
+        if: contains(fromJson('["3.13"]'), matrix.nox_session.python )
+        uses: actions/setup-python@v5
+        id: set-py-latest
         with:
-          python-version: 3.9
+          # Include all versions including pre releases
+          # See https://github.com/actions/setup-python/blob/main/docs/advanced-usage.md#specifying-a-python-version
+          python-version: ${{ format('~{0}.0-alpha.0', matrix.nox_session.python) }}
           architecture: x64
+          allow-build: info
+          cache-build: true
+
+      - name: Install python 3.12 for nox
+        uses: actions/setup-python@v5.0.0
+        with:
+          python-version: 3.12
+          architecture: x64
+
+      - name: pin virtualenv==20.15.1 in old python versions
+        # pinned to keep compatibility with old versions, see https://github.com/MatteoH2O1999/setup-python/issues/28#issuecomment-1745613621
+        if: contains(fromJson('["2.7", "3.5", "3.6"]'), matrix.nox_session.python )
+        run: sed -i "s/virtualenv/virtualenv==20.15.1/g" noxfile-requirements.txt
 
       - name: Setup headless display
         uses: pyvista/setup-headless-display-action@v2
@@ -93,10 +116,10 @@ jobs:
 #    if: github.event_name == 'pull_request'
 #    steps:
 #      - name: Checkout
-#        uses: actions/checkout@v2
+#        uses: actions/checkout@v4.1.1
 #
 #      - name: Install python 3.9 for nox
-#        uses: actions/setup-python@v4
+#        uses: actions/setup-python@v5.0.0
 #        with:
 #          python-version: 3.9
 #          architecture: x64
@@ -118,12 +141,12 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
 
       - name: Checkout with no depth
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 0  # so that gh-deploy works
 
       - name: Install python 3.9 for nox
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5.0.0
         with:
           python-version: 3.9
           architecture: x64
@@ -135,7 +158,7 @@ jobs:
 
       # 1) retrieve the reports generated previously
       - name: Retrieve reports
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v4.1.1
         with:
           name: reports_dir
           path: ./docs/reports
@@ -167,7 +190,7 @@ jobs:
           EOF
       - name: \[not on TAG\] Publish coverage report
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads')
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v4.0.1
         with:
           files: ./docs/reports/coverage/coverage.xml
 

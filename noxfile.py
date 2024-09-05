@@ -1,32 +1,23 @@
 import argparse
-from itertools import product
-from json import dumps
+import json
 import logging
-import os
-import sys
 
 import nox  # noqa
+import os
 from packaging import version
 from pathlib import Path  # noqa
+import sys
 
 # add parent folder to python path so that we can import noxfile_utils.py
 # note that you need to "pip install -r noxfile-requiterements.txt" for this file to work.
 sys.path.append(str(Path(__file__).parent / "ci_tools"))
-from nox_utils import PY37, PY38, PY39, PY310, PY311, power_session, rm_folder, rm_file, PowerSession  # noqa
+from nox_utils import PY37, PY38, PY39, PY310, PY311, install_reqs, rm_folder, rm_file  # noqa
 
 
 pkg_name = "mkdocs_gallery"
 gh_org = "smarie"
 gh_repo = "mkdocs-gallery"
 
-ENVS = {
-    PY311: {"coverage": False, "pkg_specs": {"pip": ">19"}},
-    PY310: {"coverage": False, "pkg_specs": {"pip": ">19"}},
-    PY39: {"coverage": False, "pkg_specs": {"pip": ">19"}},
-    PY37: {"coverage": False, "pkg_specs": {"pip": ">19"}},
-    # IMPORTANT: this should be last so that the folder docs/reports is not deleted afterwards
-    PY38: {"coverage": True, "pkg_specs": {"pip": ">19"}},
-}
 
 # set the default activated sessions, minimal for CI
 nox.options.sessions = ["tests", "flake8", "docs"]  # , "docs", "gh_pages"
@@ -63,8 +54,22 @@ class Folders:
     flake8_badge = flake8_reports / "flake8-badge.svg"
 
 
-@power_session(envs=ENVS, logsdir=Folders.runlogs)
-def tests(session: PowerSession, coverage, pkg_specs):
+ENVS = {
+    PY311: {"coverage": False, "pkg_specs": {"pip": ">19"}},
+    PY310: {"coverage": False, "pkg_specs": {"pip": ">19"}},
+    PY39: {"coverage": False, "pkg_specs": {"pip": ">19"}},
+    PY37: {"coverage": False, "pkg_specs": {"pip": ">19"}},
+    # IMPORTANT: this should be last so that the folder docs/reports is not deleted afterwards
+    PY38: {"coverage": True, "pkg_specs": {"pip": ">19"}},
+}
+
+ENV_PARAMS = tuple((k, v["coverage"], v["pkg_specs"]) for k, v in ENVS.items())
+ENV_IDS = tuple(ENVS.keys())
+
+
+@nox.session
+@nox.parametrize("python,coverage,pkg_specs", ENV_PARAMS, ids=ENV_IDS)
+def tests(session, coverage, pkg_specs):
     """Run the test suite, including test reports generation and coverage reports. """
 
     # As soon as this runs, we delete the target site and coverage files to avoid reporting wrong coverage/etc.
@@ -87,13 +92,13 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # session.run2("pip uninstall pytest-asyncio --yes")
 
     # install all requirements
-    session.install_reqs(setup=True, install=True, tests=True, versions_dct=pkg_specs)
+    install_reqs(session, setup=True, install=True, tests=True, versions_dct=pkg_specs)
     # Since our tests are currently limited, use our own doc generation as a test
     cannot_run_mayavi = version.parse(session.python) < version.parse(PY38)
     if cannot_run_mayavi:
-        session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
+        install_reqs(session, phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
     else:
-        session.install_reqs(phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS+MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
+        install_reqs(session, phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS+MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
 
     # Edit mkdocs config file
     with open("mkdocs.yml", "r") as f:
@@ -103,7 +108,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
         with open("mkdocs-no-mayavi.yml", "w") as f:
             for line in mkdocs_config:
                 if line == "      expected_failing_examples:\n":
-                    line = line + "         - docs/examples/plot_10_mayavi.py\n"
+                    line = line + "         - examples/plot_10_mayavi.py\n"
                 f.write(line)
 
     # install CI-only dependencies
@@ -118,78 +123,80 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # session.run2("conda list", env={"CONDA_PREFIX": str(conda_prefix), "CONDA_DEFAULT_ENV": session.get_session_id()})
 
     # Fail if the assumed python version is not the actual one
-    session.run2("python ci_tools/check_python_version.py %s" % session.python)
+    session.run("python", "ci_tools/check_python_version.py", session.python)
+
+    # check that it can be imported even from a different folder
+    # Important: do not surround the command into double quotes as in the shell !
+    # session.run('python', '-c', 'import os; os.chdir(\'./docs/\'); import %s' % pkg_name)
 
     # finally run all tests
     if not coverage:
         # install self so that it is recognized by pytest
-        session.install2('.', '--no-deps')
+        session.install(".", "--no-deps")
 
         # simple: pytest only
-        session.run2("python -m pytest --cache-clear -v tests/")
+        session.run("python", "-m", "pytest", "--cache-clear", "-v", "tests/")
 
         # since our tests are too limited, we use our own mkdocs build as additional test for now.
         if cannot_run_mayavi:
-            session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
+            session.run("python", "-m", "mkdocs", "build", "-f", "mkdocs-no-mayavi.yml")
         else:
-            session.run2("python -m mkdocs build -f mkdocs.yml")
+            session.run("python", "-m", "mkdocs", "build", "-f", "mkdocs.yml")
         # -- add a second build so that we can go through the caching/md5 side
         if cannot_run_mayavi:
-            session.run2("python -m mkdocs build -f mkdocs-no-mayavi.yml")
+            session.run("python", "-m", "mkdocs", "build", "-f", "mkdocs-no-mayavi.yml")
         else:
-            session.run2("python -m mkdocs build -f mkdocs.yml")
+            session.run("python", "-m", "mkdocs", "build", "-f", "mkdocs.yml")
     else:
         # install self in "develop" mode so that coverage can be measured
-        session.install2('-e', '.', '--no-deps')
+        session.install("-e", ".", "--no-deps")
 
         # coverage + junit html reports + badge generation
-        session.install_reqs(phase="coverage",
+        install_reqs(session, phase="coverage",
                              phase_reqs=["coverage", "pytest-html", "genbadge[tests,coverage]"],
                              versions_dct=pkg_specs)
 
         # --coverage + junit html reports
-        session.run2("coverage run --source src/{pkg_name} "
-                     "-m pytest --cache-clear --junitxml='{test_xml}' --html='{test_html}' -v tests/"
-                     "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+        session.run("coverage", "run", "--source", f"src/{pkg_name}",
+                    "-m", "pytest", "--cache-clear",
+                    f"--junitxml={Folders.test_xml}", f"--html={Folders.test_html}",
+                    "-v", "tests/")
 
         # -- use the doc generation for coverage
+        coverage_args = ("coverage", "run", "--append", "--source", f"src/{pkg_name}", "-m", "mkdocs", "build")
         if cannot_run_mayavi:
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
-                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+            session.run(*coverage_args, "-f", "mkdocs-no-mayavi.yml")
         else:
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
-                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
-        # -- add a second build so that we can go through the caching/md5 side
-        if cannot_run_mayavi:
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs-no-mayavi.yml"
-                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
-        else:
-            session.run2("coverage run --append --source src/{pkg_name} -m mkdocs build -f mkdocs.yml"
-                         "".format(pkg_name=pkg_name, test_xml=Folders.test_xml, test_html=Folders.test_html))
+            session.run(*coverage_args, "-f", "mkdocs.yml")
 
-        session.run2("coverage report")
-        session.run2("coverage xml -o '{covxml}'".format(covxml=Folders.coverage_xml))
-        session.run2("coverage html -d '{dst}'".format(dst=Folders.coverage_reports))
+        # -- add a second build so that we can go through the caching/md5 code
+        if cannot_run_mayavi:
+            session.run(*coverage_args, "-f", "mkdocs-no-mayavi.yml")
+        else:
+            session.run(*coverage_args, "-f", "mkdocs.yml")
+
+        session.run("coverage", "report")
+        session.run("coverage", "xml", "-o", f"{Folders.coverage_xml}")
+        session.run("coverage", "html", "-d", f"{Folders.coverage_reports}")
         # delete this intermediate file, it is not needed anymore
         rm_file(Folders.coverage_intermediate_file)
 
         # --generates the badge for the test results and fail build if less than x% tests pass
         nox_logger.info("Generating badge for tests coverage")
         # Use our own package to generate the badge
-        session.run2("genbadge tests -i '%s' -o '%s' -t 100" % (Folders.test_xml, Folders.test_badge))
-        session.run2("genbadge coverage -i '%s' -o '%s'" % (Folders.coverage_xml, Folders.coverage_badge))
+        session.run("genbadge", "tests", "-i", f"{Folders.test_xml}", "-o", f"{Folders.test_badge}", "-t", "100")
+        session.run("genbadge", "coverage", "-i", f"{Folders.coverage_xml}", "-o", f"{Folders.coverage_badge}")
     # Cleanup
     if os.path.exists("mkdocs-no-mayavi.yml"):
         os.remove("mkdocs-no-mayavi.yml")
 
 
-@power_session(python=PY39, logsdir=Folders.runlogs)
-def flake8(session: PowerSession):
+@nox.session(python=PY39)
+def flake8(session):
     """Launch flake8 qualimetry."""
 
     session.install("-r", str(Folders.ci_tools / "flake8-requirements.txt"))
-    session.install("genbadge[flake8]")
-    session.install2('.')
+    session.install(".")
 
     rm_folder(Folders.flake8_reports)
     Folders.flake8_reports.mkdir(parents=True, exist_ok=True)
@@ -201,7 +208,7 @@ def flake8(session: PowerSession):
     session.run("flake8", pkg_name, "--exit-zero", "--format=html", "--htmldir", str(Folders.flake8_reports),
                 "--statistics", "--tee", "--output-file", str(Folders.flake8_intermediate_file))
     # generate our badge
-    session.run2("genbadge flake8 -i '%s' -o '%s'" % (Folders.flake8_intermediate_file, Folders.flake8_badge))
+    session.run("genbadge", "flake8", "-i", f"{Folders.flake8_intermediate_file}", "-o", f"{Folders.flake8_badge}")
     rm_file(Folders.flake8_intermediate_file)
 
 
@@ -218,45 +225,50 @@ MKDOCS_GALLERY_EXAMPLES_REQS = [
 MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS = [
     "PyQt5",  # PyQt is required for the mayavi backend
     # Note: installing Mayavi from PyPi does not seem to work on GHA CI.
-    "git+https://github.com/enthought/mayavi.git",  # we want mayavi>=4.7.4 when available due to https://github.com/enthought/mayavi/pull/1272
+    #"git+https://github.com/enthought/mayavi.git",  # we want mayavi>=4.7.4 when available due to https://github.com/enthought/mayavi/pull/1272
+    "configobj",
+    "numpy<2",
+    "mayavi"
 ]
 
 
-@power_session(python=[PY39])
-def docs(session: PowerSession):
-    """Generates the doc and serves it on a local http server. Pass '-- build' to build statically instead."""
-    session.install_reqs(phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
+@nox.session(python=PY39)
+def docs(session):
+    """Generates the doc. Pass '-- serve' to serve it on a local http server instead."""
+
+    install_reqs(session, phase="docs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
 
     # Install the plugin
-    session.install2('.')
+    session.install('.')
 
     if session.posargs:
-        # use posargs instead of "serve"
-        session.run2("mkdocs %s" % " ".join(session.posargs))
+        # use posargs instead of "build"
+        session.run("mkdocs", *session.posargs)
     else:
-        session.run2("mkdocs serve -f mkdocs.yml")
+        session.run("mkdocs", "build", "-f", "mkdocs.yml")
 
 
-@power_session(python=[PY39])
-def publish(session: PowerSession):
+@nox.session(python=PY39)
+def publish(session):
     """Deploy the docs+reports on github pages. Note: this rebuilds the docs"""
-    session.install_reqs(phase="mkdocs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
+
+    install_reqs(session, phase="mkdocs", phase_reqs=["mkdocs"] + MKDOCS_GALLERY_EXAMPLES_REQS + MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS)
 
     # Install the plugin
-    session.install2('.')
+    session.install(".")
 
     # possibly rebuild the docs in a static way (mkdocs serve does not build locally)
-    session.run2("mkdocs build -f mkdocs.yml")
+    session.run("mkdocs", "build", "-f", "mkdocs.yml")
 
     # check that the doc has been generated with coverage
     if not Folders.site_reports.exists():
-        raise ValueError("Test reports have not been built yet. Please run 'nox -s tests-3.7' first")
+        raise ValueError("Test reports have not been built yet. Please run 'nox -s tests(3.7)' first")
 
     # publish the docs
-    session.run2("mkdocs gh-deploy -f mkdocs.yml")
+    session.run("mkdocs", "gh-deploy", "-f", "mkdocs.yml")
 
     # publish the coverage - now in github actions only
-    # session.install_reqs(phase="codecov", phase_reqs=["codecov", "keyring"])
+    # install_reqs(session, phase="codecov", phase_reqs=["codecov", "keyring"])
     # # keyring set https://app.codecov.io/gh/<org>/<repo> token
     # import keyring  # (note that this import is not from the session env but the main nox env)
     # codecov_token = keyring.get_password("https://app.codecov.io/gh/<org>/<repo>>", "token")
@@ -264,9 +276,11 @@ def publish(session: PowerSession):
     # session.run2('codecov -t %s -f %s' % (codecov_token, Folders.coverage_xml))
 
 
-@power_session(python=[PY39])
-def release(session: PowerSession):
+@nox.session(python=PY39)
+def release(session):
     """Create a release on github corresponding to the latest tag"""
+
+    install_reqs(session, phase="setup.py#dist", phase_reqs=["setuptools_scm"])
 
     # Get current tag using setuptools_scm and make sure this is not a dirty/dev one
     from setuptools_scm import get_version  # (note that this import is not from the session env but the main nox env)
@@ -279,9 +293,8 @@ def release(session: PowerSession):
     current_tag = get_version(".", version_scheme=my_scheme)
 
     # create the package
-    session.install_reqs(phase="setup.py#dist", phase_reqs=["setuptools_scm"])
     rm_folder(Folders.dist)
-    session.run2("python setup.py sdist bdist_wheel")
+    session.run("python", "setup.py", "sdist", "bdist_wheel")
 
     if version[0].dirty or not version[0].exact:
         raise ValueError("You need to execute this action on a clean tag version with no local changes.")
@@ -308,15 +321,14 @@ def release(session: PowerSession):
     if publish_on_pypi:
         # keyring set https://upload.pypi.org/legacy/ your-username
         # keyring set https://test.pypi.org/legacy/ your-username
-        session.install_reqs(phase="PyPi", phase_reqs=["twine"])
-        session.run2("twine upload dist/* -u smarie")  # -r testpypi
+        install_reqs(session, phase="PyPi", phase_reqs=["twine"])
+        session.run("twine", "upload", "dist/*", "-u", "smarie")  # -r testpypi
 
     # create the github release
-    session.install_reqs(phase="release", phase_reqs=["click", "PyGithub"])
-    session.run2("python ci_tools/github_release.py -s {gh_token} "
-                 "--repo-slug {gh_org}/{gh_repo} -cf ./docs/changelog.md "
-                 "-d https://{gh_org}.github.io/{gh_repo}/changelog {tag}"
-                 "".format(gh_token=gh_token, gh_org=gh_org, gh_repo=gh_repo, tag=current_tag))
+    install_reqs(session, phase="release", phase_reqs=["click", "PyGithub"])
+    session.run("python", "ci_tools/github_release.py", "-s", gh_token,
+                "--repo-slug", f"{gh_org}/{gh_repo}", "-cf", "./docs/changelog.md",
+                "-d", f"https://{gh_org}.github.io/{gh_repo}/changelog", current_tag)
 
 
 @nox.session(python=False)
@@ -337,29 +349,16 @@ def gha_list(session):
     )
     additional_args = parser.parse_args(session.posargs)
 
-    # get the desired base session to generate the list for
-    session_func = globals()[additional_args.session]
+    # Now use --json CLI option
+    out = session.run("nox", "-l", "--json", "-s", "tests", external=True, silent=True)
+    sessions_list = [{"python": s["python"], "session": s["session"]} for s in json.loads(out)]
 
-    # list all sessions for this base session
-    try:
-        session_func.parametrize
-    except AttributeError:
-        if additional_args.with_version:
-            sessions_list = [{"python": py, "session": "%s-%s" % (session_func.__name__, py)} for py in session_func.python]
-        else:
-            sessions_list = ["%s-%s" % (session_func.__name__, py) for py in session_func.python]
-    else:
-        if additional_args.with_version:
-            sessions_list = [{"python": py, "session": "%s-%s(%s)" % (session_func.__name__, py, param)}
-                             for py, param in product(session_func.python, session_func.parametrize)]
-        else:
-            sessions_list = ["%s-%s(%s)" % (session_func.__name__, py, param)
-                             for py, param in product(session_func.python, session_func.parametrize)]
+    # TODO filter
 
     # print the list so that it can be caught by GHA.
     # Note that json.dumps is optional since this is a list of string.
     # However it is to remind us that GHA expects a well-formatted json list of strings.
-    print(dumps(sessions_list))
+    print(json.dumps(sessions_list))
 
 
 # if __name__ == '__main__':

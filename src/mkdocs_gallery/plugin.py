@@ -7,6 +7,7 @@
 The mkdocs plugin entry point
 """
 import os
+from os.path import relpath
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Union
@@ -342,7 +343,7 @@ markdown_extensions:
             dir_or_list_of_dirs = [dir_or_list_of_dirs]
 
         # Get them relative to the mkdocs source dir
-        return [Path(e).relative_to(rel_to_dir).as_posix() for e in dir_or_list_of_dirs]
+        return [Path(relpath(Path(e), start=Path(rel_to_dir))).as_posix() for e in dir_or_list_of_dirs]
 
     # def on_nav(self, nav, config, files):
     #     # Nav is already modded in on_pre_build, do not change it
