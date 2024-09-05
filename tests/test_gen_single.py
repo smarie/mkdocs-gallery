@@ -1,8 +1,9 @@
 import ast
+import asyncio
 import codeop
 import sys
 from textwrap import dedent
-import asyncio
+
 import pytest
 
 from mkdocs_gallery.gen_single import _needs_async_handling, _parse_code
