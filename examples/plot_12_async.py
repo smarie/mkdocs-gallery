@@ -31,13 +31,7 @@ f"I waited for {await afn():.1f} seconds!"
 
 # %%
 # Without any handling, the snippet above would trigger a `SyntaxError`, since we are using `await` outside of an
-# asynchronous context. With the handling, it works just fine.
-#
-# The background handling will only be applied if it is actually needed. Meaning, you can still run your asynchronous
-# code manually if required.
-
-asyncio.run(afn())
-
+# asynchronous context. With the background handling, it works just fine.
 
 # %%
 # Apart from `await` all other asynchronous syntax is supported as well.

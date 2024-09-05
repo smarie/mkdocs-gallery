@@ -37,19 +37,6 @@ def test_non_async_syntax_error():
                 """
                 async def afn():
                     return True
-
-                import asyncio
-                assert asyncio.run(afn())
-                """
-            ),
-            False,
-            id="asyncio_run",
-        ),
-        pytest.param(
-            dedent(
-                """
-                async def afn():
-                    return True
                 
                 assert await afn()
                 """
