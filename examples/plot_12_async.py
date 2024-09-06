@@ -32,9 +32,8 @@ f"I waited for {await afn():.1f} seconds!"
 # %%
 # Without any handling, the snippet above would trigger a `SyntaxError`, since we are using `await` outside of an
 # asynchronous context. With the background handling, it works just fine.
-
-# %%
-# Apart from `await` all other asynchronous syntax is supported as well.
+#
+# Apart from `await` that we used above, all other asynchronous syntax is supported as well.
 #
 # ## Asynchronous Generators
 
