@@ -28,6 +28,7 @@ def test_non_async_syntax_error():
         _parse_code("foo = None\n bar = None", src_file=SRC_FILE, compiler_flags=COMPILER_FLAGS)
 
 
+@needs_ast_unparse
 def test_no_async_roundtrip():
     code = "None"
     assert not _needs_async_handling(code, src_file=SRC_FILE, compiler_flags=COMPILER_FLAGS)
