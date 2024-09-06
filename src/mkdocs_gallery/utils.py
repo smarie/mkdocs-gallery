@@ -12,6 +12,7 @@ Miscellaneous utilities.
 
 from __future__ import absolute_import, division, print_function
 
+import asyncio
 import hashlib
 import os
 import re
@@ -376,3 +377,15 @@ def is_relative_to(parentpath: Path, subpath: Path) -> bool:
 
     except ValueError:
         return False
+
+
+def run_async(coro):
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+
+    try:
+        return loop.run_until_complete(coro)
+    finally:
+        loop.close()

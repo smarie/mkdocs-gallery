@@ -41,7 +41,7 @@ from .gen_data_model import GalleryBase, GalleryScript, GalleryScriptResults
 from .notebook import jupyter_notebook, save_notebook
 from .py_source_parser import remove_config_comments, split_code_and_text_blocks
 from .scrapers import ImageNotFoundError, _find_image_ext, clean_modules, save_figures
-from .utils import _new_file, _replace_by_new_if_needed, optipng, rescale_image
+from .utils import _new_file, _replace_by_new_if_needed, optipng, rescale_image, run_async
 
 logger = mkdocs_compatibility.getLogger("mkdocs-gallery")
 
@@ -780,8 +780,7 @@ def _apply_async_handling(code_ast, *, compiler_flags):
                 async def __async_wrapper__():
                     # original AST goes here
                     return locals()
-                import asyncio as __asyncio__
-                __async_wrapper_locals__ = __asyncio__.run(__async_wrapper__())
+                __async_wrapper_locals__ = __run_async__(__async_wrapper__())
                 __async_wrapper_result__ = __async_wrapper_locals__.pop("__async_wrapper_result__", None)
                 globals().update(__async_wrapper_locals__)
                 __async_wrapper_result__
@@ -950,6 +949,7 @@ def parse_and_execute(script: GalleryScript, script_blocks):
             # Don't ever support __file__: Issues #166 #212
             # Don't let them use input()
             "input": _check_input,
+            "__run_async__": run_async,
         }
     )
     script.run_vars.example_globals = example_globals
@@ -960,7 +960,7 @@ def parse_and_execute(script: GalleryScript, script_blocks):
     # Remember the original argv so that we can put them back after run
     argv_orig = sys.argv[:]
 
-    # Remember the original sys.path so that we can reset it after run
+    # Remember the original sys.path so that we can reset it after run
     sys_path_orig = deepcopy(sys.path)
 
     # Python file is the original one (not the copy for download)

@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.10.3 - Bugfixes
+
+-  Don't use `asyncio.run` for async handling. Fixes [#93](https://github.com/smarie/mkdocs-gallery/issues/93).
+
 ### 0.10.2 - Bugfixes
 
 - **SECURITY** removed insecure polyfill extra javascript from example. Fixes [#99](https://github.com/smarie/mkdocs-gallery/issues/99).
