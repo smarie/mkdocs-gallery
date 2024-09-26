@@ -7,8 +7,9 @@
 The mkdocs plugin entry point
 """
 import os
-from os.path import relpath
+import platform
 import re
+from os.path import relpath
 from pathlib import Path
 from typing import Any, Dict, List, Union
 
@@ -20,6 +21,7 @@ from mkdocs.plugins import BasePlugin
 from mkdocs.structure.files import Files
 from mkdocs.structure.pages import Page
 from packaging import version
+from packaging.version import parse as parse_version
 
 from . import glr_path_static
 from .binder import copy_binder_files
@@ -27,6 +29,8 @@ from .binder import copy_binder_files
 # from .docs_resolv import embed_code_links
 from .gen_gallery import fill_mkdocs_nav, generate_gallery_md, parse_config, summarize_failing_examples
 from .utils import is_relative_to
+
+IS_PY37 = parse_version("3.7") <= parse_version(platform.python_version()) < parse_version("3.8")
 
 mkdocs_version = version.parse(mkdocs_version_str)
 is_mkdocs_14_or_greater = mkdocs_version >= version.parse("1.4")
@@ -207,7 +211,10 @@ class GalleryPlugin(BasePlugin):
                 if "toc.integrate" not in config["theme"]["features"]:
                     config["theme"]["features"].append("navigation.indexes")
 
-        extra_config_yml = """
+        # Set Python version dependent emoji logic for backward compatibility
+        mx_name = "materialx" if IS_PY37 else "material.extensions"
+
+        extra_config_yml = f"""
 markdown_extensions:
   # to declare attributes such as css classes on markdown elements. For example to change the color
   - attr_list
