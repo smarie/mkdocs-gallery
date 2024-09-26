@@ -231,8 +231,8 @@ markdown_extensions:
 
   # to have the download icons in the buttons
   - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:{mx_name}.emoji.twemoji
+      emoji_generator: !!python/name:{mx_name}.emoji.to_svg
 
 
 """
