@@ -2,7 +2,9 @@
 
 ### 0.10.4 - Bugfixes
 
-- Emoji logic updated. Fixes [#103](https://github.com/smarie/mkdocs-gallery/issues/103).
+- Fixed `DeprecationWarning` with `mkdocs-material` `>=9.4` by using `material.extensions.emoji` instead of 
+  `materialx.emoji.twemoji`. Fixes [#103](https://github.com/smarie/mkdocs-gallery/issues/103). PR
+  [#104](https://github.com/smarie/mkdocs-gallery/pull/104) by [BalzaniEduardo](https://github.com/BalzaniEdoardo).
 
 ### 0.10.3 - Bugfixes
 
