@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.10.4 - Bugfixes
+
+- Emoji logic updated. Fixes [#103](https://github.com/smarie/mkdocs-gallery/issues/103).
+
 ### 0.10.3 - Bugfixes
 
 -  Don't use `asyncio.run` for async handling. Fixes [#93](https://github.com/smarie/mkdocs-gallery/issues/93).
