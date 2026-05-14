@@ -4,14 +4,13 @@ import logging
 
 import nox  # noqa
 import os
-from packaging import version
 from pathlib import Path  # noqa
 import sys
 
 # add parent folder to python path so that we can import noxfile_utils.py
 # note that you need to "pip install -r noxfile-requiterements.txt" for this file to work.
 sys.path.append(str(Path(__file__).parent / "ci_tools"))
-from nox_utils import PY37, PY38, PY39, PY310, PY311, install_reqs, rm_folder, rm_file  # noqa
+from nox_utils import PY312, PY313, PY314, install_reqs, rm_folder, rm_file  # noqa
 
 
 pkg_name = "mkdocs_gallery"
@@ -55,12 +54,10 @@ class Folders:
 
 
 ENVS = {
-    PY311: {"coverage": False, "pkg_specs": {"pip": ">19"}},
-    PY310: {"coverage": False, "pkg_specs": {"pip": ">19"}},
-    PY39: {"coverage": False, "pkg_specs": {"pip": ">19"}},
-    PY37: {"coverage": False, "pkg_specs": {"pip": ">19"}},
+    PY314: {"coverage": False, "pkg_specs": {"pip": ">19"}},
+    PY313: {"coverage": False, "pkg_specs": {"pip": ">19"}},
     # IMPORTANT: this should be last so that the folder docs/reports is not deleted afterwards
-    PY38: {"coverage": True, "pkg_specs": {"pip": ">19"}},
+    PY312: {"coverage": True, "pkg_specs": {"pip": ">19"}},
 }
 
 ENV_PARAMS = tuple((k, v["coverage"], v["pkg_specs"]) for k, v in ENVS.items())
@@ -94,7 +91,7 @@ def tests(session, coverage, pkg_specs):
     # install all requirements
     install_reqs(session, setup=True, install=True, tests=True, versions_dct=pkg_specs)
     # Since our tests are currently limited, use our own doc generation as a test
-    cannot_run_mayavi = version.parse(session.python) < version.parse(PY38)
+    cannot_run_mayavi = os.environ.get("CI") == "true"
     if cannot_run_mayavi:
         install_reqs(session, phase="tests", phase_reqs=MKDOCS_GALLERY_EXAMPLES_REQS)
     else:
@@ -191,7 +188,7 @@ def tests(session, coverage, pkg_specs):
         os.remove("mkdocs-no-mayavi.yml")
 
 
-@nox.session(python=PY39)
+@nox.session(python=PY312)
 def flake8(session):
     """Launch flake8 qualimetry."""
 
@@ -232,7 +229,7 @@ MKDOCS_GALLERY_EXAMPLES_MAYAVI_REQS = [
 ]
 
 
-@nox.session(python=PY39)
+@nox.session(python=PY312)
 def docs(session):
     """Generates the doc. Pass '-- serve' to serve it on a local http server instead."""
 
@@ -248,7 +245,7 @@ def docs(session):
         session.run("mkdocs", "build", "-f", "mkdocs.yml")
 
 
-@nox.session(python=PY39)
+@nox.session(python=PY312)
 def publish(session):
     """Deploy the docs+reports on github pages. Note: this rebuilds the docs"""
 
@@ -262,7 +259,7 @@ def publish(session):
 
     # check that the doc has been generated with coverage
     if not Folders.site_reports.exists():
-        raise ValueError("Test reports have not been built yet. Please run 'nox -s tests(3.7)' first")
+        raise ValueError("Test reports have not been built yet. Please run 'nox -s tests(3.12)' first")
 
     # publish the docs
     session.run("mkdocs", "gh-deploy", "-f", "mkdocs.yml")
@@ -276,7 +273,7 @@ def publish(session):
     # session.run2('codecov -t %s -f %s' % (codecov_token, Folders.coverage_xml))
 
 
-@nox.session(python=PY39)
+@nox.session(python=PY312)
 def release(session):
     """Create a release on github corresponding to the latest tag"""
 
